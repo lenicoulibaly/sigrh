@@ -27,12 +27,17 @@ public class FonctionHistoService implements IHistoService<Fonction, FonctionHis
     }
 
     @Override
-    public Page<FonctionHisto> getHistoPageBetweenPeriod(Long idFonction, LocalDateTime after, LocalDateTime before, int pageNum, int pageSize) {
-        return fonctionHistoDAO.getHistoPageBetweenPeriod(idFonction, after, before, PageRequest.of(pageNum, pageSize));
+    public Page<FonctionHisto> getHistoPageBetweenPeriod(Long idFonction, LocalDateTime before, LocalDateTime after, int pageNum, int pageSize) {
+        return fonctionHistoDAO.getHistoPageBetweenPeriod(idFonction, before, after, PageRequest.of(pageNum, pageSize));
     }
 
     @Override
-    public Page<FonctionHisto> getHistoPageBetweenPeriod(Long idFonction, String username, LocalDateTime after, LocalDateTime before, int pageNum, int pageSize) {
-        return fonctionHistoDAO.getHistoPageBetweenPeriod(idFonction, username, after, before, PageRequest.of(pageNum, pageSize));
+    public Page<FonctionHisto> getHistoPageBetweenPeriod(Long idFonction, String username, LocalDateTime before, LocalDateTime after, int pageNum, int pageSize) {
+        return fonctionHistoDAO.getHistoPageBetweenPeriod(idFonction, username, before, after, PageRequest.of(pageNum, pageSize));
+    }
+
+    @Override
+    public Page<FonctionHisto> getHistoPageBetweenPeriod(String username, LocalDateTime before, LocalDateTime after, int pageNum, int pageSize) {
+        return fonctionHistoDAO.getHistoPageBetweenPeriod(username, before, after, PageRequest.of(pageNum, pageSize));
     }
 }

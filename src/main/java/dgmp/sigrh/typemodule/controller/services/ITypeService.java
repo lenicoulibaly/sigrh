@@ -5,6 +5,7 @@ import dgmp.sigrh.typemodule.model.dtos.TypeParamDTO;
 import dgmp.sigrh.typemodule.model.dtos.TypeParamsDTO;
 import dgmp.sigrh.typemodule.model.dtos.UpdateTypeDTO;
 import dgmp.sigrh.typemodule.model.entities.Type;
+import dgmp.sigrh.typemodule.model.enums.TypeGroup;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -22,7 +23,10 @@ public interface ITypeService
 
     Type setSousTypesRecursively(Long typeId);
     List<Type> getSousTypesRecursively(Long typeId);
+    List<TypeGroup> getTypeGroups();
 
     Page<Type> searchPageOfTypes(String key, String typeGroup, int pageNum, int pageSize);
     Page<Type> searchPageOfDeletedTypes(String key, String typeGroup, int pageNum, int pageSize);
+
+    void restoreType(Long idType);
 }

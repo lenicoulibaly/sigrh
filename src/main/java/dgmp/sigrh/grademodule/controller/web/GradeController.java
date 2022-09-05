@@ -148,5 +148,4 @@ public class GradeController
         gradeService.restoreGrade(idGrade);
         return "redirect:/sigrh/administration/grades/deleted-grades-list";
     }
-
 }

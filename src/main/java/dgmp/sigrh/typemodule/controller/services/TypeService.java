@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -39,7 +38,6 @@ public class TypeService implements ITypeService
     public Type createType(CreateTypeDTO dto)
     {
         Type type = typeMapper.mapToType(dto);
-        type.setUniqueCode(type.getUniqueCode().toUpperCase(Locale.ROOT));
         type = typeRepo.save(type);
         typeHistoService.storeEntity(type, TypeEventType.CREATE_TYPE);
         return type;
@@ -64,6 +62,15 @@ public class TypeService implements ITypeService
         if(loadedType == null) return;
         loadedType.setStatus(PersistenceStatus.DELETED);
         typeHistoService.storeEntity(loadedType, TypeEventType.DELETE_TYPE);
+    }
+
+    @Override
+    public void restoreType(Long typeId)
+    {
+        Type loadedType = typeId == null ? null : typeRepo.findById(typeId).orElse(null);
+        if(loadedType == null) return;
+        loadedType.setStatus(PersistenceStatus.ACTIVE);
+        typeHistoService.storeEntity(loadedType, TypeEventType.RESTORE_TYPE);
     }
 
     @Override @Transactional
@@ -145,6 +152,11 @@ public class TypeService implements ITypeService
         Type type = typeRepo.findById(typeId).orElse(null);
         if(type == null) return null;
         return typeRepo.findByParent(typeId).stream().flatMap(t-> Stream.concat(Stream.of(t), getSousTypesRecursively(t.getTypeId()).stream())).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TypeGroup> getTypeGroups() {
+        return EnumUtils.getEnumList(TypeGroup.class);
     }
 
     @Override

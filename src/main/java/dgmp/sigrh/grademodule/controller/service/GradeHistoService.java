@@ -27,12 +27,17 @@ public class GradeHistoService implements IHistoService<Grade, GradeHisto, Grade
     }
 
     @Override
-    public Page<GradeHisto> getHistoPageBetweenPeriod(Long entityId, LocalDateTime after, LocalDateTime before, int pageNum, int pageSize) {
-        return gradeHistoDAO.searchPageOfGradeHisto(entityId, after, before, PageRequest.of(pageNum, pageSize));
+    public Page<GradeHisto> getHistoPageBetweenPeriod(Long entityId, LocalDateTime before, LocalDateTime after, int pageNum, int pageSize) {
+        return gradeHistoDAO.searchPageOfGradeHisto(entityId, before, after, PageRequest.of(pageNum, pageSize));
     }
 
     @Override
-    public Page<GradeHisto> getHistoPageBetweenPeriod(Long entityId, String username, LocalDateTime after, LocalDateTime before, int pageNum, int pageSize) {
-        return gradeHistoDAO.searchPageOfGradeHisto(entityId, username, after, before, PageRequest.of(pageNum, pageSize));
+    public Page<GradeHisto> getHistoPageBetweenPeriod(Long entityId, String username, LocalDateTime before, LocalDateTime after, int pageNum, int pageSize) {
+        return gradeHistoDAO.searchPageOfGradeHisto(entityId, username, before, after, PageRequest.of(pageNum, pageSize));
+    }
+
+    @Override
+    public Page<GradeHisto> getHistoPageBetweenPeriod(String username, LocalDateTime after, LocalDateTime before, int pageNum, int pageSize) {
+        return gradeHistoDAO.searchPageOfGradeHisto(username, before, after, PageRequest.of(pageNum, pageSize));
     }
 }

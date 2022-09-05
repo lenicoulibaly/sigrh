@@ -27,12 +27,17 @@ public class EmploiHistoService implements IHistoService<Emploi, EmploiHisto, Em
     }
 
     @Override
-    public Page<EmploiHisto> getHistoPageBetweenPeriod(Long entityId,LocalDateTime after, LocalDateTime before, int pageNum, int pageSize) {
-        return emploiHistoDAO.getHistoPageBetweenPeriod(entityId,after, before, PageRequest.of(pageNum, pageSize));
+    public Page<EmploiHisto> getHistoPageBetweenPeriod(Long entityId, LocalDateTime before, LocalDateTime after, int pageNum, int pageSize) {
+        return emploiHistoDAO.getHistoPageBetweenPeriod(entityId, before, after, PageRequest.of(pageNum, pageSize));
     }
 
     @Override
-    public Page<EmploiHisto> getHistoPageBetweenPeriod(Long entityId, String username, LocalDateTime after, LocalDateTime before, int pageNum, int pageSize) {
-        return emploiHistoDAO.getHistoPageBetweenPeriod(entityId, username, after, before, PageRequest.of(pageNum, pageSize));
+    public Page<EmploiHisto> getHistoPageBetweenPeriod(Long entityId, String username, LocalDateTime before, LocalDateTime after, int pageNum, int pageSize) {
+        return emploiHistoDAO.getHistoPageBetweenPeriod(entityId, username, before, after, PageRequest.of(pageNum, pageSize));
+    }
+
+    @Override
+    public Page<EmploiHisto> getHistoPageBetweenPeriod(String username, LocalDateTime before, LocalDateTime after, int pageNum, int pageSize) {
+        return emploiHistoDAO.getHistoPageBetweenPeriod(username, before, after, PageRequest.of(pageNum, pageSize));
     }
 }

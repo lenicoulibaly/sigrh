@@ -1,0 +1,46 @@
+<div >
+    <div class="col-md-3">
+        <!-- Profile Image -->
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Menu contextuel</h3>
+            </div>
+            <div class="card-body box-profile">
+                <span th:fragment="contextual-menu">
+                    <ul class="list-group list-group-unbordered mb-3">
+                        <li class="list-group-item" th:if="${viewMode != 'new'}">
+                            <a th:href="@{/sigrh/administration/types/new-type-form}" title="Créer un nouveau type">
+                                <b>Nouveau type</b> <i class="float-right fa-solid fa-circle-plus"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item" th:if="${viewMode!='update' && viewMode != 'new' && viewMode != 'trash'}">
+                            <a th:href="@{/sigrh/administration/types/update-type-form(typeId=${type.typeId})}" th:title="'Modifier le type ' +${type.name}">
+                                <b>Modifier</b> <i class="float-right fas fa-edit"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item" th:if="${viewMode != 'new' && viewMode != 'trash'}" th:title="'Supprimer le type  ' + ${type.name}">
+                            <a id="lnk-delete" href="#" data-toggle="modal" data-target="#delete-confirmation-modal">
+                                <b>Supprimer</b> <i class="float-right fas fa-trash"></i>
+                            </a>
+                            <th:block
+                                    th:replace="administration/types/delete-confirmation-modal-frag::delete-confirmation-modal"></th:block>
+                        </li>
+                        <li class="list-group-item">
+                            <a th:href="@{/sigrh/administration/types/types-list}" title="Voir la liste des types">
+                                <b>Liste des types</b> <i class="float-right fas fa-list"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a title="Voir la liste des types supprimés"
+                               th:href="@{/sigrh/administration/types/deleted-types-list}">
+                                <b>Corbeille</b> <i class="fa-solid fa-circle-trash"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </span>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>

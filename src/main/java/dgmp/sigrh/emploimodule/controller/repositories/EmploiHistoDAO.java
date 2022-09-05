@@ -17,11 +17,14 @@ public interface EmploiHistoDAO extends JpaRepository<EmploiHisto, Long>
     @Query("select e from EmploiHisto e where e.idEmploi = ?1 order by e.eventActorIdentifier.modificationDate DESC")
     Page<EmploiHisto> getHistoPageBetweenPeriod(Long idEmploi, Pageable pageable);
 
-    @Query("select e from EmploiHisto e where e.idEmploi = ?1 and e.eventActorIdentifier.modificationDate >= ?2 and e.eventActorIdentifier.modificationDate <= ?3 order by e.eventActorIdentifier.modificationDate DESC")
-    Page<EmploiHisto> getHistoPageBetweenPeriod(Long idEmploi, LocalDateTime after, LocalDateTime before, Pageable pageable);
+    @Query("select e from EmploiHisto e where e.idEmploi = ?1 and e.eventActorIdentifier.modificationDate <= ?2 and e.eventActorIdentifier.modificationDate >= ?3 order by e.eventActorIdentifier.modificationDate DESC")
+    Page<EmploiHisto> getHistoPageBetweenPeriod(Long idEmploi, LocalDateTime before, LocalDateTime after, Pageable pageable);
 
-    @Query("select e from EmploiHisto e where e.idEmploi = ?1 and e.eventActorIdentifier.modifierUsername = ?2 and e.eventActorIdentifier.modificationDate >= ?3 and e.eventActorIdentifier.modificationDate <= ?4 order by e.eventActorIdentifier.modificationDate DESC")
-    Page<EmploiHisto> getHistoPageBetweenPeriod(Long idEmploi, String username, LocalDateTime after, LocalDateTime before, Pageable pageable);
+    @Query("select e from EmploiHisto e where e.idEmploi = ?1 and e.eventActorIdentifier.modifierUsername = ?2 and e.eventActorIdentifier.modificationDate <= ?3 and e.eventActorIdentifier.modificationDate >= ?4 order by e.eventActorIdentifier.modificationDate DESC")
+    Page<EmploiHisto> getHistoPageBetweenPeriod(Long idEmploi, String username, LocalDateTime before, LocalDateTime after, Pageable pageable);
+
+    @Query("select e from EmploiHisto e where e.eventActorIdentifier.modifierUsername = ?1 and e.eventActorIdentifier.modificationDate <= ?2 and e.eventActorIdentifier.modificationDate >= ?3 order by e.eventActorIdentifier.modificationDate DESC")
+    Page<EmploiHisto> getHistoPageBetweenPeriod(String username, LocalDateTime before, LocalDateTime after, Pageable pageable);
 
     @Query("select (count(eh)>0) from EmploiHisto eh where eh.idEmploi = ?1")
     long countByIdEmploi(long idEmploi);

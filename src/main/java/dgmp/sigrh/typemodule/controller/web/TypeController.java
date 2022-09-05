@@ -14,9 +14,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 
 @Controller @RequiredArgsConstructor
@@ -36,7 +39,7 @@ public class TypeController
         model.addAttribute("key", key);
         Page<Type> types = typeService.searchPageOfTypes(key, key, pageNum, pageSize);
         model.addAttribute("types", types);
-        model.addAttribute("types", new long[types.getTotalPages()]);
+        model.addAttribute("pages", new long[types.getTotalPages()]);
         model.addAttribute("viewMode", "list");
         return "administration/types/typesList";
     }
@@ -85,5 +88,61 @@ public class TypeController
         model.addAttribute("type", typeDTO);
         model.addAttribute("viewMode", "update");
         return "administration/types/updateTypeForm";
+    }
+
+    @PostMapping(path = "/sigrh/administration/types/create")
+    public String createType(Model model, @Valid CreateTypeDTO dto, BindingResult bindingResult)
+    {
+        if(bindingResult.hasErrors())
+        {
+            bindingResult.getFieldErrors().forEach(fe->model.addAttribute(fe.getField() + "ErrMsg", fe.getDefaultMessage()));
+            bindingResult.getGlobalErrors().forEach(ge->model.addAttribute("globalErrMsg", ge.getDefaultMessage()));
+            model.addAttribute("type", dto);
+            model.addAttribute("viewMode", "new");
+            return "administration/types/newTypeForm";
+        }
+        typeService.createType(dto);
+        return "redirect:/sigrh/administration/types/types-list";
+    }
+
+    @PostMapping(path = "/sigrh/administration/types/update")
+    public String updateType(Model model, @Valid UpdateTypeDTO dto, BindingResult bindingResult)
+    {
+        if(bindingResult.hasErrors())
+        {
+            bindingResult.getGlobalErrors().forEach(ge->
+            {
+                if(ge.getDefaultMessage().contains("::"))
+                {
+                    String field= ge.getDefaultMessage().split("::")[0];
+                    String message= ge.getDefaultMessage().split("::")[1];
+                    model.addAttribute(field +"ErrMsg", message);
+                }
+                else
+                {
+                    model.addAttribute("globalErrMsg", ge.getDefaultMessage());
+                }
+            });
+            bindingResult.getFieldErrors().forEach(fe->model.addAttribute(fe.getField() + "ErrMsg", fe.getDefaultMessage()));
+            model.addAttribute("viewMode", "update");
+            model.addAttribute("type", dto);
+            return "administration/types/updateTypeForm";
+        }
+        typeService.updateType(dto);
+        return "redirect:/sigrh/administration/types/types-list";
+    }
+
+    @GetMapping(path = "/sigrh/administration/types/delete")
+    public String deleteType(Model model, @RequestParam(defaultValue = "0") Long typeId)
+    {
+        typeService.deleteType(typeId);
+        return "redirect:/sigrh/administration/types/types-list";
+    }
+
+    @GetMapping(path = "/sigrh/administration/types/restore")
+    public String restoreType(Model model, @RequestParam(defaultValue = "0") Long typeId)
+    {
+        typeService.restoreType(typeId);
+        return "redirect:/sigrh/administration/types/deleted-types-list";
     }
 }
