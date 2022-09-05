@@ -18,14 +18,11 @@ public interface TypeMapper
 
     Type mapToType(UpdateTypeDTO dto);
 
-
     @Mapping(target = "typeGroup", expression = "java(type.getTypeGroup().getGroupName())")
     ReadTypeDTO mapToReadTypeDTO(Type type);
     @Mapping(target = "parent.typeId", source = "dto.parentId")
     @Mapping(target = "child.typeId", source = "dto.childId")
-    @Mapping(target = "status", expression = "java(org.apache.commons.lang3.EnumUtils.getEnum(dgmp.sigrh.shared.model.enums.PersistenceStatus.class, dto.getStatus()))")
     TypeParam mapToTypeParam(TypeParamDTO dto);
-
 
     TypeHisto mapToTypeHisto(Type type, TypeEventType eventType, EventActorIdentifier eai);
 

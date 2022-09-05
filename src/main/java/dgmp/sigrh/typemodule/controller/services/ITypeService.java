@@ -1,19 +1,28 @@
 package dgmp.sigrh.typemodule.controller.services;
 
 import dgmp.sigrh.typemodule.model.dtos.CreateTypeDTO;
-import dgmp.sigrh.typemodule.model.dtos.ReadTypeDTO;
 import dgmp.sigrh.typemodule.model.dtos.TypeParamDTO;
+import dgmp.sigrh.typemodule.model.dtos.TypeParamsDTO;
 import dgmp.sigrh.typemodule.model.dtos.UpdateTypeDTO;
+import dgmp.sigrh.typemodule.model.entities.Type;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface ITypeService
 {
-    ReadTypeDTO createType(CreateTypeDTO dto);
-    ReadTypeDTO updateType(UpdateTypeDTO dto);
+    Type createType(CreateTypeDTO dto);
+    Type updateType(UpdateTypeDTO dto);
     void deleteType(Long typeId);
-    void setSousType(TypeParamDTO dto);
+    void addSousType(TypeParamDTO dto);
     void removeSousType(TypeParamDTO dto);
+    void setSousTypes(TypeParamsDTO dto);
+    boolean parentHasDirectSousType(Long parentId, Long childId);
+    boolean parentHasDistantSousType(Long parentId, Long childId);
 
-    Page<ReadTypeDTO> searchPageOfTypes(String key, int pageNum, int pageSize);
-    Page<ReadTypeDTO> searchPageOfDeletedTypes(String key, int pageNum, int pageSize);
+    Type setSousTypesRecursively(Long typeId);
+    List<Type> getSousTypesRecursively(Long typeId);
+
+    Page<Type> searchPageOfTypes(String key, String typeGroup, int pageNum, int pageSize);
+    Page<Type> searchPageOfDeletedTypes(String key, String typeGroup, int pageNum, int pageSize);
 }

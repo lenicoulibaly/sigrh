@@ -7,6 +7,7 @@ import dgmp.sigrh.typemodule.model.dtos.CreateTypeDTO;
 import dgmp.sigrh.typemodule.model.dtos.ReadTypeDTO;
 import dgmp.sigrh.typemodule.model.dtos.TypeParamDTO;
 import dgmp.sigrh.typemodule.model.dtos.UpdateTypeDTO;
+import dgmp.sigrh.typemodule.model.entities.Type;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -78,14 +79,14 @@ public class TypeResource
 
     @PreAuthorize("hasAuthority('DEV')")
     @PostMapping(path = "/create") @ResponseStatus(HttpStatus.CREATED)
-    public ReadTypeDTO createType(@RequestBody @Valid CreateTypeDTO dto)
+    public Type createType(@RequestBody @Valid CreateTypeDTO dto)
     {
         return typeService.createType(dto);
     }
 
     @PreAuthorize("hasAuthority('DEV')")
     @PutMapping(path = "/update") @ResponseStatus(HttpStatus.OK)
-    public ReadTypeDTO updateType(@RequestBody @Valid UpdateTypeDTO dto)
+    public Type updateType(@RequestBody @Valid UpdateTypeDTO dto)
     {
         return typeService.updateType(dto);
     }
@@ -94,7 +95,7 @@ public class TypeResource
     @PutMapping(path = "/setSousType") @ResponseStatus(HttpStatus.OK)
     public void setSousType(@RequestBody @Valid TypeParamDTO dto)
     {
-        typeService.setSousType(dto);
+        typeService.addSousType(dto);
     }
 
     @PreAuthorize("hasAuthority('DEV')")
