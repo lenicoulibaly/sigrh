@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" 
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{administration/emplois/emplois-layout}">
+    <head>
+		<th:block layout:fragment="specific-css-links">
+            <!-- Select2 -->
+            <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+        </th:block>
+	</head>
+
+	<body>
+        <div layout:fragment="content">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <!-- Profile Image -->
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Menu contextuel</h3>
+                                </div>
+                                <div class="card-body box-profile">
+                                    <th:block th:replace="administration/emplois/contextual-menu-frag::contextual-menu"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Modification de l'emploi [[${emploi.nomEmploi}]]</h3>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body p-0">
+                                    <form method="post" th:action="@{/sigrh/administration/emplois/update}" th:object="${emploi}">
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <input th:field="*{idEmploi}" type="hidden">
+                                                <div class="col col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="nomEmploi">Intitulé de l'emploi</label> <small
+                                                            th:if="${nomEmploiErrMsg}" class="text-danger">[[${nomEmploiErrMsg}]]</small>
+                                                        <input type="text" th:field="*{nomEmploi}"
+                                                               class="form-control"
+                                                               id="nomEmploi">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <th:block th:replace="administration/emplois/update-confirmation-modal-frag::update-confirmation-modal"/>
+                                        <div class="modal-footer justify-content-between">
+                                            <a th:href="@{/sigrh/administration/emplois/update-emploi-form(idEmploi=${emploi.idEmploi})}" class="btn btn-default">Annuler</a>
+                                            <button type="button" data-toggle="modal" data-target="#update-confirmation-modal" class="btn btn-primary">Enregistrer</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                    </div>
+        </div>
+        <div layout:fragment="specific-scripts">
+            <script th:src="@{/dist/js/demo.js}"></script>
+
+            <!-- Select2 -->
+            <script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
+            <script th:src="@{/plugins/bootstrap-switch/js/bootstrap-switch.min.js}"></script>
+            <script>
+                $(function () {
+                    //Initialize Select2 Elements
+                    $('.select2').select2();
+
+                    //Initialize Select2 Elements
+                    $('.select2bs4').select2({theme: 'bootstrap4'});
+
+                    //SWITCH
+                    $("input[data-bootstrap-switch]").each(function(){
+                        $(this).bootstrapSwitch('state', $(this).prop('checked'));
+                    });
+                });
+            </script>
+            <script>
+            </script>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr" th:fragment="fonctions-breadcrumb" xmlns:th="http://www.thymeleaf.org">
+  <div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0 text-dark">Administration</h1>
+      </div><!-- /.col -->
+      <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right" th:if="${viewMode} == 'list'">
+              <li class="breadcrumb-item"><a href="/sigrh/administration">Administration</a></li>
+              <li class="breadcrumb-item active"><a href="/sigrh/administration/fonctions/fonctions-list">Fonctions</a></li>
+              <li class="breadcrumb-item active">List</li>
+          </ol>
+         <ol class="breadcrumb float-sm-right" th:if="${viewMode} == 'details'">
+                  <li class="breadcrumb-item"><a href="/sigrh/administration">Administration</a></li>
+                  <li class="breadcrumb-item active"><a href="/sigrh/administration/fonctions/fonctions-list">Fonctions</a></li>
+                  <li class="breadcrumb-item active">Details</li>
+         </ol>
+          <ol class="breadcrumb float-sm-right" th:if="${viewMode} == 'new'">
+              <li class="breadcrumb-item"><a href="/sigrh/administration">Administration</a></li>
+              <li class="breadcrumb-item active"><a href="/sigrh/administration/fonctions/fonctions-list">Fonctions</a></li>
+              <li class="breadcrumb-item active">Nouveau</li>
+          </ol>
+          <ol class="breadcrumb float-sm-right" th:if="${viewMode} == 'update'">
+              <li class="breadcrumb-item"><a href="/sigrh/administration">Administration</a></li>
+              <li class="breadcrumb-item active"><a href="/sigrh/administration/fonctions/fonctions-list">Fonctions</a></li>
+              <li class="breadcrumb-item active">Modifier</li>
+          </ol>
+          <ol class="breadcrumb float-sm-right" th:if="${viewMode} == 'trash'">
+              <li class="breadcrumb-item"><a href="/sigrh/administration">Administration</a></li>
+              <li class="breadcrumb-item active"><a href="/sigrh/administration/fonctions/fonctions-list">Fonctions</a></li>
+              <li class="breadcrumb-item active">Corbeille</li>
+          </ol>
+      </div><!-- /.col -->
+    </div><!-- /.row -->
+  </div><!-- /.container-fluid -->
+</div>
+</html>

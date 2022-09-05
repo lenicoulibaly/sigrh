@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" 
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+                layout:decorate="~{administration/fonctions/fonctions-layout}">
+    <head>
+		<th:block layout:fragment="specific-css-links">
+            <!-- Select2 -->
+            <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+        </th:block>
+	</head>
+
+	<body>
+        <div layout:fragment="content">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <!-- Profile Image -->
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Menu contextuel</h3>
+                                </div>
+                                <div class="card-body box-profile">
+                                    <th:block th:replace="administration/fonctions/contextual-menu-frag::contextual-menu"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Création d'une nouvelle fonction</h3>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body p-0">
+                                    <form method="post" th:action="@{/sigrh/administration/fonctions/create}" th:object="${fonction}">
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="nomFonction">Intitulé de la fonction</label> <small
+                                                            th:if="${nomFonctionErrMsg}" class="text-danger">[[${nomFonctionErrMsg}]]</small>
+                                                        <input type="text" th:field="*{nomFonction}"
+                                                               class="form-control"
+                                                               id="nomFonction">
+                                                    </div>
+                                                </div>
+                                                <div class="col col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="d-block">Fonction de nomination ?</label>
+                                                        <input type="checkbox" checked
+                                                               th:field="*{fonctionDeNomination}" data-bootstrap-switch
+                                                               data-off-color="danger" data-on-color="success">
+
+                                                    </div>
+                                                </div>
+                                                <div class="col col-md-3">
+                                                    <label class="d-block">Fonction top manager ?</label>
+                                                    <input type="checkbox" th:field="*{fonctionTopManager}"
+                                                           data-bootstrap-switch data-off-color="danger"
+                                                           data-on-color="success">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer justify-content-between">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                    </div>
+        </div>
+        <div layout:fragment="specific-scripts">
+            <script th:src="@{/dist/js/demo.js}"></script>
+
+            <!-- Select2 -->
+            <script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
+            <script th:src="@{/plugins/bootstrap-switch/js/bootstrap-switch.min.js}"></script>
+            <script>
+                $(function () {
+                    //Initialize Select2 Elements
+                    $('.select2').select2();
+
+                    //Initialize Select2 Elements
+                    $('.select2bs4').select2({theme: 'bootstrap4'});
+
+                    //SWITCH
+                    $("input[data-bootstrap-switch]").each(function(){
+                        $(this).bootstrapSwitch('state', $(this).prop('checked'));
+                    });
+                });
+            </script>
+            <script>
+
+                if($("#idEmploi").val() != -1)
+                {
+                    $("#btnNewEmploi").click();
+                }
+
+                if($("#idFonction").val() != -1)
+                {
+                    $("#btnNewFonction").click();
+                }
+
+                if($("#hasFonctionError").val() == 1 )
+                {
+                    $("#btnNewFonction").click();
+                }
+            </script>
+        </div>
+    </body>
+</html>

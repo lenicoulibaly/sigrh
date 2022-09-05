@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <span th:text="${@scm.getAuthUsername()}"></span>
+    <ul th:if="${@scm.hasAuthority('USER')}">
+        With Role USER
+        <li th:each="auth : ${@scm.getAuthorities()}" th:text="${auth.substring(5)}"></li>
+    </ul>
+
+    <ul th:if="${!@scm.hasAuthority('USER')}">
+        Not role USER
+        <li th:each="auth : ${@scm.getAuthorities()}" th:text="${auth.substring(5)}"></li>
+    </ul>
+  Hello SIGRH
+</body>
+</html>

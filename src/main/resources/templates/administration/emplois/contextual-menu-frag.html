@@ -1,0 +1,46 @@
+<div >
+    <div class="col-md-3">
+        <!-- Profile Image -->
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Menu contextuel</h3>
+            </div>
+            <div class="card-body box-profile">
+                <span th:fragment="contextual-menu">
+                    <ul class="list-group list-group-unbordered mb-3">
+                        <li class="list-group-item" th:if="${viewMode != 'new'}">
+                            <a th:href="@{/sigrh/administration/emplois/new-emploi-form}" title="Créer un nouvel emploi">
+                                <b>Nouvel emploi</b> <i class="float-right fa-solid fa-circle-plus"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item" th:if="${viewMode!='update' && viewMode != 'new' && viewMode != 'trash'}">
+                            <a th:href="@{/sigrh/administration/emplois/update-emploi-form(idEmploi=${emploi.idEmploi})}" th:title="'Modifier l\'emploi ' +${emploi.nomEmploi}">
+                                <b>Modifier</b> <i class="float-right fas fa-edit"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item" th:if="${viewMode != 'new' && viewMode != 'trash'}" th:title="'Supprimer l\'emploi  ' + ${emploi.nomEmploi}">
+                            <a id="lnk-delete" href="#" data-toggle="modal" data-target="#delete-confirmation-modal">
+                                <b>Supprimer</b> <i class="float-right fas fa-trash"></i>
+                            </a>
+                            <th:block
+                                    th:replace="administration/emplois/delete-confirmation-modal-frag::delete-confirmation-modal"></th:block>
+                        </li>
+                        <li class="list-group-item">
+                            <a th:href="@{/sigrh/administration/emplois/emplois-list}" title="Voir la liste des emplois">
+                                <b>Liste des emplois</b> <i class="float-right fas fa-list"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a title="Voir la liste des emplois supprimés"
+                               th:href="@{/sigrh/administration/emplois/deleted-emplois-list}">
+                                <b>Corbeille</b> <i class="fa-solid fa-circle-trash"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </span>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>

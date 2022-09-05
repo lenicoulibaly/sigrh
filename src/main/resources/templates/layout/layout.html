@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <th:block th:replace="layout/meta-frag.html::meta"></th:block>
+  <th:block th:replace="layout/index-links-frag.html::index-links"></th:block>
+  <th:block layout:fragment ="specific-css-links"></th:block>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+  <!-- Navbar -->
+  <th:block th:replace="layout/top-bar-frag.html::top-bar"></th:block>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  <th:block th:replace="layout/side-bar-frag.html::side-bar"></th:block>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+
+    <th:block layout:fragment ="breadcrumb">
+      <th:block th:replace="layout/content-header-frag.html::content-header"></th:block>
+    </th:block>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <th:block layout:fragment ="content">
+          Put your content here
+        </th:block>
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <th:block th:replace="layout/footer-frag.html::footer"></th:block>
+
+  <!-- Control Sidebar -->
+  <th:block th:replace="layout/control-sidebar-frag.html::control-sidebar"></th:block>
+  <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+<th:block th:replace="layout/index-scripts-frag.html::index-scripts"></th:block>
+<th:block layout:fragment ="specific-scripts"></th:block>
+</body>
+</html>

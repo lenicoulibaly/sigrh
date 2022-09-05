@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr" th:fragment="administration-menu">
+    <div class="dropdown mx-1">
+        <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            Comptes et accès
+        </a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="#">Liste des utilisateurs</a>
+            <a class="dropdown-item" href="#">Nouvel utilisateur</a>
+            <a class="dropdown-item" href="#">Liste des roles</a>
+            <a class="dropdown-item" href="#">Nouveau role</a>
+            <a class="dropdown-item" href="#">Liste des privilèges</a>
+            <a class="dropdown-item" href="#">Nouveau privilège</a>
+            <a class="dropdown-item" href="#">Assignation</a>
+        </div>
+    </div>
+
+    <div class="dropdown mx-1">
+        <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            Emplois
+        </a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="/sigrh/administration/emplois/emplois-list">Liste des emplois</a>
+            <a class="dropdown-item" href="/sigrh/administration/emplois/new-emploi-form">Nouvel emploi</a>
+            <a class="dropdown-item" href="/sigrh/administration/emplois/deleted-emplois-list">Corbeille</a>
+        </div>
+    </div>
+
+    <div class="dropdown mx-1">
+        <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            Fonctions
+        </a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="/sigrh/administration/fonctions/fonctions-list">Liste des fonctions</a>
+            <a class="dropdown-item" href="/sigrh/administration/fonctions/new-fonction-form">Nouvelle fonction</a>
+            <a class="dropdown-item" href="/sigrh/administration/fonctions/deleted-fonctions-list">Corbeille</a>
+        </div>
+    </div>
+
+    <div class="dropdown mx-1">
+        <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            Catégories
+        </a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="#">Liste des catégories</a>
+            <a class="dropdown-item" href="#">Nouvelle catégorie</a>
+        </div>
+    </div>
+
+    <div class="dropdown mx-1">
+        <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            Grades
+        </a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="/sigrh/administration/grades/grades-list">Liste des grades</a>
+            <a class="dropdown-item" href="/sigrh/administration/grades/new-grade-form">Nouveau grade</a>
+            <a class="dropdown-item" href="/sigrh/administration/grades/deleted-grades-list">Corbeille</a>
+        </div>
+    </div>
+</html>

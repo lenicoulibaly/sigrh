@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" 
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+                layout:decorate="~{layout/layout}">
+    <head>
+		<th:block layout:fragment="specific-css-links">
+
+		</th:block>
+	</head>
+
+	<body>
+        <th:block layout:fragment="breadcrumb">
+            <th:block th:replace="personnel/list-personnel-breadcrumb-frag.html::list-personnel-breadcrumb"/>
+        </th:block>
+        <div layout:fragment="content">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Fixed Header Table</h3>
+                            <div class="card-tools">
+                                <div class="input-group input-group-sm" style="width: 150px;">
+                                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0" style="height: 500px;">
+                            <table class="table table-head-fixed text-nowrap">
+                                <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Prénom</th>
+                                    <th>Matricule</th>
+                                    <th>Date de naissance</th>
+                                    <th>Civilité</th>
+                                    <th>Service</th>
+                                    <th>Photo</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="agent: ${agents}">
+                                    <td th:text="${agent.nom}">Nom</td>
+                                    <td th:text="${agent.prenom}">Prénom</td>
+                                    <td th:text="${agent.matricule}">Matricule</td>
+                                    <td th:text="${agent.dateNaissance}">Date de naissance</td>
+                                    <td th:text="${agent.civilite}">Civilité</td>
+                                    <td th:text="${agent.strName + '(' + agent.strSigle + ')'}">Service</td>
+                                    <td>
+                                        <img src="dist/img/user2-160x160.jpg"  class="img-circle elevation-2 h-25 w-25" alt="User Image">
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-flat">Actions</button>
+                                            <button type="button" class="btn btn-default btn-flat dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                                <span class="sr-only">Toggle Dropdown</span>
+                                                <div class="dropdown-menu" role="menu">
+                                                    <a class="dropdown-item" href="#">Detail</a>
+                                                    <a class="dropdown-item" href="#">Modification</a>
+                                                    <a class="dropdown-item" href="#">Affectation</a>
+                                                    <a class="dropdown-item" href="#">Nomination</a>
+                                                    <a class="dropdown-item" href="#">Promotion</a>
+                                                    <a class="dropdown-item" href="#">Mobilité</a>
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item" href="#">Separated link</a>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+        </div>
+        <div layout:fragment="specific-scripts">
+        </div>
+    </body>
+</html>

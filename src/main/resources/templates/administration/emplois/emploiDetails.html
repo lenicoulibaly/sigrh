@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" 
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+                layout:decorate="~{administration/emplois/emplois-layout}">
+    <head>
+		<th:block layout:fragment="specific-css-links">
+            <!-- Select2 -->
+            <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+        </th:block>
+	</head>
+
+	<body>
+        <div layout:fragment="content">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <!-- Profile Image -->
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Menu contextuel</h3>
+                                </div>
+                                <div class="card-body box-profile">
+                                    <th:block th:replace="administration/emplois/contextual-menu-frag::contextual-menu"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card card-primary card-tabs">
+                                <div class="card-header p-0 pt-1 border-bottom-0">
+                                    <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="custom-tabs-two-home-tab" data-toggle="pill" href="#emploi-details" role="tab" aria-controls="custom-tabs-two-home" aria-selected="true">Détail de l'emploi [[${emploi.nomEmploi}]]</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="custom-tabs-two-profile-tab" data-toggle="pill" href="#modifications-story" role="tab" aria-controls="custom-tabs-two-profile" aria-selected="false">Historique des modifications</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="card-body">
+                                    <div class="tab-content" id="custom-tabs-two-tabContent">
+                                        <div class="tab-pane fade show active" id="emploi-details" role="tabpanel" aria-labelledby="custom-tabs-two-home-tab">
+                                            <table class="table table-bordered">
+                                                <tr>
+                                                    <td class="text-right text-bold" style="width: 50%">Intitulé de l'emploi </td>
+                                                    <td class="text-left">[[${emploi.nomEmploi}]]</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right text-bold">Nombre d'agents </td>
+                                                    <td class="text-left">
+                                                        <div class="progress progress-xs">
+                                                            <div class="progress-bar progress-bar-danger" th:style="'width:' + ${emploi.proportion} + '%'"></div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right text-bold">Proportion</td>
+                                                    <td><span class="badge bg-danger">[[${emploi.proportion}]]</span></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="tab-pane fade" id="modifications-story" role="tabpanel" aria-labelledby="custom-tabs-two-profile-tab">
+                                            <table class="table table-hover table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th>Intitulé de l'emploi</th>
+                                                    <th>Statut</th>
+                                                    <th>Action</th>
+                                                    <th>Date et heure</th>
+                                                    <th>Utilisateur</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="histo, status:${modificationList.getContent()}">
+                                                    <td th:class="${modificationList.getContent().get(status.last ? status.count-1 : status.index+1).nomEmploi == histo.nomEmploi ? '' : 'text-danger'}" >[[${histo.nomEmploi}]]</td>
+                                                    <td th:class="${modificationList.getContent().get(status.last ? status.count-1 : status.index+1).status.name == histo.status.name ? '' : 'text-danger'}">[[${histo.status.name}]]</td>
+                                                    <td >[[${histo.eventType.name}]]</td>
+                                                    <td >[[${histo.eventActorIdentifier.modificationDate}]]</td>
+                                                    <td th:class="${modificationList.getContent().get(status.last ? status.count-1 : status.index+1).eventActorIdentifier.modifierUsername == histo.eventActorIdentifier.modifierUsername ? '' : 'text-danger'}">[[${histo.eventActorIdentifier.modifierUsername}]]</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!-- /.card -->
+                            </div>
+                        </div>
+                    </div>
+        </div>
+        <div layout:fragment="specific-scripts">
+            <script th:src="@{/dist/js/demo.js}"></script>
+
+            <!-- Select2 -->
+            <script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
+            <script th:src="@{/plugins/bootstrap-switch/js/bootstrap-switch.min.js}"></script>
+            <script>
+                $(function () {
+                    //Initialize Select2 Elements
+                    $('.select2').select2();
+
+                    //Initialize Select2 Elements
+                    $('.select2bs4').select2({theme: 'bootstrap4'});
+
+                    //SWITCH
+                    $("input[data-bootstrap-switch]").each(function(){
+                        $(this).bootstrapSwitch('state', $(this).prop('checked'));
+                    });
+                });
+            </script>
+            <script>
+            </script>
+        </div>
+    </body>
+</html>

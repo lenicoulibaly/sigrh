@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" 
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+                layout:decorate="~{layout/layout}">
+    <head>
+		<th:block layout:fragment="specific-css-links">
+
+		</th:block>
+	</head>
+
+	<body>
+        <div layout:fragment="content">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <form role="form" th:object="${dto}" >
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Informations personnelles</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                        <i class="fas fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="nom">Nom</label>
+                                            <input id="nom" type="text" class="form-control" th:field="*{nom}" placeholder="Enter le nom" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="prenom">Prénom</label>
+                                            <input id="prenom" type="text" class="form-control" th:field="*{prenom}" placeholder="Enter le prénom" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label for="civilite">Civilité</label>
+                                            <select id="civilite" type="text" class="form-control  select2bs4" th:field="*{civilite}" >
+                                                <option value="" >Choisir la civilité</option>
+                                                <option th:each="civilite: ${@enumsService.getAllCivilites()}" th:value="${civilite.name()}" th:text="${civilite.toString()}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label for="dateNaissance">Date de naissance</label>
+                                            <input id="dateNaissance" type="date" class="form-control" th:field="*{dateNaissance}" placeholder="Enter la date de naissance" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="departementNaissance">Département de naissance</label>
+                                            <select id="departementNaissance" type="text" class="form-control select2bs4" style="width: 100%;" th:field="*{departementNaissance}" >
+                                                <option value="" >Choisir le département de naissance</option>
+                                                <option value="Abidjan">Abidjan</option>
+                                                <option value="Boundiali">Boundiali</option>
+                                                <option value="Grand-Lahou">Grand-Lahou</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="lieuNaissance">Lieu de naissance</label>
+                                            <input id="lieuNaissance" type="text" class="form-control" th:field="*{lieuNaissance}" placeholder="Enter le lieu de naissance" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="situationMatrimoniale">Situation matrimoniale</label>
+                                            <select id="situationMatrimoniale" type="text" class="form-control select2bs4" th:field="*{situationMatrimoniale}" >
+                                                <option value="" >Choisir la situation matrimoniale</option>
+                                                <option th:each="sitMat: ${@enumsService.getAllSitMats()}" th:value="${sitMat.name()}" th:text="${sitMat.toString()}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="email">Email</label>
+                                            <input id="email" type="email" class="form-control" th:field="*{email}" placeholder="Enter l'adresse mail" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="tel">Téléphone</label>
+                                            <input id="tel" type="text" class="form-control" th:field="*{tel}" placeholder="Enter le numéro de téléphone" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="typePiece">Type de piece</label>
+                                            <select id="typePiece" type="text" class="form-control select2bs4" th:field="*{typePiece}" >
+                                                <option value="" >Choisir la civilité</option>
+                                                <option th:each="typePiece: ${@enumsService.getAllTypePieces()}" th:value="${typePiece.name()}" th:text="${typePiece.toString()}">Monsieur</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="numPiece">Numéro de pièce</label>
+                                            <input id="numPiece" type="text" class="form-control" th:field="*{numPiece}" placeholder="Enter le numéro de la piece" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="nomPere">Nom du père</label>
+                                            <input id="nomPere" type="text" class="form-control" th:field="*{nomPere}" placeholder="Enter le nom du père" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="nomMere">Nom de la mère</label>
+                                            <input id="nomMere" type="text" class="form-control" th:field="*{nomMere}" placeholder="Enter nom de la mère" />
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <div class="card card-primary">
+
+                            <div class="card-header">
+                                <h3 class="card-title">Informations professionnelles</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                        <i class="fas fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="matricule">Matricule</label>
+                                            <input id="matricule" type="text" class="form-control" th:field="*{matricule}" placeholder="Enter le matricule" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="emailPro">E-mail Professionnelle</label>
+                                            <input id="emailPro" type="email" class="form-control" th:field="*{emailPro}" placeholder="Enter l'adresse email Professionnelle" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="fixeBureau">Fixe bureau</label>
+                                            <input id="fixeBureau" type="text" class="form-control" th:field="*{fixeBureau}" placeholder="Fixe bureau" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="numBadge">numBadge</label>
+                                            <input id="numBadge" type="text" class="form-control" th:field="*{numBadge}" placeholder="Entrer le N° de badge" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="emploi">Emploi</label>
+                                            <select id="emploi" class="form-control select2bs4" th:field="*{idEmploi}" >
+                                                <option value="" >Choisir l'emploi</option>
+                                                <option th:each="emploi: ${@emploiService.getAllEmplois()}" th:value="${emploi.idEmploi}" th:text="${emploi.nomEmploi}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="grade">Grade</label>
+                                            <select id="grade" class="form-control select2bs4" th:field="*{idGrade}" >
+                                                <option value="" >Choisir le grade</option>
+                                                <option th:each="grade: ${@gradeService.getAllGrades()}" th:value="${grade.idGrade}" th:text="${grade.nomGrade}">Abidjan</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="datePriseService1">Première prise de service</label>
+                                            <input id="datePriseService1" type="date" class="form-control" th:field="*{datePriseService1}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="datePriseServiceDGMP">Prise de service DGMP</label>
+                                            <input id="datePriseServiceDGMP" type="date" class="form-control" th:field="*{datePriseServiceDGMP}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="typeAgent">Type d'agent</label>
+                                            <select id="typeAgent" type="text" class="form-control select2bs4" th:field="*{typeAgent}" >
+                                                <option value="" >Choisir le type d'agent</option>
+                                                <option th:each="typeAgent: ${@enumsService.getAllTypeAgents()}" th:value="${typeAgent.name()}" th:text="${typeAgent.toString()}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="position">Position</label>
+                                            <select id="position" class="form-control select2bs4" th:field="*{position}" >
+                                                <option value="" >Choisir la position</option>
+                                                <option th:each="position: ${@enumsService.getAllPositions()}" th:value="${position.name()}" th:text="${position.toString()}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="username">Login</label>
+                                            <input id="username" type="text" class="form-control" th:field="*{username}" placeholder="Entrer le login d'utilisateur" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="photoFile">Photo de profil</label>
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="exampleInputFile">
+                                                    <input id="photoFile" type="file" class="custom-file-input" th:field="*{photoFile}" />
+                                                    <label class="custom-file-label" for="photoFile">Choisir la photo de profil</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                    </form>
+                    <!-- /.card -->
+
+                    <!-- Form Element sizes -->
+
+                </div>
+            </div>
+        </div>
+
+   
+        <div layout:fragment="specific-scripts">
+            <script th:src="@{dist/js/demo.js}"></script>
+
+            <!-- Select2 -->
+            <script th:src="@{plugins/select2/js/select2.full.min.js}"></script>
+            <script>
+                $(function () {
+                    //Initialize Select2 Elements
+                    $('.select2').select2();
+
+                    //Initialize Select2 Elements
+                    $('.select2bs4').select2({theme: 'bootstrap4'});
+                });
+            </script>
+        </div>
+    </body>
+</html>
