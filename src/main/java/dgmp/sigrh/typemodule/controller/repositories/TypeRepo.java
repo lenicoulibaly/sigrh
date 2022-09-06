@@ -25,6 +25,9 @@ public interface TypeRepo extends JpaRepository<Type, Long>
     @Query("select t from Type t where (upper(t.name) like upper(concat('%', ?1, '%')) or t.uniqueCode like %?1%) and t.status = ?2")
     Page<Type> searchPageOfTypes(String key, PersistenceStatus status, Pageable pageable);
 
+    @Query("select t from Type t where t.status = ?1")
+    Page<Type> searchPageOfTypes(PersistenceStatus status, Pageable pageable);
+
     @Query("select new dgmp.sigrh.typemodule.model.dtos.ReadTypeDTO(t) from Type t where upper(t.typeGroup) = upper(?1)")
     List<ReadTypeDTO> findByTypeGroup(String typeGroup);
 

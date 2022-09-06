@@ -20,7 +20,6 @@ public class TypeHisto
     private  Long typeId;
     @Enumerated(EnumType.STRING)
     private TypeGroup typeGroup;
-    @Column(nullable = false, unique = true)
     private String uniqueCode;
     @Column(nullable = false)
     private String name;

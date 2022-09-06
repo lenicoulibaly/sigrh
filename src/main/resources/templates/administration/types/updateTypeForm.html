@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org" 
                 xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{administration/grades/grades-layout}">
+      layout:decorate="~{administration/types/types-layout}">
     <head>
 		<th:block layout:fragment="specific-css-links">
             <!-- Select2 -->
@@ -21,48 +21,56 @@
                                     <h3 class="card-title">Menu contextuel</h3>
                                 </div>
                                 <div class="card-body box-profile">
-                                    <th:block th:replace="administration/grades/contextual-menu-frag::contextual-menu"/>
+                                    <th:block th:replace="administration/types/contextual-menu-frag::contextual-menu"/>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-9">
                             <div class="card card-primary">
                                 <div class="card-header">
-                                    <h3 class="card-title">Modification du grade [[${grade.nomGrade}]]</h3>
+                                    <h3 class="card-title">Modification du type [[${type.name}]]</h3>
                                 </div>
                                 <!-- /.card-header -->
                                 <div class="card-body p-0">
-                                    <form method="post" th:action="@{/sigrh/administration/grades/update}" th:object="${grade}">
+                                    <form method="post" th:action="@{/sigrh/administration/types/update}" th:object="${type}">
                                         <div class="modal-body">
                                             <div class="row">
-                                                <input th:field="*{idGrade}" type="hidden">
+                                                <input th:field="*{typeId}" type="hidden">
                                                 <div class="col col-12">
                                                     <div th:if="${globalErrMsg}" th:text="${globalErrMsg}"
                                                          class="alert alert-danger alert-dismissible fade show"/>
                                                 </div>
-                                                    <div class="col col-md-6 col-sm-6 ">
-                                                        <div class="form-group">
-                                                            <label for="categorie">Catégorie</label> <small
-                                                                th:if="${categorieErrMsg}" class="text-danger">[[${categorieErrMsg}]]</small>
-                                                            <select required th:field="*{categorie}" class="form-control" id="categorie">
-                                                                <option value="" >Choisir la catégorie</option>
-                                                                <option th:each="cat:${@categorieService.getAllCategories()}" th:value="${cat.name()}">[[${cat.name()}]]</option>
-                                                            </select>
-                                                        </div>
+                                                <div class="col col-md-4 col-sm-4 ">
+                                                    <div class="form-group">
+                                                        <label for="typeGroup">Nature du type</label> <small
+                                                            th:if="${typeGroupErrMsg}" class="text-danger">[[${typeGroupErrMsg}]]</small>
+                                                        <select required th:field="*{typeGroup}" class="form-control" th:classappend="${typeGroupErrMsg} ? 'border-danger' : ''" id="typeGroup">
+                                                            <option value="" >Choisir la nature du type</option>
+                                                            <option th:selected="${type.typeGroup == group.getGroupCode()}" th:each="group:${@typeService.getTypeGroups()}" th:value="${group.groupCode}">[[${group.groupName}]]</option>
+                                                        </select>
                                                     </div>
+                                                </div>
 
-                                                    <div class="col col-md-6 col-sm-6 ">
-                                                        <div class="form-group">
-                                                            <label for="rang">Rang</label> <small
-                                                                th:if="${rangErrMsg}" class="text-danger">[[${rangErrMsg}]]</small>
-                                                            <input required th:field="*{rang}" type="number" class="form-control" id="rang" />
-                                                        </div>
+                                                <div class="col col-md-4 col-sm-4 ">
+                                                    <div class="form-group">
+                                                        <label for="uniqueCode">Code du type</label> <small
+                                                            th:if="${uniqueCodeErrMsg}" class="text-danger">[[${uniqueCodeErrMsg}]]</small>
+                                                        <input th:classappend="${uniqueCodeErrMsg} ? 'border-danger' : ''" required th:field="*{uniqueCode}" type="text" class="form-control" id="uniqueCode" />
                                                     </div>
+                                                </div>
+
+                                                <div class="col col-md-4 col-sm-4 ">
+                                                    <div class="form-group">
+                                                        <label for="name">Intitulé du type</label> <small
+                                                            th:if="${nameErrMsg}" class="text-danger">[[${nameErrMsg}]]</small>
+                                                        <input th:classappend="${nameErrMsg} ? 'border-danger' : ''" required th:field="*{name}" type="text" class="form-control" id="name" />
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <th:block th:replace="administration/grades/update-confirmation-modal-frag::update-confirmation-modal"/>
+                                        <th:block th:replace="administration/types/update-confirmation-modal-frag::update-confirmation-modal"/>
                                         <div class="modal-footer justify-content-between">
-                                            <a th:href="@{/sigrh/administration/grades/update-grade-form(idGrade=${grade.idGrade})}" class="btn btn-default">Annuler</a>
+                                            <a th:href="@{/sigrh/administration/types/update-type-form(typeId=${type.typeId})}" class="btn btn-default">Annuler</a>
                                             <button type="button" data-toggle="modal" data-target="#update-confirmation-modal" class="btn btn-primary">Enregistrer</button>
                                         </div>
                                     </form>

@@ -15,6 +15,7 @@ public interface TypeMapper
     @Mapping(target = "status", expression = "java(dgmp.sigrh.shared.model.enums.PersistenceStatus.ACTIVE)")
     @Mapping(target = "typeGroup", expression = "java(org.apache.commons.lang3.EnumUtils.getEnum(dgmp.sigrh.typemodule.model.enums.TypeGroup.class, dto.getTypeGroup()))")
     @Mapping(target = "uniqueCode", expression = "java(dto.getUniqueCode().toUpperCase())")
+    @Mapping(target = "name", expression = "java(dto.getName().toUpperCase())")
     Type mapToType(CreateTypeDTO dto);
 
     Type mapToType(UpdateTypeDTO dto);

@@ -40,23 +40,23 @@
                                                     <div th:if="${globalErrMsg}" th:text="${globalErrMsg}"
                                                          class="alert alert-danger alert-dismissible fade show"/>
                                                 </div>
-                                                    <div class="col col-md-4 col-sm-4 ">
+                                                <div class="col col-md-4 col-sm-4 ">
 
                                                         <div class="form-group">
                                                             <label for="typeGroup">Nature du type</label> <small
                                                                 th:if="${typeGroupErrMsg}" class="text-danger">[[${typeGroupErrMsg}]]</small>
-                                                            <select required th:field="*{typeGroup}" class="form-control" id="typeGroup">
+                                                            <select th:classappend="${typeGroupErrMsg} ? 'border-danger' : ''" required th:field="*{typeGroup}" class="form-control" id="typeGroup">
                                                                 <option value="" >Choisir la nature du type</option>
-                                                                <option th:each="group:${@typeService.getTypeGroups()}" th:value="${group.name()}">[[${group.name()}]]</option>
+                                                                <option th:each="group:${@typeService.getTypeGroups()}" th:value="${group.name()}">[[${group.groupName}]]</option>
                                                             </select>
                                                         </div>
                                                     </div>
 
-                                                    <div class="col col-md-4 col-sm-4 ">
+                                                <div class="col col-md-4 col-sm-4 ">
                                                         <div class="form-group">
                                                             <label for="uniqueCode">Code du type</label> <small
                                                                 th:if="${uniqueCodeErrMsg}" class="text-danger">[[${uniqueCodeErrMsg}]]</small>
-                                                            <input required th:field="*{uniqueCode}" type="text" class="form-control" id="uniqueCode" />
+                                                            <input th:classappend="${uniqueCodeErrMsg} ? 'border-danger' : ''" required th:field="*{uniqueCode}" type="text" class="form-control" id="uniqueCode" />
                                                         </div>
                                                     </div>
 
@@ -64,7 +64,7 @@
                                                     <div class="form-group">
                                                         <label for="name">Intitulé du type</label> <small
                                                             th:if="${nameCodeErrMsg}" class="text-danger">[[${nameErrMsg}]]</small>
-                                                        <input required th:field="*{name}" type="text" class="form-control" id="name" />
+                                                        <input th:classappend="${nameCodeErrMsg} ? 'border-danger' : ''" required th:field="*{name}" type="text" class="form-control" id="name" />
                                                     </div>
                                                 </div>
                                             </div>

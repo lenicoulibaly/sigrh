@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -48,9 +49,9 @@ public class TypeService implements ITypeService
     {
         Type loadedType = dto.getTypeId() == null ? null : typeRepo.findById(dto.getTypeId()).orElse(null);
         if(loadedType == null) return null;
-        loadedType.setTypeGroup(EnumUtils.getEnum(TypeGroup.class, dto.getTypeGroup()));
-        loadedType.setName(dto.getName());
-        loadedType.setUniqueCode(dto.getUniqueCode());
+        loadedType.setTypeGroup(EnumUtils.getEnumList(TypeGroup.class).stream().filter(gr->gr.getGroupCode().equalsIgnoreCase(dto.getTypeGroup())).findFirst().orElse(null));
+        loadedType.setName(dto.getName().toUpperCase(Locale.ROOT));
+        loadedType.setUniqueCode(dto.getUniqueCode().toUpperCase(Locale.ROOT));
         typeHistoService.storeEntity(loadedType, TypeEventType.UPDATE_TYPE);
         return loadedType;
     }
@@ -162,6 +163,7 @@ public class TypeService implements ITypeService
     @Override
     public Page<Type> searchPageOfTypes(String key, String typeGroup, int pageNum, int pageSize)
     {
+        if("".equals(key)) return typeRepo.searchPageOfTypes(PersistenceStatus.ACTIVE, PageRequest.of(pageNum, pageSize));
         Set<TypeGroup> typeGroups =  EnumUtils.getEnumList(TypeGroup.class).stream().filter(tg ->StringUtils.containsIgnoreCase(tg.getGroupCode(), typeGroup)
         || StringUtils.containsIgnoreCase(tg.getGroupName(), typeGroup) || StringUtils.containsIgnoreCase(tg.name(), typeGroup)).collect(Collectors.toSet());
         if(typeGroups.size() == 0) return typeRepo.searchPageOfTypes(key, PersistenceStatus.ACTIVE, PageRequest.of(pageNum, pageSize));

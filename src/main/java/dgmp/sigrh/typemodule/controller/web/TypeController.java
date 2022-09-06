@@ -84,7 +84,7 @@ public class TypeController
     public String gotoUpdateTypeForm(Model model, @RequestParam(defaultValue = "0") long typeId)
     {
         Type loadedType = typeRepo.findById(typeId).orElse(null);
-        UpdateTypeDTO typeDTO = loadedType == null ? new UpdateTypeDTO() : new UpdateTypeDTO(loadedType.getTypeId(), loadedType.getTypeGroup().getGroupCode(), loadedType.getUniqueCode(), loadedType.getName());
+        UpdateTypeDTO typeDTO = loadedType == null ? new UpdateTypeDTO() : new UpdateTypeDTO(loadedType.getTypeId(), loadedType.getTypeGroup() == null ? null : loadedType.getTypeGroup().getGroupCode(), loadedType.getUniqueCode(), loadedType.getName());
         model.addAttribute("type", typeDTO);
         model.addAttribute("viewMode", "update");
         return "administration/types/updateTypeForm";
