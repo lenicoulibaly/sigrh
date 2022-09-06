@@ -19,7 +19,7 @@ public interface TypeRepo extends JpaRepository<Type, Long>
     @Query("select t from Type t where (upper(t.name) like upper(concat('%', ?1, '%')) or t.uniqueCode like %?1% or t.typeGroup = ?2) and t.status = ?3")
     Page<Type> searchPageOfTypes(String key, TypeGroup typeGroup, PersistenceStatus status, Pageable pageable);
 
-    @Query("select t from Type t where upper(t.name) like upper(concat('%', ?1, '%')) and upper(t.uniqueCode) like upper(concat('%', ?1, '%')) and t.typeGroup in ?2 and t.status = ?3")
+    @Query("select t from Type t where (upper(t.name) like upper(concat('%', ?1, '%')) or upper(t.uniqueCode) like upper(concat('%', ?1, '%')) or t.typeGroup in ?2) and t.status = ?3")
     Page<Type> searchPageOfTypes(String key, Collection<TypeGroup> typeGroups, PersistenceStatus status, Pageable pageable);
 
     @Query("select t from Type t where (upper(t.name) like upper(concat('%', ?1, '%')) or t.uniqueCode like %?1%) and t.status = ?2")

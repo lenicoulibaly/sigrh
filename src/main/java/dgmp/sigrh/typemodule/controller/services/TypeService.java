@@ -164,8 +164,10 @@ public class TypeService implements ITypeService
     public Page<Type> searchPageOfTypes(String key, String typeGroup, int pageNum, int pageSize)
     {
         if("".equals(key)) return typeRepo.searchPageOfTypes(PersistenceStatus.ACTIVE, PageRequest.of(pageNum, pageSize));
-        Set<TypeGroup> typeGroups =  EnumUtils.getEnumList(TypeGroup.class).stream().filter(tg ->StringUtils.containsIgnoreCase(tg.getGroupCode(), typeGroup)
-        || StringUtils.containsIgnoreCase(tg.getGroupName(), typeGroup) || StringUtils.containsIgnoreCase(tg.name(), typeGroup)).collect(Collectors.toSet());
+        Set<TypeGroup> typeGroups =  EnumUtils.getEnumList(TypeGroup.class).stream().filter(
+                tg ->StringUtils.containsIgnoreCase(tg.getGroupCode(), key) ||
+                StringUtils.containsIgnoreCase(tg.getGroupName(), key) ||
+                StringUtils.containsIgnoreCase(tg.name(), key)).collect(Collectors.toSet());
         if(typeGroups.size() == 0) return typeRepo.searchPageOfTypes(key, PersistenceStatus.ACTIVE, PageRequest.of(pageNum, pageSize));
         return typeRepo.searchPageOfTypes(key, typeGroups, PersistenceStatus.ACTIVE, PageRequest.of(pageNum, pageSize));
     }
@@ -173,8 +175,9 @@ public class TypeService implements ITypeService
     @Override
     public Page<Type> searchPageOfDeletedTypes(String key, String typeGroup, int pageNum, int pageSize)
     {
-        Set<TypeGroup> typeGroups =  EnumUtils.getEnumList(TypeGroup.class).stream().filter(tg ->StringUtils.containsIgnoreCase(tg.getGroupCode(), typeGroup)
-                || StringUtils.containsIgnoreCase(tg.getGroupName(), typeGroup) || StringUtils.containsIgnoreCase(tg.name(), typeGroup)).collect(Collectors.toSet());
+        if("".equals(key)) return typeRepo.searchPageOfTypes(PersistenceStatus.DELETED, PageRequest.of(pageNum, pageSize));
+        Set<TypeGroup> typeGroups =  EnumUtils.getEnumList(TypeGroup.class).stream().filter(tg ->StringUtils.containsIgnoreCase(tg.getGroupCode(), key)
+                || StringUtils.containsIgnoreCase(tg.getGroupName(), key) || StringUtils.containsIgnoreCase(tg.name(), key)).collect(Collectors.toSet());
         if(typeGroups.size() == 0) return typeRepo.searchPageOfTypes(key, PersistenceStatus.DELETED, PageRequest.of(pageNum, pageSize));
         return typeRepo.searchPageOfTypes(key, typeGroups, PersistenceStatus.DELETED, PageRequest.of(pageNum, pageSize));
     }
