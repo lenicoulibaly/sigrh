@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@Table(name = "sous_type_param") @Entity
+@Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class TypeParamHisto
 {

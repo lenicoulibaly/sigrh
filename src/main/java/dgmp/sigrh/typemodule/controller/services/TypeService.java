@@ -77,7 +77,7 @@ public class TypeService implements ITypeService
     @Override @Transactional
     public void addSousType(TypeParamDTO dto)
     {
-        if(!this.parentHasDistantSousType(dto.getParentId(), dto.getChildId())) return;
+        if(this.parentHasDistantSousType(dto.getChildId(), dto.getParentId())) return;
         if(typeParamRepo.alreadyExistsAndActive(dto.getParentId(), dto.getChildId())) return;
         if(typeParamRepo.alreadyExistsAndNotActive(dto.getParentId(), dto.getChildId()))
         {
@@ -133,7 +133,13 @@ public class TypeService implements ITypeService
     {
         if(parentHasDirectSousType(parentId, childId)) return true;
         if(!typeRepo.existsById(parentId) || !typeRepo.existsById(childId)) return false;
-        return typeRepo.findByParent(parentId).stream().anyMatch(st->parentHasDistantSousType(st.getTypeId(), childId));
+        return typeRepo.findActiveSousTypes(parentId).stream().anyMatch(st->parentHasDistantSousType(st.getTypeId(), childId));
+    }
+
+    @Override
+    public List<Type> getPossibleSousTypes(Long parentId)
+    {
+        return typeRepo.findByTypeGroupAndStatus(typeRepo.findTypeGroupBTypeId(parentId), PersistenceStatus.ACTIVE).stream().filter(t->!this.parentHasDistantSousType(t.getTypeId(), parentId) && !t.getTypeId().equals(parentId)).collect(Collectors.toList());
     }
 
     @Override
@@ -141,7 +147,7 @@ public class TypeService implements ITypeService
     {
         Type type = typeRepo.findById(typeId).orElse(null);
         if(type == null) return null;
-        List<Type> sousTypes = typeRepo.findByParent(typeId);
+        List<Type> sousTypes = typeRepo.findActiveSousTypes(typeId);
         type.setChildren(sousTypes);
         sousTypes.forEach(t->setSousTypesRecursively(t.getTypeId()));
         return type;
@@ -152,7 +158,7 @@ public class TypeService implements ITypeService
     {
         Type type = typeRepo.findById(typeId).orElse(null);
         if(type == null) return null;
-        return typeRepo.findByParent(typeId).stream().flatMap(t-> Stream.concat(Stream.of(t), getSousTypesRecursively(t.getTypeId()).stream())).collect(Collectors.toList());
+        return typeRepo.findActiveSousTypes(typeId).stream().flatMap(t-> Stream.concat(Stream.of(t), getSousTypesRecursively(t.getTypeId()).stream())).collect(Collectors.toList());
     }
 
     @Override

@@ -21,6 +21,8 @@ public interface ITypeService
     boolean parentHasDirectSousType(Long parentId, Long childId);
     boolean parentHasDistantSousType(Long parentId, Long childId);
 
+    List<Type> getPossibleSousTypes(Long parentId);
+
     Type setSousTypesRecursively(Long typeId);
     List<Type> getSousTypesRecursively(Long typeId);
     List<TypeGroup> getTypeGroups();

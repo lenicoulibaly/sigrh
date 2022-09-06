@@ -16,13 +16,27 @@ import java.util.List;
 
 public interface TypeRepo extends JpaRepository<Type, Long>
 {
-    @Query("select t from Type t where (upper(t.name) like upper(concat('%', ?1, '%')) or t.uniqueCode like %?1% or t.typeGroup = ?2) and t.status = ?3")
+    @Query("select t from Type t where t.status = ?1")
+    List<Type> findByStatus(PersistenceStatus status);
+
+
+    @Query("select t from Type t where t.status = 'ACTIVE'")
+    List<Type> findActiveTypes();
+
+    @Query("select t from Type t where t.typeGroup = ?1 and t.status = ?2")
+    List<Type> findByTypeGroupAndStatus(TypeGroup typeGroup, PersistenceStatus status);
+
+    @Query("select t.typeGroup from Type t where t.typeId = ?1")
+    TypeGroup findTypeGroupBTypeId(Long typeId);
+
+
+    @Query("select t from Type t where (upper(t.name) like upper(concat('%', ?1, '%')) or upper(t.uniqueCode) like upper(concat('%', ?1, '%')) or t.typeGroup = ?2) and t.status = ?3")
     Page<Type> searchPageOfTypes(String key, TypeGroup typeGroup, PersistenceStatus status, Pageable pageable);
 
     @Query("select t from Type t where (upper(t.name) like upper(concat('%', ?1, '%')) or upper(t.uniqueCode) like upper(concat('%', ?1, '%')) or t.typeGroup in ?2) and t.status = ?3")
     Page<Type> searchPageOfTypes(String key, Collection<TypeGroup> typeGroups, PersistenceStatus status, Pageable pageable);
 
-    @Query("select t from Type t where (upper(t.name) like upper(concat('%', ?1, '%')) or t.uniqueCode like %?1%) and t.status = ?2")
+    @Query("select t from Type t where (upper(t.name) like upper(concat('%', ?1, '%')) or upper(t.uniqueCode) like upper(concat('%', ?1, '%'))) and t.status = ?2")
     Page<Type> searchPageOfTypes(String key, PersistenceStatus status, Pageable pageable);
 
     @Query("select t from Type t where t.status = ?1")
@@ -40,17 +54,14 @@ public interface TypeRepo extends JpaRepository<Type, Long>
     @Query("select new dgmp.sigrh.typemodule.model.dtos.ReadTypeDTO(s.child) from TypeParam s where upper(s.parent.uniqueCode) = upper(?1)")
     List<ReadTypeDTO> findSousTypeOf(String parentUniqueCode);
 
-    @Query("select tp.child from TypeParam  tp where tp.parent.typeId = ?1 ")
-    List<Type> findByParent(Long parentId);
+    @Query("select tp.child from TypeParam  tp where tp.parent.typeId = ?1 and tp.status = 'ACTIVE' and tp.child.status ='ACTIVE'")
+    List<Type> findActiveSousTypes(Long parentId);
 
-
-
-    @Query("select tp.child.typeId from TypeParam  tp where tp.parent.typeId = ?1 ")
+    @Query("select tp.child.typeId from TypeParam  tp where tp.parent.typeId = ?1 and tp.child.status = 'ACTIVE' and tp.status = 'ACTIVE'")
     List<Long> findChildrenIds(Long parentId);
 
     @Query("select (count (stp)>0) from TypeParam stp where stp.child.typeId=?2 and stp.parent.typeId=?1")
     boolean isSousTypeOf(long parentId, long childId);
-
 
     @Query("select (count(t) > 0) from Type t where upper(t.uniqueCode) = upper(?1)")
     boolean existsByUniqueCode(String uniqueCode);
