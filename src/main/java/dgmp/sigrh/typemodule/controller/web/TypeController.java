@@ -5,6 +5,7 @@ import dgmp.sigrh.typemodule.controller.repositories.TypeParamRepo;
 import dgmp.sigrh.typemodule.controller.repositories.TypeRepo;
 import dgmp.sigrh.typemodule.controller.services.ITypeService;
 import dgmp.sigrh.typemodule.model.dtos.CreateTypeDTO;
+import dgmp.sigrh.typemodule.model.dtos.TypeParamsDTO;
 import dgmp.sigrh.typemodule.model.dtos.UpdateTypeDTO;
 import dgmp.sigrh.typemodule.model.entities.Type;
 import dgmp.sigrh.typemodule.model.entities.TypeHisto;
@@ -18,9 +19,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller @RequiredArgsConstructor
 public class TypeController
@@ -39,9 +43,39 @@ public class TypeController
         model.addAttribute("key", key);
         Page<Type> types = typeService.searchPageOfTypes(key, key, pageNum, pageSize);
         model.addAttribute("types", types);
+
         model.addAttribute("pages", new long[types.getTotalPages()]);
         model.addAttribute("viewMode", "list");
         return "administration/types/typesList";
+    }
+
+    @GetMapping(path = "/sigrh/administration/types/set-sous-types")
+    public String gotoSetSousTypes(Model model, @RequestParam(defaultValue = "0") Long typeId)
+    {
+        Type type = typeRepo.findById(typeId).orElse(null);
+        model.addAttribute("type", type == null ? new Type() : type);
+        //model.addAttribute("modificationList", typeHistoService.getHistoPageBetweenPeriod(typeId, after, befor, pageNum, pageSize));
+        TypeParamsDTO dto = new TypeParamsDTO();
+        dto.setParentId(typeId);
+        model.addAttribute("sousTypes", typeRepo.findActiveSousTypes(typeId));
+        model.addAttribute("possibleSousTypes", Stream.concat(typeService.getPossibleSousTypes(typeId).stream(), typeRepo.findActiveSousTypes(typeId).stream()).collect(Collectors.toSet()));
+        model.addAttribute("dto", dto);
+        model.addAttribute("viewMode", "details");
+
+        return "administration/types/setSousTypesForm";
+    }
+
+    @PostMapping(path = "/sigrh/administration/types/set-sous-types")
+    public String setSousTypes(Model model, RedirectAttributes ra, TypeParamsDTO dto, @RequestParam Long[] childIds)
+    {
+        //Type type = typeRepo.findById(typeId).orElse(null);
+        //model.addAttribute("type", type == null ? new Type() : type);
+        //model.addAttribute("modificationList", typeHistoService.getHistoPageBetweenPeriod(typeId, after, befor, pageNum, pageSize));
+        dto.setChildIds(childIds);
+        typeService.setSousTypes(dto);
+        ra.addAttribute("typeId", dto.getParentId());
+
+        return "redirect:/sigrh/administration/types/set-sous-types";
     }
 
     @GetMapping(path = "/sigrh/administration/types/type-details")
@@ -52,6 +86,7 @@ public class TypeController
     {
         Type type = typeRepo.findById(typeId).orElse(null);
         model.addAttribute("type", type == null ? new Type() : type);
+        model.addAttribute("sousTypes", typeRepo.findActiveSousTypes(type.getTypeId()));
         model.addAttribute("modificationList", typeHistoService.getHistoPageBetweenPeriod(typeId, after, befor, pageNum, pageSize));
         model.addAttribute("viewMode", "details");
         return "administration/types/typeDetails";

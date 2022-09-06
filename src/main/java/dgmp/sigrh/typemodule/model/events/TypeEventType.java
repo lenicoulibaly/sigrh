@@ -11,6 +11,7 @@ public enum TypeEventType
     DELETE_TYPE("Suppression d'un type"),
     RESTORE_TYPE("Restoration d'un type"),
     ADD_SOUS_TYPE("Ajout d'un sous type"),
+    RESTORE_SOUS_TYPE("Restoration d'un sous type"),
     REMOVE_SOUS_TYPE("Suppression d'un sous type");
     private String event;
 }
