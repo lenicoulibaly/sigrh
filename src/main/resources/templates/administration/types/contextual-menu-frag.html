@@ -8,14 +8,19 @@
             <div class="card-body box-profile">
                 <span th:fragment="contextual-menu">
                     <ul class="list-group list-group-unbordered mb-3">
-                        <li class="list-group-item" th:if="${viewMode != 'new'}">
-                            <a th:href="@{/sigrh/administration/types/new-type-form}" title="Créer un nouveau type">
-                                <b>Nouveau type</b> <i class="float-right fa-solid fa-circle-plus"></i>
+                        <li class="list-group-item" th:if="${viewMode!='details' && viewMode != 'new' && viewMode != 'trash'}">
+                            <a th:href="@{/sigrh/administration/types/type-details(typeId=${type.typeId})}" th:title="'Voir le détail du type ' +${type.name}">
+                                <b>Voir le détail</b> <i class="float-right fas fa-eye"></i>
                             </a>
                         </li>
                         <li class="list-group-item" th:if="${viewMode!='update' && viewMode != 'new' && viewMode != 'trash'}">
-                            <a th:href="@{/sigrh/administration/types/update-type-form(typeId=${type.typeId})}" th:title="'Modifier le type ' +${type.name}">
+                            <a th:href="@{/sigrh/administration/types/update-type-form(typeId=${type.typeId})}" th:title="'Configurer les sous-types du type ' +${type.name}">
                                 <b>Modifier</b> <i class="float-right fas fa-edit"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item" th:if="${viewMode!='config' && viewMode != 'new' && viewMode != 'trash'}">
+                            <a th:href="@{/sigrh/administration/types/set-sous-types(typeId=${type.typeId})}" th:title="'Configurer les sous-types du type ' +${type.name}">
+                                <b>Configuer les sous types</b> <i class="float-right fas fa-edit"></i>
                             </a>
                         </li>
                         <li class="list-group-item" th:if="${viewMode != 'new' && viewMode != 'trash'}" th:title="'Supprimer le type  ' + ${type.name}">
@@ -24,6 +29,11 @@
                             </a>
                             <th:block
                                     th:replace="administration/types/delete-confirmation-modal-frag::delete-confirmation-modal"></th:block>
+                        </li>
+                        <li class="list-group-item" th:if="${viewMode != 'new'}">
+                            <a th:href="@{/sigrh/administration/types/new-type-form}" title="Créer un nouveau type">
+                                <b>Nouveau type</b> <i class="float-right fa-solid fa-circle-plus"></i>
+                            </a>
                         </li>
                         <li class="list-group-item">
                             <a th:href="@{/sigrh/administration/types/types-list}" title="Voir la liste des types">
