@@ -1,20 +1,19 @@
 package dgmp.sigrh.structuremodule.model.entities;
 
-import dgmp.sigrh.agentmodule.model.entities.Agent;
+import dgmp.sigrh.auth.model.events.EventActorIdentifier;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
 import dgmp.sigrh.typemodule.model.entities.Type;
+import dgmp.sigrh.typemodule.model.events.TypeEventType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Entity
-public class Structure
+public class StructureHisto
 {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long strId;
@@ -24,7 +23,7 @@ public class Structure
     private long strLevel;
     private String strSigle;
     @ManyToOne @JoinColumn(name = "PARENT_ID")
-    private Structure strParent;
+    private StructureHisto strParent;
     @ManyToOne @JoinColumn(name="ID_TYPE_UA")
     private Type typeStructure;
 
@@ -35,12 +34,8 @@ public class Structure
 
     @ManyToOne
     private Post strRespoPost;
-    @Transient
-    private List<Structure> strChildren;
-    @Transient
-    private MultipartFile creationActFile;
 
-    public Structure(Long strId)
+    public StructureHisto(Long strId)
     {
         this.strId = strId;
     }
@@ -49,15 +44,9 @@ public class Structure
     @Enumerated(EnumType.STRING)
     private PersistenceStatus status;
 
-    @Transient
-    private List<Post> posts;
-    @Transient
-    private List<Agent> personnel;
-
-    @Override
-    public String toString()
-    {
-        return this.strName + " ("+this.strSigle + ")";
-    }
+    @Enumerated(EnumType.STRING)
+    private TypeEventType eventType;
+    @Embedded
+    private EventActorIdentifier eai;
 
 }
