@@ -60,7 +60,7 @@ public class TypeController
         model.addAttribute("sousTypes", typeRepo.findActiveSousTypes(typeId));
         model.addAttribute("possibleSousTypes", Stream.concat(typeService.getPossibleSousTypes(typeId).stream(), typeRepo.findActiveSousTypes(typeId).stream()).collect(Collectors.toSet()));
         model.addAttribute("dto", dto);
-        model.addAttribute("viewMode", "config");
+        model.addAttribute("viewMode", "details");
 
         return "administration/types/setSousTypesForm";
     }
