@@ -14,7 +14,7 @@
                             </a>
                         </li>
                         <li class="list-group-item" th:if="${viewMode!='update' && viewMode != 'new' && viewMode != 'trash'}">
-                            <a th:href="@{/sigrh/administration/types/update-type-form(typeId=${type.typeId})}" th:title="'Configurer les sous-types du type ' +${type.name}">
+                            <a th:href="@{/sigrh/administration/types/update-type-form(typeId=${type.typeId})}" th:title="'Modifier le type ' +${type.name}">
                                 <b>Modifier</b> <i class="float-right fas fa-edit"></i>
                             </a>
                         </li>
