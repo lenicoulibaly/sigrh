@@ -83,7 +83,7 @@ public class TypeService implements ITypeService
         {
             TypeParam typeParam = typeParamRepo.findByParentAndChild(dto.getParentId(), dto.getChildId());
             typeParam.setStatus(PersistenceStatus.ACTIVE);
-            typeParamHistoService.storeEntity(typeParam, TypeEventType.ADD_SOUS_TYPE);
+            typeParamHistoService.storeEntity(typeParam, TypeEventType.RESTORE_SOUS_TYPE);
             return;
         }
         TypeParam typeParam = typeMapper.mapToTypeParam(dto);

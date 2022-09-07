@@ -1,8 +1,6 @@
 package dgmp.sigrh.typemodule.model.entities;
 
-import dgmp.sigrh.auth.model.events.EventActorIdentifier;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
-import dgmp.sigrh.typemodule.model.events.TypeEventType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,8 +20,4 @@ public class TypeParam
     private Type child;
     @Enumerated(EnumType.STRING)
     private PersistenceStatus status;
-    @Enumerated(EnumType.STRING)
-    private TypeEventType eventType;
-    @Embedded
-    private EventActorIdentifier eai;
 }
