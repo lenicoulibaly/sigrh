@@ -1,6 +1,6 @@
-package dgmp.sigrh.structuremodule.model.dtos;
+package dgmp.sigrh.structuremodule.model.dtos.str;
 
-import dgmp.sigrh.structuremodule.controller.repositories.StructureDAO;
+import dgmp.sigrh.structuremodule.controller.repositories.structure.StrRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -12,23 +12,22 @@ import java.lang.annotation.*;
 
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = {ExistingOrNullStrId.ExistingOrNullStrIdValidator.class})
+@Constraint(validatedBy = {ExistingStrId.ExistingStrIdValidator.class})
 @Documented
-public @interface ExistingOrNullStrId
+public @interface ExistingStrId
 {
     String message() default "Invalid Structure Id";
     Class<?> [] group() default {};
     Class<? extends Payload> [] payload() default {};
 
     @Component @RequiredArgsConstructor
-    class ExistingOrNullStrIdValidator implements ConstraintValidator<ExistingOrNullStrId, Long>
+    class ExistingStrIdValidator implements ConstraintValidator<ExistingStrId, Long>
     {
-        private final StructureDAO strDAO;
+        private final StrRepo strDAO;
 
         @Override
-        public boolean isValid(Long value, ConstraintValidatorContext context)
-        {
-            return strDAO.existsById(value) ||value == null;
+        public boolean isValid(Long value, ConstraintValidatorContext context) {
+            return strDAO.existsById(value);
         }
     }
 }

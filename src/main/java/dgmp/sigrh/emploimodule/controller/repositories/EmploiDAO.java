@@ -8,7 +8,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-public interface EmploiDAO extends JpaRepository<Emploi, Long> {
+import java.util.Set;
+
+public interface EmploiDAO extends JpaRepository<Emploi, Long>
+{
     boolean existsByNomEmploi(String value);
 
     @Query("select (count(e) > 0) from Emploi e where e.idEmploi <> ?1 and upper(e.nomEmploi) = upper(?2)")
@@ -17,7 +20,8 @@ public interface EmploiDAO extends JpaRepository<Emploi, Long> {
     @Query("select e.nomEmploi from Emploi e where e.idEmploi = ?1")
     String getNomEmploi(Long idEmploi);
 
-
+    @Query("select e.nomEmploi from Emploi e where e.idEmploi in (select pp.emploiId from PostParam pp where pp.postId = ?1)")
+    Set<String> getEmploisCompatiblesByPost(long postId);
 
     @Query("select e from Emploi e where upper(e.nomEmploi) like upper(concat('%', ?1, '%')) and e.status='ACTIVE'")
     Page<Emploi> searchPageEmploi(String nomEmploi, Pageable pageable);
@@ -31,7 +35,6 @@ public interface EmploiDAO extends JpaRepository<Emploi, Long> {
     @Query("update Emploi e set e.nomEmploi = ?2 where e.idEmploi = ?1")
     @Modifying
     int updateEmploi(Long idemploi, String nomEmploi);
-
 
     @Query("select e from Emploi e where upper(e.nomEmploi) like upper(concat('%', ?1, '%')) and e.status='DELETED'")
     Page<Emploi> searchDeletedPageEmploi(String searchKey, PageRequest of);

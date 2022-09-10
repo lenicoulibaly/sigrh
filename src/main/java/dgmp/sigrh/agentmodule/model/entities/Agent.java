@@ -7,8 +7,8 @@ import dgmp.sigrh.auth.model.entities.AppUser;
 import dgmp.sigrh.emploimodule.model.entities.Emploi;
 import dgmp.sigrh.fonctionmodule.model.entities.Fonction;
 import dgmp.sigrh.grademodule.model.entities.Grade;
-import dgmp.sigrh.structuremodule.model.entities.Post;
-import dgmp.sigrh.structuremodule.model.entities.Structure;
+import dgmp.sigrh.structuremodule.model.entities.post.Post;
+import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,7 +27,7 @@ import java.util.Date;
 public class Agent
 {
 	@Id @GeneratedValue(strategy = GenerationType.TABLE, generator = "id_generator")
-	private Long idAgent;
+	private Long agentId;
 	@Column(length = 50)
 	private String nom;
 	@Column(length = 50)

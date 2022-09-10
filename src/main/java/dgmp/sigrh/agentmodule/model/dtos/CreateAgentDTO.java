@@ -3,7 +3,7 @@ package dgmp.sigrh.agentmodule.model.dtos;
 import dgmp.sigrh.agentmodule.model.dtos.validators.*;
 import dgmp.sigrh.emploimodule.model.dtos.ExistingEmploiId;
 import dgmp.sigrh.grademodule.model.dtos.ExistingGradeId;
-import dgmp.sigrh.structuremodule.model.dtos.ExistingStrId;
+import dgmp.sigrh.structuremodule.model.dtos.str.ExistingStrId;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;

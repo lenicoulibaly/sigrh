@@ -1,7 +1,7 @@
 package dgmp.sigrh.auth.model.dtos.asignation;
 
 import dgmp.sigrh.auth.model.dtos.appuser.ExistingUserId;
-import dgmp.sigrh.structuremodule.model.dtos.ExistingStrId;
+import dgmp.sigrh.structuremodule.model.dtos.str.ExistingStrId;
 import lombok.*;
 
 import java.time.LocalDateTime;

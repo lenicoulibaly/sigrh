@@ -7,7 +7,7 @@ import dgmp.sigrh.auth.model.events.EventActorIdentifier;
 import dgmp.sigrh.auth.model.events.types.agent.AgentEventTypes;
 import dgmp.sigrh.emploimodule.model.entities.Emploi;
 import dgmp.sigrh.grademodule.model.entities.Grade;
-import dgmp.sigrh.structuremodule.model.entities.Post;
+import dgmp.sigrh.structuremodule.model.entities.post.Post;
 import lombok.*;
 import org.springframework.beans.BeanUtils;
 

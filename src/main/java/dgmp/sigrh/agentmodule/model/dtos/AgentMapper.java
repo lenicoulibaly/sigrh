@@ -4,7 +4,7 @@ import dgmp.sigrh.agentmodule.model.entities.Agent;
 import dgmp.sigrh.auth.model.dtos.appuser.UserMapper;
 import dgmp.sigrh.emploimodule.model.dtos.EmploiMapper;
 import dgmp.sigrh.grademodule.model.dtos.GrageMapper;
-import dgmp.sigrh.structuremodule.model.dtos.PostMapper;
+import dgmp.sigrh.structuremodule.model.dtos.post.PostMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -20,7 +20,7 @@ public abstract class AgentMapper
 
     @Mappings
     ({
-        @Mapping(target="readPostDTO", expression = "java(postMapper.getReadPostDTO(agent.getPost()))"),
+        @Mapping(target="readPostDTO", expression = "java(postMapper.mapToReadPostDTO(agent.getPost()))"),
         @Mapping(target="readEmploiDTO", expression = "java(emploiMapper.mapToReadEmploiDTO(agent.getEmploi()))"),
         @Mapping(target="readGradeDTO", expression = "java(grageMapper.mapToReadGradeDTO(agent.getGrade()))"),
         @Mapping(target="readUserDTO", expression = "java(userMapper.getReadUserDTO(agent.getUser()))"),
@@ -47,7 +47,7 @@ public abstract class AgentMapper
     @Mapping(target="etatRecrutement", expression = "java(org.apache.commons.lang3.EnumUtils.getEnum(dgmp.sigrh.agentmodule.model.enums.EtatRecrutement.class, dto.getEtatRecrutement()))")
     @Mapping(target = "emploi", expression = "java(dto.getIdEmploi() == null ? null : new dgmp.sigrh.emploimodule.model.entities.Emploi(dto.getIdEmploi()))")
     @Mapping(target = "grade", expression = "java(dto.getIdGrade() == null ? null : new dgmp.sigrh.grademodule.model.entities.Grade(dto.getIdGrade()))")
-    @Mapping(target = "structure", expression = "java(dto.getStrId() == null ? null : new dgmp.sigrh.structuremodule.model.entities.Structure(dto.getStrId()))")
+    @Mapping(target = "structure", expression = "java(dto.getStrId() == null ? null : new dgmp.sigrh.structuremodule.model.entities.structure.Structure(dto.getStrId()))")
 
     @Mapping(target = "datePriseService1", source = "priseService.datePriseService1")
     @Mapping(target = "datePriseServiceDGMP", source = "priseService.datePriseServiceDGMP")

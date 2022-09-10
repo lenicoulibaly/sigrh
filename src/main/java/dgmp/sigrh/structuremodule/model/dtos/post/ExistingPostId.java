@@ -1,6 +1,6 @@
-package dgmp.sigrh.structuremodule.model.dtos;
+package dgmp.sigrh.structuremodule.model.dtos.post;
 
-import dgmp.sigrh.structuremodule.controller.repositories.StructureDAO;
+import dgmp.sigrh.structuremodule.controller.repositories.post.PostRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -12,22 +12,23 @@ import java.lang.annotation.*;
 
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = {ExistingStrId.ExistingStrIdValidator.class})
+@Constraint(validatedBy = {ExistingPostId.ExistingPostIddValidator.class})
 @Documented
-public @interface ExistingStrId
+public @interface ExistingPostId
 {
-    String message() default "Invalid Structure Id";
+    String message() default "L'identifiant du post est invalide";
     Class<?> [] group() default {};
     Class<? extends Payload> [] payload() default {};
 
-    @Component @RequiredArgsConstructor
-    class ExistingStrIdValidator implements ConstraintValidator<ExistingStrId, Long>
+    @Component
+    @RequiredArgsConstructor
+    class ExistingPostIddValidator implements ConstraintValidator<ExistingPostId, Long>
     {
-        private final StructureDAO strDAO;
+        private final PostRepo postRepo;
 
         @Override
         public boolean isValid(Long value, ConstraintValidatorContext context) {
-            return strDAO.existsById(value);
+            return postRepo.existsById(value);
         }
     }
 }

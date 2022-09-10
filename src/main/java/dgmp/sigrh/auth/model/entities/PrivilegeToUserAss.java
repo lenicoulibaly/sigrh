@@ -1,6 +1,6 @@
 package dgmp.sigrh.auth.model.entities;
 
-import dgmp.sigrh.structuremodule.model.entities.Structure;
+import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
 import lombok.*;
 
 import javax.persistence.DiscriminatorValue;

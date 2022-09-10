@@ -23,12 +23,12 @@ public abstract class AssignationMapper
 
     @Mapping(target = "user", expression = "java(dto.getUserId() == null ? null : new dgmp.sigrh.auth.model.entities.AppUser(dto.getUserId()))")
     @Mapping(target = "role", expression = "java(dto.getRoleId() == null ? null : new dgmp.sigrh.auth.model.entities.AppRole(dto.getRoleId()))")
-    @Mapping(target = "structure", expression = "java(dto.getStrId() == null ? null : new dgmp.sigrh.structuremodule.model.entities.Structure(dto.getStrId()))")
+    @Mapping(target = "structure", expression = "java(dto.getStrId() == null ? null : new dgmp.sigrh.structuremodule.model.entities.structure.Structure(dto.getStrId()))")
     public abstract RoleToUserAss mapToRoleToUserAss(RoleToUserDTO dto);
 
     @Mapping(target = "user", expression = "java(dto.getUserId() == null ? null : new dgmp.sigrh.auth.model.entities.AppUser(dto.getUserId()))")
     @Mapping(target = "privilege", expression = "java(new dgmp.sigrh.auth.model.entities.AppPrivilege(dto.getPrivilegeId()))")
-    @Mapping(target = "structure", expression = "java(dto.getStrId() == null ? null : new dgmp.sigrh.structuremodule.model.entities.Structure(dto.getStrId()))")
+    @Mapping(target = "structure", expression = "java(dto.getStrId() == null ? null : new dgmp.sigrh.structuremodule.model.entities.structure.Structure(dto.getStrId()))")
     public abstract PrivilegeToUserAss mapToPrvToUserAss(PrvToUserDTO dto);
 
     @Mapping(target = "role", expression = "java(dto.getRoleId() == null ? null : new dgmp.sigrh.auth.model.entities.AppRole(dto.getRoleId()))")

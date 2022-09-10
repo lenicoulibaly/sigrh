@@ -19,7 +19,7 @@ import dgmp.sigrh.auth.security.SecurityConstants;
 import dgmp.sigrh.auth.security.SecurityErrorMsg;
 import dgmp.sigrh.auth.security.services.ISecurityContextManager;
 import dgmp.sigrh.brokermodule.model.MutatedEventPayload;
-import dgmp.sigrh.structuremodule.controller.repositories.StructureDAO;
+import dgmp.sigrh.structuremodule.controller.repositories.structure.StrRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -56,7 +56,7 @@ public class UserService implements IUserService
     private final IAccountTokenService accountTokenService;
     private final UserMapper userMapper;
     private final ISecurityContextManager scm;
-    private final StructureDAO strDAO;
+    private final StrRepo strDAO;
     private final StructureService strService;
     private final AccountTokenDAO accountTokenDAO;
     private final IBrokerMessageSender<Object> brokerMessageSender;

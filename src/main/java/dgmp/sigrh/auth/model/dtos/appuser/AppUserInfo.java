@@ -1,6 +1,6 @@
 package dgmp.sigrh.auth.model.dtos.appuser;
 
-import dgmp.sigrh.structuremodule.model.entities.Structure;
+import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
 
 public interface AppUserInfo {
     Long getUserId();

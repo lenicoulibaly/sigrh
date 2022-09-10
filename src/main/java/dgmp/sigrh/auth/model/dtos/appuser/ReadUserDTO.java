@@ -1,6 +1,6 @@
 package dgmp.sigrh.auth.model.dtos.appuser;
 
-import dgmp.sigrh.structuremodule.model.dtos.StructureDTO;
+import dgmp.sigrh.structuremodule.model.dtos.str.ReadStrDTO;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -18,5 +18,5 @@ public class ReadUserDTO
     private Long strId;
     private LocalDateTime creationDate;
     private LocalDateTime lastModificationDate;
-    private StructureDTO structureDTO;
+    private ReadStrDTO structureDTO;
 }

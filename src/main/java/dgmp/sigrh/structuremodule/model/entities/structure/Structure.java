@@ -1,19 +1,21 @@
-package dgmp.sigrh.structuremodule.model.entities;
+package dgmp.sigrh.structuremodule.model.entities.structure;
 
-import dgmp.sigrh.auth.model.events.EventActorIdentifier;
+import dgmp.sigrh.agentmodule.model.entities.Agent;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
+import dgmp.sigrh.structuremodule.model.entities.post.Post;
 import dgmp.sigrh.typemodule.model.entities.Type;
-import dgmp.sigrh.typemodule.model.events.TypeEventType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Entity
-public class StructureHisto
+public class Structure
 {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long strId;
@@ -23,9 +25,9 @@ public class StructureHisto
     private long strLevel;
     private String strSigle;
     @ManyToOne @JoinColumn(name = "PARENT_ID")
-    private StructureHisto strParent;
+    private Structure strParent;
     @ManyToOne @JoinColumn(name="ID_TYPE_UA")
-    private Type typeStructure;
+    private Type strType;
 
     private String strTel;
     private String strAddress;
@@ -34,8 +36,12 @@ public class StructureHisto
 
     @ManyToOne
     private Post strRespoPost;
+    @Transient
+    private List<Structure> strChildren;
+    @Transient
+    private MultipartFile creationActFile;
 
-    public StructureHisto(Long strId)
+    public Structure(Long strId)
     {
         this.strId = strId;
     }
@@ -44,9 +50,15 @@ public class StructureHisto
     @Enumerated(EnumType.STRING)
     private PersistenceStatus status;
 
-    @Enumerated(EnumType.STRING)
-    private TypeEventType eventType;
-    @Embedded
-    private EventActorIdentifier eai;
+    @Transient
+    private List<Post> posts;
+    @Transient
+    private List<Agent> personnel;
+
+    @Override
+    public String toString()
+    {
+        return this.strName + " ("+this.strSigle + ")";
+    }
 
 }

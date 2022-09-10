@@ -1,17 +1,20 @@
-package dgmp.sigrh.structuremodule.model.entities;
+package dgmp.sigrh.structuremodule.model.entities.post;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import dgmp.sigrh.agentmodule.model.entities.Agent;
+import dgmp.sigrh.auth.model.events.EventActorIdentifier;
 import dgmp.sigrh.fonctionmodule.model.entities.Fonction;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
+import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
+import dgmp.sigrh.typemodule.model.events.TypeEventType;
 import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @ToString
-public class Post
+public class PostHisto
 {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long postId;
@@ -29,9 +32,10 @@ public class Post
 	@Enumerated(EnumType.STRING)
 	private PersistenceStatus status;
 
-	public Post(Long postId) {
-		this.postId = postId;
-	}
+	@Enumerated(EnumType.STRING)
+	private TypeEventType eventType;
+	@Embedded
+	private EventActorIdentifier eai;
 
 
 }

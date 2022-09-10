@@ -1,8 +1,8 @@
 package dgmp.sigrh.auth.controller.services.impl;
 
 import dgmp.sigrh.auth.controller.services.spec.IStructureService;
-import dgmp.sigrh.structuremodule.controller.repositories.StructureDAO;
-import dgmp.sigrh.structuremodule.model.entities.Structure;
+import dgmp.sigrh.structuremodule.controller.repositories.structure.StrRepo;
+import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor @Slf4j
 public class StructureService implements IStructureService
 {
-    private final StructureDAO structureDAO;
+    private final StrRepo structureDAO;
     @Override
     public Structure searchStructure(String searchKey)
     {
@@ -44,6 +44,7 @@ public class StructureService implements IStructureService
     @Override
     public boolean isRecursivelyParentOf(Long parentId, Long childId)
     {
+        if(parentId == null || childId == null) return false;
         Structure parent = structureDAO.findById(parentId).orElse(null);
         Structure child = structureDAO.findById(childId).orElse(null);
         if(parent == null || child == null) return false;

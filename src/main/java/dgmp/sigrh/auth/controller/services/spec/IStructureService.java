@@ -1,6 +1,6 @@
 package dgmp.sigrh.auth.controller.services.spec;
 
-import dgmp.sigrh.structuremodule.model.entities.Structure;
+import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
 
 import java.util.stream.Stream;
 

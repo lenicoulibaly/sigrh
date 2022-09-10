@@ -1,26 +1,26 @@
-package dgmp.sigrh.structuremodule.model.dtos;
+package dgmp.sigrh.structuremodule.model.dtos.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class ReadPostDTO
 {
-    private Long idPost;
+    private Long postId;
 
-    private Long idFonction;
     private String nomFonction;
+    private String intitule;
 
-    private String libellePost;
-
-    private long strId;
     private String strName;
     private String strSigle;
 
-    private long idAgent;
-    private String nom;
-    private String prenom;
-    private String matricule;
+    private String agentNom;
+    private String agentPrenom;
+    private String agentMatricule;
+
+    private Set<String> emploisCompatibles;
 }

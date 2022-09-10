@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Objects;
 
 @Entity
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
@@ -21,6 +22,19 @@ public class Emploi
 	private PersistenceStatus status;
 	@OneToMany(mappedBy = "emploi")
 	private Collection<Agent> listAgents;
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Emploi)) return false;
+		Emploi emploi = (Emploi) o;
+		return Objects.equals(idEmploi, emploi.idEmploi);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(idEmploi);
+	}
 
 	public Emploi(Long idEmploi) {
 		this.idEmploi = idEmploi;
