@@ -3,8 +3,8 @@ package dgmp.sigrh.structuremodule.model.entities.structure;
 import dgmp.sigrh.auth.model.events.EventActorIdentifier;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
 import dgmp.sigrh.structuremodule.model.entities.post.Post;
+import dgmp.sigrh.structuremodule.model.events.StrEventType;
 import dgmp.sigrh.typemodule.model.entities.Type;
-import dgmp.sigrh.typemodule.model.events.TypeEventType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,9 +14,10 @@ import javax.persistence.*;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Entity
-public class StructureHisto
+public class StrHisto
 {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long histoId;
     private Long strId;
     @Column(unique = true)
     private String strCode;
@@ -24,7 +25,7 @@ public class StructureHisto
     private long strLevel;
     private String strSigle;
     @ManyToOne @JoinColumn(name = "PARENT_ID")
-    private StructureHisto strParent;
+    private StrHisto strParent;
     @ManyToOne @JoinColumn(name="ID_TYPE_UA")
     private Type typeStructure;
 
@@ -36,17 +37,12 @@ public class StructureHisto
     @ManyToOne
     private Post strRespoPost;
 
-    public StructureHisto(Long strId)
-    {
-        this.strId = strId;
-    }
-
     private String ficheTechPath;
     @Enumerated(EnumType.STRING)
     private PersistenceStatus status;
 
     @Enumerated(EnumType.STRING)
-    private TypeEventType eventType;
+    private StrEventType eventType;
     @Embedded
     private EventActorIdentifier eai;
 

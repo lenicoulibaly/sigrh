@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotNull;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor //@Entity
+@CompatibleTypeAndParentStr
 public class CreateStrDTO
 {
     @Length(message = "Le nom de la structure doit contenir au moins 3 caractères", min = 3)

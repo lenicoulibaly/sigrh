@@ -30,7 +30,7 @@ public class StructureService implements IStructureService
     @Override
     public Stream<Structure> getStructureChildrenStream(Long strId)
     {
-        return Stream.concat(Stream.of(structureDAO.findById(strId).orElse(null)), structureDAO.findByStrParent_StrId(strId).stream().flatMap(str->getStructureChildrenStream(str.getStrId()))).filter(Objects::nonNull);
+        return Stream.concat(Stream.of(structureDAO.findById(strId).orElse(null)), structureDAO.findByStrParent(strId).stream().flatMap(str->getStructureChildrenStream(str.getStrId()))).filter(Objects::nonNull);
     }
 
     @Override

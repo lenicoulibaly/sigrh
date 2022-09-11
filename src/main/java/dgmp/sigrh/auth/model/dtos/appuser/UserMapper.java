@@ -2,7 +2,7 @@ package dgmp.sigrh.auth.model.dtos.appuser;
 
 import dgmp.sigrh.auth.model.entities.AppUser;
 import dgmp.sigrh.structuremodule.controller.repositories.structure.StrRepo;
-import dgmp.sigrh.structuremodule.model.dtos.str.StructureMapper;
+import dgmp.sigrh.structuremodule.model.dtos.str.StrMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class UserMapper
 {
     @Autowired
-    protected StructureMapper structureMapper;
+    protected StrMapper structureMapper;
     @Autowired
     protected StrRepo structureDAO;
     @Mappings({

@@ -2,6 +2,7 @@ package dgmp.sigrh;
 
 import dgmp.sigrh.auth.controller.services.spec.IUserService;
 import dgmp.sigrh.auth.model.dtos.appuser.CreateActiveUserDTO;
+import dgmp.sigrh.structuremodule.controller.repositories.structure.StrRepo;
 import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -16,7 +17,7 @@ public class SigrhApplication {
     }
 
     //@Bean
-    CommandLineRunner start(IUserService userService)
+    CommandLineRunner start(IUserService userService, StrRepo strRepo)
     {
         return args ->
         {

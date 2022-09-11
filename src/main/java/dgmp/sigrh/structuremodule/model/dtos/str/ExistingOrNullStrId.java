@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 public @interface ExistingOrNullStrId
 {
     String message() default "Invalid Structure Id";
-    Class<?> [] group() default {};
+    Class<?> [] groups() default {};
     Class<? extends Payload> [] payload() default {};
 
     @Component @RequiredArgsConstructor
