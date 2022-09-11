@@ -1,4 +1,4 @@
-package dgmp.sigrh.structuremodule.controller.service;
+package dgmp.sigrh.structuremodule.controller.service.str;
 
 import dgmp.sigrh.auth.security.services.ISecurityContextManager;
 import dgmp.sigrh.brokermodule.services.IHistoService;

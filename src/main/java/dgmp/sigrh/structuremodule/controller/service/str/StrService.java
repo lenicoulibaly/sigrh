@@ -1,4 +1,4 @@
-package dgmp.sigrh.structuremodule.controller.service;
+package dgmp.sigrh.structuremodule.controller.service.str;
 
 import dgmp.sigrh.brokermodule.services.IHistoService;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
@@ -50,7 +50,21 @@ public class StrService implements IStrService
         if(strId==null) return null;
         Structure loadedStructure = strRepo.findById(strId).orElse(null);
         if(loadedStructure == null ) return null;
+        if(loadedStructure.getStatus() == PersistenceStatus.DELETED) return strMapper.mapToReadStrDTO(loadedStructure);
         loadedStructure.setStatus(PersistenceStatus.DELETED);
+        strHistoService.storeEntity(loadedStructure, StrEventType.DELETE_STR);
+        return strMapper.mapToReadStrDTO(loadedStructure);
+    }
+
+    @Override @Transactional
+    public ReadStrDTO restoreStr(Long strId)
+    {
+        if(strId==null) return null;
+        Structure loadedStructure = strRepo.findById(strId).orElse(null);
+        if(loadedStructure == null ) return null;
+        if(loadedStructure.getStatus() == PersistenceStatus.ACTIVE) return strMapper.mapToReadStrDTO(loadedStructure);
+        loadedStructure.setStatus(PersistenceStatus.ACTIVE);
+        strHistoService.storeEntity(loadedStructure, StrEventType.RESTORE_STR);
         return strMapper.mapToReadStrDTO(loadedStructure);
     }
 

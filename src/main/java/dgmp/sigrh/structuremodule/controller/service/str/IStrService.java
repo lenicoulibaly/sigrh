@@ -1,4 +1,4 @@
-package dgmp.sigrh.structuremodule.controller.service;
+package dgmp.sigrh.structuremodule.controller.service.str;
 
 import dgmp.sigrh.structuremodule.model.dtos.str.ChangeAncrageDTO;
 import dgmp.sigrh.structuremodule.model.dtos.str.CreateStrDTO;
@@ -14,6 +14,7 @@ public interface IStrService
     ReadStrDTO createStr(CreateStrDTO dto);
     ReadStrDTO updateStr(UpdateStrDTO dto);
     ReadStrDTO deleteStr(Long strId);
+    ReadStrDTO restoreStr(Long strId);
     ReadStrDTO changeAncrage(ChangeAncrageDTO dto);
 
     Structure loadChildrenTree(Long strId);
