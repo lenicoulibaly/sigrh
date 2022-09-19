@@ -23,7 +23,7 @@ public class EmploiHisto
 	@Enumerated(value = EnumType.STRING)
 	private EmploiEventType eventType;
 	@Embedded
-	private EventActorIdentifier eventActorIdentifier;
+	private EventActorIdentifier eai;
 
 	public EmploiHisto(Long histoId) {
 		this.histoId = histoId;

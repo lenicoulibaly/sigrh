@@ -27,6 +27,11 @@ public class FonctionHistoService implements IHistoService<Fonction, FonctionHis
     }
 
     @Override
+    public FonctionHisto storeEntity(Fonction fonction, FonctionEventType eventType, String actionId, String mainActionName) {
+        return fonctionHistoDAO.save(fonctionMapper.mapToFonctionHisto(fonction, eventType, scm.getEventActorIdFromSCM(), actionId, mainActionName));
+    }
+
+    @Override
     public Page<FonctionHisto> getHistoPageBetweenPeriod(Long idFonction, LocalDateTime before, LocalDateTime after, int pageNum, int pageSize) {
         return fonctionHistoDAO.getHistoPageBetweenPeriod(idFonction, before, after, PageRequest.of(pageNum, pageSize));
     }

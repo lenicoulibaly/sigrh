@@ -11,7 +11,7 @@ import java.util.Set;
 public class ReadPostDTO
 {
     private Long postId;
-
+    private String postCode;
     private String nomFonction;
     private String intitule;
 
@@ -21,6 +21,9 @@ public class ReadPostDTO
     private String agentNom;
     private String agentPrenom;
     private String agentMatricule;
+    private long nbrPosts;
+    private long nbrPostsVacants;
+    private long nbrPostsOccupes;
 
     private Set<String> emploisCompatibles;
 }

@@ -1,0 +1,56 @@
+<div >
+    <div class="col-md-3">
+        <!-- Profile Image -->
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Menu contextuel</h3>
+            </div>
+            <div class="card-body box-profile">
+                <span th:fragment="contextual-menu">
+                    <ul class="list-group list-group-unbordered mb-3" th:if="${str}">
+                        <li class="list-group-item" th:if="${viewMode!='details' && viewMode != 'new' && viewMode != 'trash'}">
+                            <a th:href="@{/sigrh/str/str-details(strId=${str.strId})}" th:title="'Voir le détail de la structure ' +${str.strName}">
+                                <b>Voir le détail</b> <i class="float-right bi bi-eye-fill"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item" th:if="${viewMode!='update' && viewMode != 'new' && viewMode != 'trash'}">
+                            <a th:href="@{/sigrh/str/str-form(strId=${str.strId})}" th:title="'Modifier la structure ' +${str.strName}">
+                                <b>Modifier</b> <i class="float-right bi bi-pencil-fill"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item" th:if="${viewMode!='config' && viewMode != 'new' && viewMode != 'trash'}">
+                            <a th:href="@{/sigrh/str/set-sous-types(str=${str.strId})}" th:title="'Configurer les sous-types du type ' +${str.strName}">
+                                <b>Configuer les sous types</b> <i class="float-right bi bi-gear-fill"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item" th:if="${viewMode != 'new' && viewMode != 'trash'}" th:title="'Supprimer le type  ' + ${str.strName}">
+                            <a id="lnk-delete" href="#" data-toggle="modal" data-target="#delete-confirmation-modal">
+                                <b>Supprimer</b> <i class="float-right bi bi-trash-fill"></i>
+                            </a>
+                            <th:block
+                                    th:replace="administration/types/delete-confirmation-modal-frag::delete-confirmation-modal"></th:block>
+                        </li>
+                        <li class="list-group-item" th:if="${viewMode != 'new'}">
+                            <a th:href="@{/sigrh/administration/types/new-type-form}" title="Créer un nouveau type">
+                                <b>Nouveau type</b> <i class="float-right bi bi-plus-circle-fill"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a th:href="@{/sigrh/administration/types/types-list}" title="Voir la liste des types">
+                                <b>Liste des types</b> <i class="float-right bi bi-list-ul"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a title="Voir la liste des types supprimés"
+                               th:href="@{/sigrh/administration/types/deleted-types-list}">
+                                <b>Corbeille</b> <i class="float-right bi bi-trash-fill"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </span>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>

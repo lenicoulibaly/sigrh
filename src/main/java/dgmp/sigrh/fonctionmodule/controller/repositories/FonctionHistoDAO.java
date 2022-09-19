@@ -14,12 +14,12 @@ public interface FonctionHistoDAO extends JpaRepository<FonctionHisto, Long>
     @Query("select f from FonctionHisto f where f.idFonction = ?1")
     List<FonctionHisto> getModificationsList(Long idFonction);
 
-    @Query("select f from FonctionHisto f where f.idFonction = ?1 and f.eventActorIdentifier.modificationDate <= ?2 and f.eventActorIdentifier.modificationDate >= ?3 order by f.eventActorIdentifier.modificationDate DESC")
+    @Query("select f from FonctionHisto f where f.idFonction = ?1 and f.eai.modificationDate <= ?2 and f.eai.modificationDate >= ?3 order by f.eai.modificationDate DESC")
     Page<FonctionHisto> getHistoPageBetweenPeriod(Long idFonction, LocalDateTime before, LocalDateTime after, PageRequest of);
 
-    @Query("select f from FonctionHisto f where f.idFonction = ?1 and f.eventActorIdentifier.modifierUsername = ?2 and f.eventActorIdentifier.modificationDate <= ?3 and f.eventActorIdentifier.modificationDate >= ?4 order by f.eventActorIdentifier.modificationDate DESC")
+    @Query("select f from FonctionHisto f where f.idFonction = ?1 and f.eai.modifierUsername = ?2 and f.eai.modificationDate <= ?3 and f.eai.modificationDate >= ?4 order by f.eai.modificationDate DESC")
     Page<FonctionHisto> getHistoPageBetweenPeriod(Long idFonction, String username, LocalDateTime before, LocalDateTime after, PageRequest of);
 
-    @Query("select f from FonctionHisto f where f.eventActorIdentifier.modifierUsername = ?1 and f.eventActorIdentifier.modificationDate <= ?2 and f.eventActorIdentifier.modificationDate >= ?3 order by f.eventActorIdentifier.modificationDate DESC")
+    @Query("select f from FonctionHisto f where f.eai.modifierUsername = ?1 and f.eai.modificationDate <= ?2 and f.eai.modificationDate >= ?3 order by f.eai.modificationDate DESC")
     Page<FonctionHisto> getHistoPageBetweenPeriod(String username, LocalDateTime before, LocalDateTime after, PageRequest of);
 }

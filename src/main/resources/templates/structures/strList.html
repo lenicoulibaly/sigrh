@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" 
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+                layout:decorate="~{administration/types/types-layout}">
+    <head>
+		<th:block layout:fragment="specific-css-links">
+            <!-- Select2 -->
+            <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+        </th:block>
+	</head>
+
+	<body>
+        <div layout:fragment="content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Liste des types</h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                            <i class="fas fa-minus"></i></button>
+                                    </div>
+                                </div>
+                                <!-- /.card-header -->
+                                <!-- form start -->
+                                <div class="card-body">
+
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h3 class="card-title">
+                                                    [[${types.getNumberOfElements()}]] items affichés sur [[${types.getTotalElements()}]]
+                                                </h3>
+
+                                                <div class="card-tools">
+                                                    <ul class="pagination pagination-sm float-right">
+                                                        <li th:title="Début" class="page-item"><a class="page-link" th:href="@{/sigrh/administration/types/types-list(pageNum=0, Key=${key})}">&laquo;&laquo;</a></li>
+                                                        <li  th:title="Précédant" class="page-item"><a class="page-link" th:href="@{/sigrh/administration/types/types-list(pageNum=${currentPage > 0 ? currentPage-1 : 0}, key=${key})}">&laquo;</a></li>
+                                                        <li th:each="page, status:${pages}" class="page-item" th:classappend="${status.index == currentPage ? 'active' : T(java.lang.Math).abs(status.index - currentPage) < 4 ? '' : 'd-none'}"><a class="page-link" th:href="@{/sigrh/administration/types/types-list(pageNum=${status.index}, key=${key})}">[[${status.count}]]</a></li>
+                                                        <li th:title="Suivant" class="page-item"><a class="page-link" th:href="@{/sigrh/administration/types/types-list(pageNum=${currentPage < pages.length-1 ? currentPage+1 : pages.length-1}, key=${key})}">&raquo;</a></li>
+                                                        <li th:title="Fin" class="page-item"><a class="page-link" th:href="@{/sigrh/administration/types/types-list(pageNum= ${pages.length-1}, key=${key})}">&raquo;&raquo;</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!-- /.card-header -->
+                                            <div class="card-body p-0">
+
+                                                <form class="form-horizontal" th:action="@{/sigrh/administration/types/types-list}">
+                                                    <div class="card-body mt-2 m-0 p-0">
+                                                        <div class="form-group row">
+                                                            <input type="hidden" th:value="${currentPage}" name="pageNum">
+
+                                                            <div class="col-md-12 mx-0 ml-3 p-0" style="display: inline">
+                                                                <table class="d-inline">
+                                                                    <tr>
+                                                                        <td >
+                                                                            <a id="lnk-reinitialize" th:href="@{/sigrh/administration/types/types-list(pageNum=0)}" class="btn btn-primary" >Réinitialiser</a>
+                                                                        </td>
+                                                                        <td style="width: 500px;">
+                                                                            <input type="text" style="height: 40px;"  class="form-control p-0 m-0" th:value="${key}" name="key" id="key" placeholder="Rechercher un type">
+                                                                        </td>
+                                                                        <td>
+                                                                            <button class=" btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                                <a id="lnk-new-type" th:href="@{/sigrh/administration/types/new-type-form}" class="btn btn-primary float-right mr-4" >Nouveau type</a>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </form>
+
+
+                                                <hr />
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Intitulé</th>
+                                                        <th>Nature du type</th>
+                                                        <th>Code du type</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr th:each="type: ${types}">
+                                                        <td>[[${type.name}]]</td>
+                                                        <td>
+                                                            [[${type.typeGroup}]]
+                                                        </td>
+                                                        <td>[[${type.uniqueCode}]]</td>
+                                                        <td>
+                                                            <a class="btn btn-outline-warning mx-1" title="Modifier" th:href="@{/sigrh/administration/types/update-type-form(typeId=${type.typeId})}"><i class="fas fa-edit"></i> </a>
+                                                            <a class="btn btn-outline-success mx-1" title="Voir" th:href="@{/sigrh/administration/types/type-details(typeId=${type.typeId})}"><i class="fas fa-eye"></i> </a>
+                                                            <a class="btn btn-outline-danger mx-1" title="Supprimer" href="#" data-toggle="modal" th:data-target="${'#delete-confirmation-modal' + type.typeId}"><i class="fas fa-trash"></i> </a>
+                                                            <a class="btn btn-outline-success mx-1" title="Configurer des sous-types" th:href="@{/sigrh/administration/types/set-sous-types(typeId=${type.typeId})}"><i class="fas fa-eye"></i> </a>
+
+                                                            <div class="modal fade" th:id="${'delete-confirmation-modal' + type.typeId}">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h4 class="modal-title">Confirmation</h4>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <p>Confirmez-vous la suppression du type [[${type.name}]] ?</p>
+                                                                            <small class="text-danger">
+                                                                                Attention la suppression est une action irréversible!
+                                                                            </small>
+                                                                        </div>
+                                                                        <div class="modal-footer justify-content-between">
+                                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                                            <a th:href="@{/sigrh/administration/types/delete(typeId=${type.typeId})}" type="button" class="btn btn-danger">Confirmer la suppression</a>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- /.modal-content -->
+                                                                </div>
+                                                                <!-- /.modal-dialog -->
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!-- /.card-body -->
+                                        </div>
+                                        <!-- /.card -->
+
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                        </div>
+                    </div>
+        </div>
+        <div layout:fragment="specific-scripts">
+            <script th:src="@{/dist/js/demo.js}"></script>
+
+            <!-- Select2 -->
+            <script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
+            <script th:src="@{/plugins/bootstrap-switch/js/bootstrap-switch.min.js}"></script>
+            <!-- Treeview Plugin JavaScript -->
+            <script th:src="@{/dist/js/bootstrap-treeview.min.js}"></script>
+            <script th:src="@{/dist/js/bootstrap-treeview-init.js}"></script>
+            <script>
+                $(function () {
+                    //Initialize Select2 Elements
+                    $('.select2').select2();
+
+                    //Initialize Select2 Elements
+                    $('.select2bs4').select2({theme: 'bootstrap4'});
+
+                    //SWITCH
+                    $("input[data-bootstrap-switch]").each(function(){
+                        $(this).bootstrapSwitch('state', $(this).prop('checked'));
+                    });
+                });
+            </script>
+            <script>
+                var defaultData = [
+                    {
+                        text: 'Parent 1',
+                        href: '#parent1',
+                        tags: ['4'],
+                        nodes: [
+                            {
+                                text: 'Child 1',
+                                href: '#child1',
+                                tags: ['2'],
+                                nodes: [
+                                    {
+                                        text: 'Grandchild 1',
+                                        href: '#grandchild1',
+                                        tags: ['0']
+                                    },
+                                    {
+                                        text: 'Grandchild 2',
+                                        href: '#grandchild2',
+                                        tags: ['0']
+                                    }
+                                ]
+                            },
+                            {
+                                text: 'Child 2',
+                                href: '#child2',
+                                tags: ['0']
+                            }
+                        ]
+                    },
+                    {
+                        text: 'Parent 2',
+                        href: '#parent2',
+                        tags: ['0']
+                    },
+                    {
+                        text: 'Parent 3',
+                        href: '#parent3',
+                        tags: ['0']
+                    },
+                    {
+                        text: 'Parent 4',
+                        href: '#parent4',
+                        tags: ['0']
+                    },
+                    {
+                        text: 'Parent 5',
+                        href: '#parent5'  ,
+                        tags: ['0']
+                    }
+                ];
+                $('.treeview').treeview({
+                    selectedBackColor: "#03a9f3",
+                    onhoverColor: "rgba(0, 0, 0, 0.05)",
+                    expandIcon: 'ti-plus',
+                    collapseIcon: 'ti-minus',
+                    nodeIcon: 'fa fa-folder',
+                    data: defaultData
+                });
+            </script>
+        </div>
+    </body>
+</html>

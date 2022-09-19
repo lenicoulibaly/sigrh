@@ -1,10 +1,8 @@
 package dgmp.sigrh.structuremodule.controller.service.str;
 
-import dgmp.sigrh.structuremodule.model.dtos.str.ChangeAncrageDTO;
-import dgmp.sigrh.structuremodule.model.dtos.str.CreateStrDTO;
-import dgmp.sigrh.structuremodule.model.dtos.str.ReadStrDTO;
-import dgmp.sigrh.structuremodule.model.dtos.str.UpdateStrDTO;
+import dgmp.sigrh.structuremodule.model.dtos.str.*;
 import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
+import dgmp.sigrh.typemodule.model.entities.Type;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -16,8 +14,10 @@ public interface IStrService
     ReadStrDTO deleteStr(Long strId);
     ReadStrDTO restoreStr(Long strId);
     ReadStrDTO changeAncrage(ChangeAncrageDTO dto);
-
+    List<Type> getStrTypes();
     Structure loadChildrenTree(Long strId);
+
+    List<StrTreeView> loadStrTreeView(Long strId);
 
     List<Structure> getAllChildren(Long strId);
 
@@ -30,4 +30,6 @@ public interface IStrService
     Page<ReadStrDTO> searchStrByType(String key, Long typeId, int pageNum, int pageSize);
     Page<ReadStrDTO> searchStrByParent(String key, Long parentId, int pageNum, int pageSize);
     long countAllChildren(Long parentId);
+    long countVacantPosts(Long StrId);
+    long countNoneVacantPosts(Long StrId);
 }

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" 
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{administration/types/types-layout}">
+    <head>
+		<th:block layout:fragment="specific-css-links">
+            <!-- Select2 -->
+            <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+        </th:block>
+	</head>
+
+	<body>
+        <div layout:fragment="content">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <!-- Profile Image -->
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Menu contextuel</h3>
+                                </div>
+                                <div class="card-body box-profile">
+                                    <th:block th:replace="administration/types/contextual-menu-frag::contextual-menu"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card card-primary">
+                                            <div class="card-header">
+                                                <h3 class="card-title">Configuration des sous types du type [[${type.name}]]</h3>
+
+                                                <div class="card-tools">
+                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button>
+                                                </div>
+                                            </div>
+                                            <!-- /.card-header -->
+                                            <div class="card-body">
+                                                <div class="row">
+                                                        <table class="table table-responsive">
+                                                            <tr>
+                                                                <td>
+                                                                    <form id="reload-sous-types-form" th:action="@{/sigrh/administration/types/set-sous-types}">
+                                                                        <label>Sélectionez un type</label>
+                                                                        <select id="selected-type" type="text" class="form-control  select2bs4" name="typeId" onchange="function reloadSousTypesForm() {
+                                                                                $('#reload-sous-types-form').submit()} reloadSousTypesForm()">
+                                                                            <option th:selected="${t.typeId == type.typeId}" th:each="t:${@typeRepo.findActiveTypes()}" th:value="${t.typeId}" th:text="${t.name}"></option>
+                                                                        </select>
+                                                                    </form>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <form method="post" id="set-sous-types-form" th:action="@{/sigrh/administration/types/set-sous-types}" th:object="${dto}">
+                                                                        <input type="hidden" th:field="*{parentId}" />
+                                                                        <div class="form-group">
+                                                                            <label>Selection des sous types</label>
+                                                                            <select class="duallistbox" multiple="multiple" name="childIds">
+                                                                                <option th:selected="${@typeService.parentHasDirectSousType(type.typeId, st.typeId)}" th:each="st:${possibleSousTypes}" th:value="${st.typeId}" >[[${st.name}]]</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <!-- /.form-group -->
+                                                                        <button type="button" data-toggle="modal" data-target="#set-sous-type-confirmation-modal" class="float-right btn btn-primary">Enregistrer</button>
+                                                                        <th:block th:replace="administration/types/set-sous-type-confirmation-modal-frag::set-sous-type-confirmation-modal"/>
+                                                                    </form>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <table class="table table-bordered table-sm table-hover table-striped">
+                                                                        <caption>Liste des sous types du type [[${type.name}]]</caption>
+                                                                        <thead>
+                                                                        <tr>
+                                                                            <th>Nature</th>
+                                                                            <th>Intitulé</th>
+                                                                            <th>Code</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr th:each="st, status:${sousTypes}">
+                                                                            <td>[[${st.typeGroup.groupName}]]</td>
+                                                                            <td>[[${st.name}]]</td>
+                                                                            <td>[[${st.uniqueCode}]]</td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+
+                                                        </table>
+                                                    <!-- /.col -->
+                                                </div>
+                                                <!-- /.row -->
+                                            </div>
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                    </div>
+        </div>
+        <div layout:fragment="specific-scripts">
+            <script th:src="@{/dist/js/demo.js}"></script>
+
+            <!-- Select2 -->
+            <script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
+            <script th:src="@{/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js}"></script>
+            <script th:src="@{/plugins/bootstrap-switch/js/bootstrap-switch.min.js}"></script>
+            <script>
+                $(function () {
+                    //Initialize Select2 Elements
+                    $('.select2').select2();
+
+                    //Initialize Select2 Elements
+                    $('.select2bs4').select2({theme: 'bootstrap4'});
+
+                    //Bootstrap Duallistbox
+                    $('.duallistbox').bootstrapDualListbox()
+
+                    //SWITCH
+                    $("input[data-bootstrap-switch]").each(function(){
+                        $(this).bootstrapSwitch('state', $(this).prop('checked'));
+                    });
+                });
+            </script>
+            <script>
+            </script>
+        </div>
+    </body>
+</html>

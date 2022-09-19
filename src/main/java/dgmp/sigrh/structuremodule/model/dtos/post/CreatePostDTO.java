@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.util.Set;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class CreatePostDTO
@@ -17,7 +17,9 @@ public class CreatePostDTO
 	@ExistingFonctionId
 	private Long fonctionId;
 	private String intitule;
+	private String postDescription;
 	@ExistingStrId
 	private Long strId;
-	private List<Long> emploisIds;
+	private long nbrPosts;
+	private Set<Long> emploisIds;
 }

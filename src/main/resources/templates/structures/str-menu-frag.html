@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr" th:fragment="str-menu">
+    <div class="dropdown mx-1">
+        <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            Structure
+        </a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="/sigrh/structures/str-list">Liste des structures</a>
+            <a class="dropdown-item" href="/sigrh/structures/new-str-form">Nouvelle structure</a>
+            <a class="dropdown-item" href="/sigrh/structures/deleted-str-list">Corbeille</a>
+        </div>
+    </div>
+
+    <div class="dropdown mx-1">
+        <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            Posts
+        </a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="/sigrh/posts/posts-list">Liste des posts</a>
+            <a class="dropdown-item" href="/sigrh/posts/new-post-form">Nouveau post</a>
+            <a class="dropdown-item" href="/sigrh/posts/deleted-posts-list">Corbeille</a>
+        </div>
+    </div>
+</html>

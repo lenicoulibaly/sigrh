@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 @Embeddable
 public class EventActorIdentifier
 {
+    private String actionId;
+    private String mainActionName;
     private LocalDateTime modificationDate;
     private Long modifierUserId;
     private String modifierUsername;

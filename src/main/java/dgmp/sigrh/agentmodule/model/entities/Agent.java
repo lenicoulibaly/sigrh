@@ -7,6 +7,7 @@ import dgmp.sigrh.auth.model.entities.AppUser;
 import dgmp.sigrh.emploimodule.model.entities.Emploi;
 import dgmp.sigrh.fonctionmodule.model.entities.Fonction;
 import dgmp.sigrh.grademodule.model.entities.Grade;
+import dgmp.sigrh.shared.model.enums.PersistenceStatus;
 import dgmp.sigrh.structuremodule.model.entities.post.Post;
 import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
 import lombok.AllArgsConstructor;
@@ -92,11 +93,11 @@ public class Agent
 	private LocalDate dateDepartRetraite;
 	@Enumerated(EnumType.STRING)
 	private TypeAgent typeAgent; //Fonctionnaire, Contractuel
-	@Enumerated(EnumType.STRING)
-	private Position position; //Activite, Detachement, Disponibilite, Sous les drapeaux
+	//@Enumerated(EnumType.STRING)
+	//private Position position; //Activite, Detachement, Disponibilite, Sous les drapeaux
 	@Enumerated(EnumType.STRING)
 	private EtatRecrutement etatRecrutement; // En service, En attente de première affectation, En attente d'affectation dans une SD, En attente d'affectation dans un service
-	private boolean active;
+	private PersistenceStatus status;
 	@OneToOne(fetch = FetchType.EAGER)
 	private AppUser user;
 	@Column(unique = true)
@@ -163,7 +164,6 @@ public class Agent
 		agent.situationMatrimoniale = EnumUtils.getEnum(SituationMatrimoniale.class, dto.getSituationMatrimoniale());
 		agent.situationPresence = EnumUtils.getEnum(SituationPresence.class, dto.getSituationPresence());
 		agent.typeAgent = EnumUtils.getEnum(TypeAgent.class, dto.getTypeAgent());
-		agent.position = EnumUtils.getEnum(Position.class, dto.getPosition());
 		agent.etatRecrutement = EnumUtils.getEnum(EtatRecrutement.class, dto.getEtatRecrutement());
 
 		return agent;

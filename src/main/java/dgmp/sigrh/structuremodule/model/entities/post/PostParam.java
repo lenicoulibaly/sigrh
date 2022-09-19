@@ -16,7 +16,7 @@ import javax.persistence.IdClass;
 public class PostParam
 {
     @Id
-    private Long postId;
+    private Long postGroupId;
     @Id
     private Long emploiId;
     private PersistenceStatus status;

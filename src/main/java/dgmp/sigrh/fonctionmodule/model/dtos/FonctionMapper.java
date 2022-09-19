@@ -22,5 +22,8 @@ public abstract class FonctionMapper
     @Mapping(target = "proportion", expression = "java(agentDAO.count() == 0 ? 0 : (agentDAO.countByFonction(fonction.getIdFonction())/agentDAO.count())*100)")
     public abstract ReadFonctionDTO mapToReadFonctionDTO(Fonction fonction);
 
-    public abstract FonctionHisto mapToFonctionHisto(Fonction fonction, FonctionEventType eventType, EventActorIdentifier eventActorIdentifier);
+    public abstract FonctionHisto mapToFonctionHisto(Fonction fonction, FonctionEventType eventType, EventActorIdentifier eai);
+    @Mapping(target = "eai.actionId", source = "actionId")
+    @Mapping(target = "eai.mainActionName", source = "mainActionName")
+    public abstract FonctionHisto mapToFonctionHisto(Fonction fonction, FonctionEventType eventType, EventActorIdentifier eai, String actionId, String mainActionName);
 }

@@ -46,7 +46,7 @@
                                                                         <label>Sélectionez un type</label>
                                                                         <select id="selected-type" type="text" class="form-control  select2bs4" name="typeId" onchange="function reloadSousTypesForm() {
                                                                                 $('#reload-sous-types-form').submit()} reloadSousTypesForm()">
-                                                                            <option th:selected="${t.typeId == type.typeId}" th:each="t:${@typeRepo.findActiveTypes()}" th:value="${t.typeId}" th:text="${t.name}"></option>
+                                                                            <option th:selected="${t.typeId == type.typeId}" th:each="t:${@typeRepo.findActiveTypes()}" th:value="${t.typeId}" th:text="${t.toString()}"></option>
                                                                         </select>
                                                                     </form>
                                                                 </td>
@@ -58,7 +58,7 @@
                                                                         <div class="form-group">
                                                                             <label>Selection des sous types</label>
                                                                             <select class="duallistbox" multiple="multiple" name="childIds">
-                                                                                <option th:selected="${@typeService.parentHasDirectSousType(type.typeId, st.typeId)}" th:each="st:${possibleSousTypes}" th:value="${st.typeId}" >[[${st.name}]]</option>
+                                                                                <option th:selected="${@typeService.parentHasDirectSousType(type.typeId, st.typeId)}" th:each="st:${possibleSousTypes}" th:value="${st.typeId}" >[[${st.toString()}]]</option>
                                                                             </select>
                                                                         </div>
                                                                         <!-- /.form-group -->

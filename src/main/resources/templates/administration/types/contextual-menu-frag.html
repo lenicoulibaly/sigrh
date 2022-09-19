@@ -10,40 +10,40 @@
                     <ul class="list-group list-group-unbordered mb-3">
                         <li class="list-group-item" th:if="${viewMode!='details' && viewMode != 'new' && viewMode != 'trash'}">
                             <a th:href="@{/sigrh/administration/types/type-details(typeId=${type.typeId})}" th:title="'Voir le détail du type ' +${type.name}">
-                                <b>Voir le détail</b> <i class="float-right fas fa-eye"></i>
+                                <b>Voir le détail</b> <i class="float-right bi bi-eye-fill"></i>
                             </a>
                         </li>
                         <li class="list-group-item" th:if="${viewMode!='update' && viewMode != 'new' && viewMode != 'trash'}">
                             <a th:href="@{/sigrh/administration/types/update-type-form(typeId=${type.typeId})}" th:title="'Modifier le type ' +${type.name}">
-                                <b>Modifier</b> <i class="float-right fas fa-edit"></i>
+                                <b>Modifier</b> <i class="float-right bi bi-pencil-fill"></i>
                             </a>
                         </li>
                         <li class="list-group-item" th:if="${viewMode!='config' && viewMode != 'new' && viewMode != 'trash'}">
                             <a th:href="@{/sigrh/administration/types/set-sous-types(typeId=${type.typeId})}" th:title="'Configurer les sous-types du type ' +${type.name}">
-                                <b>Configuer les sous types</b> <i class="float-right fas fa-edit"></i>
+                                <b>Configuer les sous types</b> <i class="float-right bi bi-gear-fill"></i>
                             </a>
                         </li>
                         <li class="list-group-item" th:if="${viewMode != 'new' && viewMode != 'trash'}" th:title="'Supprimer le type  ' + ${type.name}">
                             <a id="lnk-delete" href="#" data-toggle="modal" data-target="#delete-confirmation-modal">
-                                <b>Supprimer</b> <i class="float-right fas fa-trash"></i>
+                                <b>Supprimer</b> <i class="float-right bi bi-trash-fill"></i>
                             </a>
                             <th:block
                                     th:replace="administration/types/delete-confirmation-modal-frag::delete-confirmation-modal"></th:block>
                         </li>
                         <li class="list-group-item" th:if="${viewMode != 'new'}">
                             <a th:href="@{/sigrh/administration/types/new-type-form}" title="Créer un nouveau type">
-                                <b>Nouveau type</b> <i class="float-right fa-solid fa-circle-plus"></i>
+                                <b>Nouveau type</b> <i class="float-right bi bi-plus-circle-fill"></i>
                             </a>
                         </li>
                         <li class="list-group-item">
                             <a th:href="@{/sigrh/administration/types/types-list}" title="Voir la liste des types">
-                                <b>Liste des types</b> <i class="float-right fas fa-list"></i>
+                                <b>Liste des types</b> <i class="float-right bi bi-list-ul"></i>
                             </a>
                         </li>
                         <li class="list-group-item">
                             <a title="Voir la liste des types supprimés"
                                th:href="@{/sigrh/administration/types/deleted-types-list}">
-                                <b>Corbeille</b> <i class="fa-solid fa-circle-trash"></i>
+                                <b>Corbeille</b> <i class="float-right bi bi-trash-fill"></i>
                             </a>
                         </li>
                     </ul>

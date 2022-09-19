@@ -3,6 +3,7 @@ package dgmp.sigrh.structuremodule.model.entities.structure;
 import dgmp.sigrh.agentmodule.model.entities.Agent;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
 import dgmp.sigrh.structuremodule.model.entities.post.Post;
+import dgmp.sigrh.structuremodule.model.entities.post.PostGroup;
 import dgmp.sigrh.typemodule.model.entities.Type;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-@Entity
+@Entity @Table(name = "str")
 public class Structure
 {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,7 +52,7 @@ public class Structure
     private PersistenceStatus status;
 
     @Transient
-    private List<Post> posts;
+    private List<PostGroup> postGroups;
     @Transient
     private List<Agent> personnel;
 

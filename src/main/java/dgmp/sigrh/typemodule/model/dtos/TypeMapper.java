@@ -29,4 +29,12 @@ public interface TypeMapper
     TypeHisto mapToTypeHisto(Type type, TypeEventType eventType, EventActorIdentifier eai);
 
     TypeParamHisto mapToTypeParamHisto(TypeParam typeParam, TypeEventType eventType, EventActorIdentifier eai);
+
+    @Mapping(target = "eai.actionId", source = "actionId")
+    @Mapping(target = "eai.mainActionName", source = "mainActionName")
+    TypeHisto mapToTypeHisto(Type type, TypeEventType eventType, EventActorIdentifier eai, String actionId, String mainActionName);
+
+    @Mapping(target = "eai.actionId", source = "actionId")
+    @Mapping(target = "eai.mainActionName", source = "mainActionName")
+    TypeParamHisto mapToTypeParamHisto(TypeParam typeParam, TypeEventType eventType, EventActorIdentifier eventActorIdFromSCM, String actionId, String mainActionName);
 }

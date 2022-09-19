@@ -20,10 +20,17 @@ public class EmploiHistoService implements IHistoService<Emploi, EmploiHisto, Em
     private final EmploiMapper emploiMapper;
     private final EmploiHistoDAO emploiHistoDAO;
     private final ISecurityContextManager scm;
+
     @Override
     public EmploiHisto storeEntity(Emploi emploi, EmploiEventType emploiEventType)
     {
         return emploiHistoDAO.save(emploiMapper.mapToEmploiHisto(emploi, emploiEventType, scm.getEventActorIdFromSCM()));
+    }
+
+    @Override
+    public EmploiHisto storeEntity(Emploi emploi, EmploiEventType emploiEventType, String actionId, String mainActionName)
+    {
+        return emploiHistoDAO.save(emploiMapper.mapToEmploiHisto(emploi, emploiEventType, scm.getEventActorIdFromSCM(), actionId, mainActionName));
     }
 
     @Override

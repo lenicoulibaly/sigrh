@@ -74,7 +74,7 @@
 
 
                                                 <hr />
-                                                <table class="table">
+                                                <table class="table table-sm">
                                                     <thead>
                                                     <tr>
                                                         <th>Intitulé</th>
@@ -91,10 +91,10 @@
                                                         </td>
                                                         <td>[[${type.uniqueCode}]]</td>
                                                         <td>
-                                                            <a class="btn btn-outline-warning mx-1" title="Modifier" th:href="@{/sigrh/administration/types/update-type-form(typeId=${type.typeId})}"><i class="fas fa-edit"></i> </a>
-                                                            <a class="btn btn-outline-success mx-1" title="Voir" th:href="@{/sigrh/administration/types/type-details(typeId=${type.typeId})}"><i class="fas fa-eye"></i> </a>
-                                                            <a class="btn btn-outline-danger mx-1" title="Supprimer" href="#" data-toggle="modal" th:data-target="${'#delete-confirmation-modal' + type.typeId}"><i class="fas fa-trash"></i> </a>
-                                                            <a class="btn btn-outline-success mx-1" title="Configurer des sous-types" th:href="@{/sigrh/administration/types/set-sous-types(typeId=${type.typeId})}"><i class="fas fa-eye"></i> </a>
+                                                            <a class="btn btn-sm btn-outline-warning mx-1" title="Modifier" th:href="@{/sigrh/administration/types/update-type-form(typeId=${type.typeId})}"><i class="bi bi-pencil text-sm"></i> </a>
+                                                            <a class="btn btn-sm btn-outline-success mx-1" title="Voir" th:href="@{/sigrh/administration/types/type-details(typeId=${type.typeId})}"><i class="bi bi-eye text-sm"></i> </a>
+                                                            <a class="btn btn-sm btn-outline-danger mx-1" title="Supprimer" href="#" data-toggle="modal" th:data-target="${'#delete-confirmation-modal' + type.typeId}"><i class="bi bi-trash text-sm"></i> </a>
+                                                            <a class="btn btn-sm btn-outline-success mx-1" title="Configurer des sous-types" th:href="@{/sigrh/administration/types/set-sous-types(typeId=${type.typeId})}"><i class="bi bi-gear text-sm"></i> </a>
 
                                                             <div class="modal fade" th:id="${'delete-confirmation-modal' + type.typeId}">
                                                                 <div class="modal-dialog">

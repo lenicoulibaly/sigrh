@@ -28,6 +28,12 @@ public class StrHistoService implements IHistoService<Structure, StrHisto, StrEv
     }
 
     @Override
+    public StrHisto storeEntity(Structure str, StrEventType eventType, String actionId, String mainActionName)
+    {
+        return strHistoRepo.save(strMapper.mapToStrHisto(str, eventType, scm.getEventActorIdFromSCM(), actionId, mainActionName));
+    }
+
+    @Override
     public Page<StrHisto> getHistoPageBetweenPeriod(Long strId, LocalDateTime before, LocalDateTime after, int pageNum, int pageSize)
     {
         return strHistoRepo.getHistoPageBetweenPeriod(strId, before, after, PageRequest.of(pageNum, pageSize));

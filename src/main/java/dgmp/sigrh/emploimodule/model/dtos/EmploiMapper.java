@@ -24,5 +24,8 @@ public abstract class EmploiMapper
     @Mapping(target = "nomEmploi", expression = "java(dto.getNomEmploi().trim().toUpperCase())")
     public abstract Emploi mapToEmploi(CreateEmploiDTO dto);
 
+    @Mapping(target = "eai.actionId", source = "actionId")
+    @Mapping(target = "eai.mainActionName", source = "mainActionName")
+    public abstract EmploiHisto mapToEmploiHisto(Emploi emploi, EmploiEventType eventType, EventActorIdentifier eventActorIdentifier, String actionId, String mainActionName);
     public abstract EmploiHisto mapToEmploiHisto(Emploi emploi, EmploiEventType eventType, EventActorIdentifier eventActorIdentifier);
 }

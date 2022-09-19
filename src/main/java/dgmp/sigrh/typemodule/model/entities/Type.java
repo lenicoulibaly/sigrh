@@ -26,6 +26,11 @@ public class Type {
     @Transient
     private List<Type> children;
 
+    @Override
+    public String toString() {
+        return name + " (" +uniqueCode + ")"  ;
+    }
+
     public Type(Long typeId) {
         this.typeId = typeId;
     }

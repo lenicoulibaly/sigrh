@@ -26,6 +26,7 @@ public @interface CompatibleTypeAndParentStr
         @Override
         public boolean isValid(ChangeAncrageDTO dto, ConstraintValidatorContext context)
         {
+            if(dto.getNewParentId()==null) return true;
             return strRepo.parentHasCompatibleSousType(dto.getNewParentId(), dto.getNewTypeId());
         }
     }
@@ -37,6 +38,7 @@ public @interface CompatibleTypeAndParentStr
         @Override
         public boolean isValid(CreateStrDTO dto, ConstraintValidatorContext context)
         {
+            if(dto.getParentId()==null) return true;
             return strRepo.parentHasCompatibleSousType(dto.getParentId(), dto.getTypeId());
         }
     }

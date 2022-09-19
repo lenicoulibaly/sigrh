@@ -20,8 +20,8 @@ public interface EmploiDAO extends JpaRepository<Emploi, Long>
     @Query("select e.nomEmploi from Emploi e where e.idEmploi = ?1")
     String getNomEmploi(Long idEmploi);
 
-    @Query("select e.nomEmploi from Emploi e where e.idEmploi in (select pp.emploiId from PostParam pp where pp.postId = ?1)")
-    Set<String> getEmploisCompatiblesByPost(long postId);
+    @Query("select e.nomEmploi from Emploi e where e.idEmploi in (select pp.emploiId from PostParam pp where pp.postGroupId = ?1)")
+    Set<String> getEmploisCompatiblesByPostGroup(Long postGroupId);
 
     @Query("select e from Emploi e where upper(e.nomEmploi) like upper(concat('%', ?1, '%')) and e.status='ACTIVE'")
     Page<Emploi> searchPageEmploi(String nomEmploi, Pageable pageable);

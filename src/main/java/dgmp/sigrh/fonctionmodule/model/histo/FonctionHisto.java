@@ -26,7 +26,7 @@ public class FonctionHisto
 	@Enumerated(value = EnumType.STRING)
 	private FonctionEventType eventType;
 	@Embedded
-	private EventActorIdentifier eventActorIdentifier;
+	private EventActorIdentifier eai;
 
 	public FonctionHisto(Long histoId) {
 		this.histoId = histoId;

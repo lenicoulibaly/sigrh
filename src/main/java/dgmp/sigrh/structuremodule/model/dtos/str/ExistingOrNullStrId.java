@@ -28,7 +28,8 @@ public @interface ExistingOrNullStrId
         @Override
         public boolean isValid(Long value, ConstraintValidatorContext context)
         {
-            return strDAO.existsById(value) ||value == null;
+            if(value == null) return true;
+            return strDAO.existsById(value) ;
         }
     }
 }

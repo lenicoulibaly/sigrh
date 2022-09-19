@@ -7,7 +7,7 @@ import dgmp.sigrh.auth.model.events.EventActorIdentifier;
 import dgmp.sigrh.fonctionmodule.model.entities.Fonction;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
 import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
-import dgmp.sigrh.typemodule.model.events.TypeEventType;
+import dgmp.sigrh.structuremodule.model.events.PostEventType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,6 +17,7 @@ import javax.persistence.*;
 public class PostHisto
 {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long histoId;
 	private Long postId;
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ID_FONCTION")
@@ -33,7 +34,7 @@ public class PostHisto
 	private PersistenceStatus status;
 
 	@Enumerated(EnumType.STRING)
-	private TypeEventType eventType;
+	private PostEventType eventType;
 	@Embedded
 	private EventActorIdentifier eai;
 

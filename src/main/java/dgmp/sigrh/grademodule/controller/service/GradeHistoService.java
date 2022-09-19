@@ -26,6 +26,13 @@ public class GradeHistoService implements IHistoService<Grade, GradeHisto, Grade
         return gradeHistoDAO.save(grageMapper.mapToGradeHisto(grade, eventType, scm.getEventActorIdFromSCM()));
     }
 
+
+    @Override
+    public GradeHisto storeEntity(Grade grade, GradeEventType eventType, String actionId, String mainActionName)
+    {
+        return gradeHistoDAO.save(grageMapper.mapToGradeHisto(grade, eventType, scm.getEventActorIdFromSCM(), actionId, mainActionName));
+    }
+
     @Override
     public Page<GradeHisto> getHistoPageBetweenPeriod(Long entityId, LocalDateTime before, LocalDateTime after, int pageNum, int pageSize) {
         return gradeHistoDAO.searchPageOfGradeHisto(entityId, before, after, PageRequest.of(pageNum, pageSize));

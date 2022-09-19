@@ -27,6 +27,11 @@ public class TypeHistoService implements IHistoService<Type, TypeHisto, TypeEven
     }
 
     @Override
+    public TypeHisto storeEntity(Type type, TypeEventType eventType, String actionId, String mainActionName) {
+        return typeHistoRepo.save(typeMapper.mapToTypeHisto(type, eventType, scm.getEventActorIdFromSCM(), actionId, mainActionName));
+    }
+
+    @Override
     public Page<TypeHisto> getHistoPageBetweenPeriod(Long typeId, LocalDateTime after, LocalDateTime before, int pageNum, int pageSize)
     {
         return typeHistoRepo.getHistoPageBetweenPeriod(typeId, before, after, PageRequest.of(pageNum, pageSize));

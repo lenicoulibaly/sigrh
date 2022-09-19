@@ -6,15 +6,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.util.Set;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class UpdatePostDTO
 {
 	@NotNull(message = "L'identifiant du post ne peut être nul")
-	@ExistingPostId
-	private Long postId;
+	@ExistingPostGroupId
+	private Long postGroupId;
 	@NotNull(message = "L'intitulé du poste ne peut être nul")
 	private String intitule;
-	private List<Long> emploisIds;
+	private String postDescription;
+	private Set<Long> emploisIds;
 }

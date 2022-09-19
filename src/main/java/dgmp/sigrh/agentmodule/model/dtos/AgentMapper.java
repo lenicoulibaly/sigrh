@@ -31,7 +31,7 @@ public abstract class AgentMapper
         @Mapping(target="situationPresence", expression = "java(org.apache.commons.lang3.EnumUtils.getEnum(dgmp.sigrh.agentmodule.model.enums.SituationPresence.class, agent.getSituationPresence().name()).toString())"),
 
         @Mapping(target="typeAgent", expression = "java(org.apache.commons.lang3.EnumUtils.getEnum(dgmp.sigrh.agentmodule.model.enums.TypeAgent.class, agent.getTypeAgent().name()).toString())"),
-        @Mapping(target="position", expression = "java(org.apache.commons.lang3.EnumUtils.getEnum(dgmp.sigrh.agentmodule.model.enums.Position.class, agent.getPosition().name()).toString())"),
+        //@Mapping(target="position", expression = "java(org.apache.commons.lang3.EnumUtils.getEnum(dgmp.sigrh.agentmodule.model.enums.Position.class, agent.getPosition().name()).toString())"),
         @Mapping(target="etatRecrutement", expression = "java(org.apache.commons.lang3.EnumUtils.getEnum(dgmp.sigrh.agentmodule.model.enums.EtatRecrutement.class, agent.getEtatRecrutement().name()).toString())"),
     })
     public abstract ReadAgentDTO getReadAgentDTO(Agent agent);
@@ -43,7 +43,7 @@ public abstract class AgentMapper
     @Mapping(target="situationPresence", expression = "java(org.apache.commons.lang3.EnumUtils.getEnum(dgmp.sigrh.agentmodule.model.enums.SituationPresence.class, dto.getSituationPresence()))")
 
     @Mapping(target="typeAgent", expression = "java(org.apache.commons.lang3.EnumUtils.getEnum(dgmp.sigrh.agentmodule.model.enums.TypeAgent.class, dto.getTypeAgent()))")
-    @Mapping(target="position", expression = "java(org.apache.commons.lang3.EnumUtils.getEnum(dgmp.sigrh.agentmodule.model.enums.Position.class, dto.getPosition()))")
+    //@Mapping(target="position", expression = "java(org.apache.commons.lang3.EnumUtils.getEnum(dgmp.sigrh.agentmodule.model.enums.Position.class, dto.getPosition()))")
     @Mapping(target="etatRecrutement", expression = "java(org.apache.commons.lang3.EnumUtils.getEnum(dgmp.sigrh.agentmodule.model.enums.EtatRecrutement.class, dto.getEtatRecrutement()))")
     @Mapping(target = "emploi", expression = "java(dto.getIdEmploi() == null ? null : new dgmp.sigrh.emploimodule.model.entities.Emploi(dto.getIdEmploi()))")
     @Mapping(target = "grade", expression = "java(dto.getIdGrade() == null ? null : new dgmp.sigrh.grademodule.model.entities.Grade(dto.getIdGrade()))")

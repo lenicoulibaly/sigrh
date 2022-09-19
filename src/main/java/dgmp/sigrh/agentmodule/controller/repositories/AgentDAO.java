@@ -1,6 +1,7 @@
 package dgmp.sigrh.agentmodule.controller.repositories;
 
 import dgmp.sigrh.agentmodule.model.entities.Agent;
+import dgmp.sigrh.agentmodule.model.enums.EtatRecrutement;
 import dgmp.sigrh.agentmodule.model.projections.AgentInfo;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -73,12 +74,14 @@ public interface AgentDAO extends JpaRepository<Agent, Long>
     @Query("select count(a) from Agent a where a.grade.idGrade = ?1")
     long countByGrade(Long idGrade);
 
+    @Query("select count(a) from Agent a where a.structure.strId = ?1 and a.status = 'ACTIVE'")
+    long countActiveByStructure(long agtId);
 
+    @Query("select count(a) from Agent a where a.structure = ?1 and a.etatRecrutement in ?2 and a.status = 'ACTIVE'")
+    long countAgentsByStrAndEtat(long strId, List<EtatRecrutement> states);
 
-
-
-
-
-
-
+    ENREGISTRE("Enregistré",true, true),ATTENTE_AFFECTATION("En attente d'affectation", true, true), ATTENTE_PRISE_SERVICE("En attende de prise de service", true, true),
+    EN_SERVICE("En service", true, true), EN_DETACHEMENT("En détachement",true, false), DISPONIBILITE("Disponibilité", false, false),
+    SOUS_DRAPEAUX("Sous les drapeaux", true, false), RETRAITE("Retraité", false, false), DEMISSIONNAIRE("Démissionnaire", false, false),
+    DECEDE("Décédé", false, false)
 }

@@ -63,4 +63,7 @@ public abstract class StrMapper
     }
 
     public abstract StrHisto mapToStrHisto(Structure str, StrEventType eventType, EventActorIdentifier eai);
+    @Mapping(target = "eai.actionId", source = "actionId")
+    @Mapping(target = "eai.mainActionName", source = "mainActionName")
+    public abstract StrHisto mapToStrHisto(Structure str, StrEventType eventType, EventActorIdentifier eai, String actionId, String mainActionName);
 }

@@ -20,4 +20,7 @@ public interface GrageMapper {
     Grade mapToGrade(CreateGradeDTO dto);
 
     GradeHisto mapToGradeHisto(Grade grade, GradeEventType eventType, EventActorIdentifier eai);
+    @Mapping(target = "eai.actionId", source = "actionId")
+    @Mapping(target = "eai.mainActionName", source = "mainActionName")
+    GradeHisto mapToGradeHisto(Grade grade, GradeEventType eventType, EventActorIdentifier eai, String actionId, String mainActionName);
 }

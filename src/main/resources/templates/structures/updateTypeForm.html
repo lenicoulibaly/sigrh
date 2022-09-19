@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" 
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{administration/types/types-layout}">
+    <head>
+		<th:block layout:fragment="specific-css-links">
+            <!-- Select2 -->
+            <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+        </th:block>
+	</head>
+
+	<body>
+        <div layout:fragment="content">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <!-- Profile Image -->
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Menu contextuel</h3>
+                                </div>
+                                <div class="card-body box-profile">
+                                    <th:block th:replace="administration/types/contextual-menu-frag::contextual-menu"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Modification du type [[${type.name}]]</h3>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body p-0">
+                                    <form method="post" th:action="@{/sigrh/administration/types/update}" th:object="${type}">
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <input th:field="*{typeId}" type="hidden">
+                                                <div class="col col-12">
+                                                    <div th:if="${globalErrMsg}" th:text="${globalErrMsg}"
+                                                         class="alert alert-danger alert-dismissible fade show"/>
+                                                </div>
+                                                <div class="col col-md-4 col-sm-4 ">
+                                                    <div class="form-group">
+                                                        <label for="typeGroup">Nature du type</label> <small
+                                                            th:if="${typeGroupErrMsg}" class="text-danger">[[${typeGroupErrMsg}]]</small>
+                                                        <select required th:field="*{typeGroup}" class="form-control" th:classappend="${typeGroupErrMsg} ? 'border-danger' : ''" id="typeGroup">
+                                                            <option value="" >Choisir la nature du type</option>
+                                                            <option th:selected="${type.typeGroup == group.getGroupCode()}" th:each="group:${@typeService.getTypeGroups()}" th:value="${group.groupCode}">[[${group.groupName}]]</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col col-md-4 col-sm-4 ">
+                                                    <div class="form-group">
+                                                        <label for="uniqueCode">Code du type</label> <small
+                                                            th:if="${uniqueCodeErrMsg}" class="text-danger">[[${uniqueCodeErrMsg}]]</small>
+                                                        <input th:classappend="${uniqueCodeErrMsg} ? 'border-danger' : ''" required th:field="*{uniqueCode}" type="text" class="form-control" id="uniqueCode" />
+                                                    </div>
+                                                </div>
+
+                                                <div class="col col-md-4 col-sm-4 ">
+                                                    <div class="form-group">
+                                                        <label for="name">Intitulé du type</label> <small
+                                                            th:if="${nameErrMsg}" class="text-danger">[[${nameErrMsg}]]</small>
+                                                        <input th:classappend="${nameErrMsg} ? 'border-danger' : ''" required th:field="*{name}" type="text" class="form-control" id="name" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <th:block th:replace="administration/types/update-confirmation-modal-frag::update-confirmation-modal"/>
+                                        <div class="modal-footer justify-content-between">
+                                            <a th:href="@{/sigrh/administration/types/update-type-form(typeId=${type.typeId})}" class="btn btn-default">Annuler</a>
+                                            <button type="button" data-toggle="modal" data-target="#update-confirmation-modal" class="btn btn-primary">Enregistrer</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                    </div>
+        </div>
+        <div layout:fragment="specific-scripts">
+            <script th:src="@{/dist/js/demo.js}"></script>
+
+            <!-- Select2 -->
+            <script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
+            <script th:src="@{/plugins/bootstrap-switch/js/bootstrap-switch.min.js}"></script>
+            <script>
+                $(function () {
+                    //Initialize Select2 Elements
+                    $('.select2').select2();
+
+                    //Initialize Select2 Elements
+                    $('.select2bs4').select2({theme: 'bootstrap4'});
+
+                    //SWITCH
+                    $("input[data-bootstrap-switch]").each(function(){
+                        $(this).bootstrapSwitch('state', $(this).prop('checked'));
+                    });
+                });
+            </script>
+            <script>
+            </script>
+        </div>
+    </body>
+</html>

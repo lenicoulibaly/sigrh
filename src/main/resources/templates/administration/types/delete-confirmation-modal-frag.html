@@ -1,7 +1,7 @@
 <div th:fragment="delete-confirmation-modal">
     <div class="modal fade" id="delete-confirmation-modal">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content" th:if="${type}">
                 <div class="modal-header">
                     <h4 class="modal-title">Confirmation</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">

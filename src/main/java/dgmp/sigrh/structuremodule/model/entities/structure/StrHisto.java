@@ -25,7 +25,7 @@ public class StrHisto
     private long strLevel;
     private String strSigle;
     @ManyToOne @JoinColumn(name = "PARENT_ID")
-    private StrHisto strParent;
+    private Structure strParent;
     @ManyToOne @JoinColumn(name="ID_TYPE_UA")
     private Type typeStructure;
 
@@ -45,5 +45,4 @@ public class StrHisto
     private StrEventType eventType;
     @Embedded
     private EventActorIdentifier eai;
-
 }
