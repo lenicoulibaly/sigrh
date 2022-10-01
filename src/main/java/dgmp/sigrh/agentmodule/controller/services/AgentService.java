@@ -8,23 +8,31 @@ import dgmp.sigrh.agentmodule.model.dtos.CreateAgentDTO;
 import dgmp.sigrh.agentmodule.model.dtos.ReadAgentDTO;
 import dgmp.sigrh.agentmodule.model.dtos.UpdateAgentDTO;
 import dgmp.sigrh.agentmodule.model.entities.Agent;
+import dgmp.sigrh.agentmodule.model.enums.EtatRecrutement;
+import dgmp.sigrh.structuremodule.controller.repositories.structure.StrRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 @Service
 @RequiredArgsConstructor
 public class AgentService implements IAgentService
 {
-    private final AgentDAO agentDAO;
+    private final AgentDAO agentRepo;
     //private final IBrokerMessageSender<Agent> brokerMessageSender;
     private final AgentMapper agentMapper;
+    private final StrRepo strRepo;
     @Override
     public ReadAgentDTO createAgent(CreateAgentDTO dto)
     {
         Agent agent = agentMapper.mapToAgent(dto);
-        agent = agentDAO.save(agent);
+        agent = agentRepo.save(agent);
         //brokerMessageSender.sendEvent(Topics.AGENT_TOPIC, AgentEventTypes.CREATE_AGENT, agent);
         return agentMapper.getReadAgentDTO(agent);
     }
@@ -32,15 +40,24 @@ public class AgentService implements IAgentService
     @Override
     public ReadAgentDTO updateAgent(UpdateAgentDTO dto)
     {
-        Agent loadedAgent = agentDAO.findById(dto.getIdAgent()).orElseThrow(()->new AgentAppException(AgentErrorMsg.AGENT_ID_NOT_FOUND_ERROR_MSG));
+        Agent loadedAgent = agentRepo.findById(dto.getIdAgent()).orElseThrow(()->new AgentAppException(AgentErrorMsg.AGENT_ID_NOT_FOUND_ERROR_MSG));
         BeanUtils.copyProperties(dto, loadedAgent);
-        loadedAgent = agentDAO.save(loadedAgent);
+        loadedAgent = agentRepo.save(loadedAgent);
         return agentMapper.getReadAgentDTO(loadedAgent);
     }
 
     @Override
     public Page<ReadAgentDTO> getAllAgentsPage(long strId) {
         return null;
+    }
+
+    @Override
+    public List<ReadAgentDTO> getAllAgentsByStr(long strId, List<EtatRecrutement> etats)
+    {
+        if(!strRepo.existsById(strId)) return new ArrayList<>();
+        List<Agent> agents = agentRepo.getAgentsByStrAndEtat(strId, etats);
+        List<ReadAgentDTO> readAgentDTOS = agents.stream().map(agentMapper::getReadAgentDTO).collect(Collectors.toList());
+        return Stream.concat(readAgentDTOS.stream(), strRepo.getStrChildrenIds(strId).stream().flatMap(id->this.getAllAgentsByStr(id, etats).stream())).collect(Collectors.toList());
     }
 
     @Override

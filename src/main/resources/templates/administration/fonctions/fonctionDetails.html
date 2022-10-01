@@ -83,8 +83,8 @@
                                                         <td th:class="${modificationList.get(status.index==0 ? 0 : status.index-1).fonctionTopManager == histo.fonctionTopManager ? '' : 'text-danger'}">[[${histo.fonctionTopManager}]]</td>
                                                         <td th:class="${modificationList.get(status.index==0 ? 0 : status.index-1).status.name == histo.status.name ? '' : 'text-danger'}">[[${histo.status.name}]]</td>
                                                         <td >[[${histo.eventType.name}]]</td>
-                                                        <td >[[${histo.eventActorIdentifier.modificationDate}]]</td>
-                                                        <td th:class="${modificationList.get(status.index==0 ? 0 : status.index-1).eventActorIdentifier.modifierUsername == histo.eventActorIdentifier.modifierUsername ? '' : 'text-danger'}">[[${histo.eventActorIdentifier.modifierUsername}]]</td>
+                                                        <td >[[${histo.eai.modificationDate}]]</td>
+                                                        <td th:class="${modificationList.get(status.index==0 ? 0 : status.index-1).eai.modifierUsername == histo.eai.modifierUsername ? '' : 'text-danger'}">[[${histo.eai.modifierUsername}]]</td>
                                                     </tr>
                                                 </tbody>
                                             </table>

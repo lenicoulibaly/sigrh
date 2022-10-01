@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 public @interface ExistingPostGroupId
 {
     String message() default "Le code du post est invalide";
-    Class<?> [] group() default {};
+    Class<?> [] groups() default {};
     Class<? extends Payload> [] payload() default {};
 
     @Component

@@ -3,7 +3,10 @@ package dgmp.sigrh.agentmodule.controller.services;
 import dgmp.sigrh.agentmodule.model.dtos.CreateAgentDTO;
 import dgmp.sigrh.agentmodule.model.dtos.ReadAgentDTO;
 import dgmp.sigrh.agentmodule.model.dtos.UpdateAgentDTO;
+import dgmp.sigrh.agentmodule.model.enums.EtatRecrutement;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface IAgentService
 {
@@ -11,6 +14,9 @@ public interface IAgentService
     ReadAgentDTO updateAgent(UpdateAgentDTO dto);
 
     Page<ReadAgentDTO> getAllAgentsPage(long strId);
+
+    List<ReadAgentDTO> getAllAgentsByStr(long strId, List<EtatRecrutement> etats);
+
     Page<ReadAgentDTO> getActiveAgentsPage(long strId); // Déduction faite des retraités, décédés et partis
     Page<ReadAgentDTO> getPresentAgentsPage(long strId); // Déduction faite de tous les absents y compris les non actifs
 

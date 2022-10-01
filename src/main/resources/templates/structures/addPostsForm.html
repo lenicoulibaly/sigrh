@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" 
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{structures/str-layout}">
+    <head>
+		<th:block layout:fragment="specific-css-links">
+            <!-- Select2 -->
+            <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+        </th:block>
+	</head>
+
+	<body>
+        <div layout:fragment="content">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <!-- Profile Image -->
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Menu contextuel</h3>
+                                </div>
+                                <div class="card-body box-profile">
+                                    <th:block th:replace="structures/posts-contextual-menu-frag::contextual-menu"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card card-primary">
+                                            <div class="card-header">
+                                                <h3 class="card-title" th:if="${str.strName}">Gestion des postes de la structure [[${str.toString()}]]</h3>
+                                                <h3 class="card-title" th:if="!${str.strName}">Création de nouveau(x) poste(s) de travail</h3>
+
+                                                <div class="card-tools">
+                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                                </div>
+                                            </div>
+                                            <!-- /.card-header -->
+                                            <div class="card-body">
+                                                <div class="row">
+                                                        <table class="table table-responsive">
+                                                            <tr>
+                                                                <td>
+                                                                    <form id="reload-add-posts-form" po th:action="@{/sigrh/structures/add-posts-form}">
+                                                                        <div class="row">
+                                                                            <div class="col col-6">
+                                                                                <label>Sélectionez une structure</label>
+                                                                                <select id="selected-str" type="text"
+                                                                                        class="form-control  select2bs4"
+                                                                                        name="strId" onchange="function reloadAddPostsForm() {
+                                                                                $('#reload-add-posts-form').submit()} reloadAddPostsForm()">
+                                                                                    <option value="">Choisir la structure</option>
+                                                                                    <option th:selected="${s.strId == str.strId}"
+                                                                                            th:each="s:${structures}"
+                                                                                            th:value="${s.strId}">
+                                                                                        [[${s.strName}]]-[[${s.strSigle}]]
+                                                                                    </option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </form>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <form method="post" id="set-sous-types-form" th:action="@{/sigrh/structures/add-posts}" th:object="${dto}">
+                                                                        <input type="hidden" th:field="*{strId}" />
+
+                                                                        <div class="row">
+                                                                            <div class="col col-12">
+                                                                                <div th:if="${globalErrMsg}" th:text="${globalErrMsg}"
+                                                                                     class="alert alert-danger alert-dismissible fade show"/>
+                                                                            </div>
+
+                                                                            <div class="col col-md-5 col-sm-5 ">
+                                                                                <div class="form-group">
+                                                                                    <label for="intitule">Intitulé</label> <small
+                                                                                        th:if="${intituleErrMsg}" class="text-danger">[[${intituleErrMsg}]]</small>
+                                                                                    <input type="text" th:classappend="${intituleErrMsg} ? 'border-danger' : ''" th:field="*{intitule}" class="form-control" id="intitule" />
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col col-md-5 col-sm-5">
+                                                                                <div class="form-group">
+                                                                                    <label for="fonctionId">Fonction</label> <small
+                                                                                        th:if="${fonctionErrMsg}" class="text-danger">[[${fonctionErrMsg}]]</small>
+                                                                                    <select th:classappend="${fonctionErrMsg} ? 'border-danger' : ''" required th:field="*{fonctionId}" class="form-control select2bs4" id="fonctionId">
+                                                                                        <option value="" >Choisir la fonction</option>
+                                                                                        <option th:each="fonction:${@fonctionDAO.getActiveFonctions()}" th:value="${fonction.idFonction}">[[${fonction.nomFonction}]]</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col col-md-2">
+                                                                                <div class="form-group">
+                                                                                    <label for="fonctionId">Nbre de postes</label> <small th:if="${nbrPostsErrMsg}" class="text-danger">[[${nbrPostsErrMsg}]]</small>
+                                                                                    <input type="number" th:classappend="${nbrPostsErrMsg} ? 'border-danger' : ''" required th:field="*{nbrPosts}" class="form-control" id="nbrPosts"/>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col col-md-12 col-sm-12">
+                                                                                <div class="form-group">
+                                                                                    <label for="postDescription">Decription</label> <small
+                                                                                        th:if="${postDescriptionErrMsg}" class="text-danger">[[${postDescriptionErrMsg}]]</small>
+                                                                                    <textarea th:classappend="${postDescriptionErrMsg} ? 'border-danger' : ''" required th:field="*{postDescription}" type="text" class="form-control" id="postDescription" />
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="form-group">
+                                                                                <label>Selection des emplois compatibles</label>
+                                                                                <select class="duallistbox" multiple="multiple" th:field="*{emploisIds}" >
+                                                                                    <option th:title="${emp.nomEmploi}" th:each="emp:${@emploiDAO.getActiveEmplois()}" th:value="${emp.idEmploi}" >[[${emp.nomEmploi}]]</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- /.form-group -->
+                                                                        <button type="button" data-toggle="modal" data-target="#add-posts-confirmation-modal" class="float-right btn btn-primary">Enregistrer</button>
+                                                                        <th:block th:replace="structures/add-posts-confirmation-modal-frag::add-posts-confirmation-modal"/>
+                                                                    </form>
+                                                                </td>
+                                                            </tr>
+
+                                                        </table>
+                                                    <!-- /.col -->
+                                                </div>
+                                                <!-- /.row -->
+                                            </div>
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                    </div>
+        </div>
+        <div layout:fragment="specific-scripts">
+            <script th:src="@{/dist/js/demo.js}"></script>
+
+            <!-- Select2 -->
+            <script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
+            <script th:src="@{/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js}"></script>
+            <script th:src="@{/plugins/bootstrap-switch/js/bootstrap-switch.min.js}"></script>
+            <script>
+                $(function () {
+                    //Initialize Select2 Elements
+                    $('.select2').select2();
+
+                    //Initialize Select2 Elements
+                    $('.select2bs4').select2({theme: 'bootstrap4'});
+
+                    //Bootstrap Duallistbox
+                    $('.duallistbox').bootstrapDualListbox()
+
+                    //SWITCH
+                    $("input[data-bootstrap-switch]").each(function(){
+                        $(this).bootstrapSwitch('state', $(this).prop('checked'));
+                    });
+                });
+            </script>
+            <script>
+            </script>
+        </div>
+    </body>
+</html>

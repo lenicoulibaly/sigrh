@@ -92,4 +92,10 @@ public interface PostRepo extends JpaRepository<Post, Long>
     @Query("select p from PostGroup p left join Structure s on p.structure.strId = s.strId where (upper(p.intitule) like upper(concat('%', ?1, '%')) or upper(p.postDescription) like upper(concat('%', ?1, '%')) or upper(p.fonction.nomFonction) like upper(concat('%', ?1, '%')) or upper(p.structure.strName) like upper(concat('%', ?1, '%')) or upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', ?1, '%'))) and p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?2) " +
             "and p.status = 'ACTIVE'")
     List<PostGroup> searchVacantPostsInEmplois(String key, Set<Long> emplpoiId);
+
+    @Query("select p from Post p where p.postGroup.postGroupId = ?1 and p.vacant = false and p.status = 'ACTIVE'")
+    List<Post> findNoneVacantPostsByPostGroup(long pgId);
+
+    @Query("select (count(p)>0) from Post p where p.postGroup.structure.strId = ?1 and p.postGroup.fonction.fonctionTopManager = true and p.postGroup.status = 'ACTIVE' and p.status = 'ACTIVE'")
+    boolean strHasPostManager(Long strId);
 }

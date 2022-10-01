@@ -113,7 +113,6 @@ public class StrService implements IStrService
     {
         if(strId == null) return new ArrayList<>();
         if(!strRepo.existsById(strId)) return new ArrayList<>();
-        if(!this.strHasAnyChildMatching(strId, key) && !strRepo.strMatchesSearchKey(strId, key)) return new ArrayList<>();
         Structure str = strRepo.findById(strId).get();
         //str.setStrChildren(strRepo.findByStrParent(strId));
         StrTreeView strTreeView = new StrTreeView();

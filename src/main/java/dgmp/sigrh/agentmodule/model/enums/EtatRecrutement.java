@@ -19,11 +19,11 @@ public enum EtatRecrutement
     public final boolean withUs;
     public final boolean present;
 
-    public List<EtatRecrutement> getWithUs(boolean withUs)
+    public static List<EtatRecrutement> getWithUs(boolean withUs)
     {
         return EnumUtils.getEnumList(EtatRecrutement.class).stream().filter(e->e.withUs == withUs).collect(Collectors.toList());
     }
-    public List<EtatRecrutement> getPresent(boolean present)
+    public static List<EtatRecrutement> getPresent(boolean present)
     {
         return EnumUtils.getEnumList(EtatRecrutement.class).stream().filter(e->e.present == present).collect(Collectors.toList());
     }

@@ -19,9 +19,13 @@ public interface IStrService
 
     List<StrTreeView> loadStrTreeView(Long strId);
 
+    List<StrTreeView> loadStrTreeView(Long strId, String critere);
+
     List<Structure> getAllChildren(Long strId);
 
     List<Structure> getParents(Long strId);
+
+    boolean strHasAnyChildMatching(long strId, String key);
     boolean childBelongToParent(Long childId, Long parentId);
     boolean parentHasChild(Long parentId, Long childId);
 
@@ -30,6 +34,9 @@ public interface IStrService
     Page<ReadStrDTO> searchStrByType(String key, Long typeId, int pageNum, int pageSize);
     Page<ReadStrDTO> searchStrByParent(String key, Long parentId, int pageNum, int pageSize);
     long countAllChildren(Long parentId);
+
+    long countAllChildren(Long strId, String key);
+
     long countVacantPosts(Long StrId);
     long countNoneVacantPosts(Long StrId);
 }

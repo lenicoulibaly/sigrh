@@ -27,10 +27,15 @@ public interface FonctionDAO extends JpaRepository<Fonction, Long> {
     @Query("select f from Fonction f where f.status = 'DELETED'")
     List<Fonction> getDeletedFonctions();
 
+    @Query("select f from Fonction f where f.status = 'ACTIVE'")
+    List<Fonction> getActiveFonctions();
 
     @Query("select f from Fonction f where upper(f.nomFonction) like upper(concat('%', ?1, '%')) and f.status='DELETED'")
     Page<Fonction> searchDeletedPageFonction(String searchKey, PageRequest of);
 
     @Query("select count(f) from Fonction f where upper(f.nomFonction) like upper(concat('%', ?1, '%')) and f.status = 'DELETED'")
     long countDeletedBySearchKey(String searchKey);
+
+    @Query("select f.fonctionTopManager from Fonction f where f.idFonction = ?1")
+    boolean functionIsTopManager(long fonctionId);
 }

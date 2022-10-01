@@ -27,6 +27,6 @@ public interface PostParamRepo extends JpaRepository<PostParam, Long>
     @Query("select p from PostParam p where p.postGroupId = ?1 and p.emploiId = ?2")
     PostParam findByPostAndEmploi(Long postGroupId, Long emploiId);
 
-    @Query("select pp.emploiId from PostParam pp where pp.postGroupId = ?1")
+    @Query("select pp.emploiId from PostParam pp where pp.postGroupId = ?1 and pp.status = 'ACTIVE'")
     Set<Long> getEmploiIdsByPost(Long postGroupId);
 }

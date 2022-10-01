@@ -8,9 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.Set;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @UniquePostManagerByStr
 public class CreatePostDTO
 {
 	@NotNull(message = "La fonction ne peut être null")
@@ -20,6 +21,7 @@ public class CreatePostDTO
 	private String postDescription;
 	@ExistingStrId
 	private Long strId;
+	@Positive(message = "Le nombre de postes ne peut être négatif")
 	private long nbrPosts;
 	private Set<Long> emploisIds;
 }

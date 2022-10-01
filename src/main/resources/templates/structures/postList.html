@@ -17,7 +17,7 @@
                         <div class="col-md-12">
                             <div class="card card-primary">
                                 <div class="card-header">
-                                    <h3 class="card-title">Liste des structures</h3>
+                                    <h3 class="card-title">Liste des Postes</h3>
                                     <div class="card-tools">
                                         <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
                                             <i class="fas fa-minus"></i></button>
@@ -30,22 +30,23 @@
                                         <div class="card">
                                             <div class="card-header">
                                                 <h3 class="card-title">
-                                                    [[${structures.getNumberOfElements()}]] items affichés sur [[${structures.getTotalElements()}]]
+                                                    [[${posts.getNumberOfElements()}]] items affichés sur [[${posts.getTotalElements()}]]
                                                 </h3>
 
                                                 <div class="card-tools">
                                                     <ul class="pagination pagination-sm float-right">
-                                                        <li th:title="Début" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-list(pageNum=0, key=${key})}">&laquo;&laquo;</a></li>
-                                                        <li  th:title="Précédant" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-list(pageNum=${currentPage > 0 ? currentPage-1 : 0}, key=${key})}">&laquo;</a></li>
-                                                        <li th:each="page, status:${pages}" class="page-item" th:classappend="${status.index == currentPage ? 'active' : T(java.lang.Math).abs(status.index - currentPage) < 4 ? '' : 'd-none'}"><a class="page-link" th:href="@{/sigrh/structures/str-list(pageNum=${status.index}, key=${key})}">[[${status.count}]]</a></li>
-                                                        <li th:title="Suivant" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-list(pageNum=${currentPage < pages.length-1 ? currentPage+1 : pages.length-1}, key=${key})}">&raquo;</a></li>
-                                                        <li th:title="Fin" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-list(pageNum= ${pages.length-1}, key=${key})}">&raquo;&raquo;</a></li>
+                                                        <li th:title="Début" class="page-item"><a class="page-link" th:href="@{/sigrh/posts/post-list(pageNum=0, key=${key})}">&laquo;&laquo;</a></li>
+                                                        <li  th:title="Précédant" class="page-item"><a class="page-link" th:href="@{/sigrh/posts/post-list(pageNum=${currentPage > 0 ? currentPage-1 : 0}, key=${key})}">&laquo;</a></li>
+                                                        <li th:each="page, status:${pages}" class="page-item" th:classappend="${status.index == currentPage ? 'active' : T(java.lang.Math).abs(status.index - currentPage) < 4 ? '' : 'd-none'}"><a class="page-link" th:href="@{/sigrh/posts/post-list(pageNum=${status.index}, key=${key})}">[[${status.count}]]</a></li>
+                                                        <li th:title="Suivant" class="page-item"><a class="page-link" th:href="@{/sigrh/posts/post-list(pageNum=${currentPage < pages.length-1 ? currentPage+1 : pages.length-1}, key=${key})}">&raquo;</a></li>
+                                                        <li th:title="Fin" class="page-item"><a class="page-link" th:href="@{/sigrh/posts/post-list(pageNum= ${pages.length-1}, key=${key})}">&raquo;&raquo;</a></li>
                                                     </ul>
                                                 </div>
                                             </div>
                                             <!-- /.card-header -->
                                             <div class="card-body p-0">
-                                                <form class="form-horizontal" th:action="@{/sigrh/structures/str-list}">
+
+                                                <form class="form-horizontal" th:action="@{/sigrh/posts/posts-list}">
                                                     <div class="card-body mt-2 m-0 p-0">
                                                         <div class="form-group row">
                                                             <input type="hidden" th:value="${currentPage}" name="pageNum">
@@ -55,7 +56,7 @@
                                                                 <table class="d-inline">
                                                                     <tr>
                                                                         <td >
-                                                                            <a id="lnk-reinitialize" th:href="@{/sigrh/structures/str-list(pageNum=0, Key='')}" class="btn btn-primary" >Réinitialiser</a>
+                                                                            <a id="lnk-reinitialize" th:href="@{/sigrh/posts/post-list(pageNum=0, Key='')}" class="btn btn-primary" >Réinitialiser</a>
                                                                         </td>
                                                                         <td style="width: 500px;">
                                                                             <input type="text" style="height: 40px;"  class="form-control p-0 m-0" th:value="${key}" name="key" id="key" placeholder="Rechercher une structure">
@@ -65,67 +66,45 @@
                                                                         </td>
                                                                     </tr>
                                                                 </table>
-                                                                <a id="lnk-new-str" th:href="@{/sigrh/structures/new-str-form}" class="btn btn-primary float-right mr-4" >Nouvelle structure</a>
+                                                                <a id="lnk-new-post" th:href="@{/sigrh/posts/new-post-form}" class="btn btn-primary float-right mr-4" >Nouvelle structure</a>
                                                             </div>
 
                                                         </div>
                                                     </div>
                                                 </form>
 
+
                                                 <hr />
-                                                <table class="table table-sm table-hover">
+                                                <table id="posts-list" class="dataTable table table-hover table-striped table-sm">
                                                     <thead>
                                                     <tr>
-                                                        <th>Nom</th>
-                                                        <th>Ancrage</th>
-                                                        <th>Hierarchie</th>
-                                                        <th>Responsable</th>
+                                                        <th>Intitulé</th>
+                                                        <th>Fonction</th>
+                                                        <th>Structure</th>
+                                                        <th>Nbr</th>
+                                                        <th>OQP</th>
+                                                        <th>Vacants</th>
                                                         <th>Actions</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <tr th:each="str: ${structures}">
-                                                        <td>[[${str.toString()}]]</td>
+                                                    <tr th:each="post:${posts}">
+                                                        <td>[[${post.intitule}]]</td>
+                                                        <td>[[${post.nomFonction}]]</td>
                                                         <td>
-                                                            [[${str.strType}]]
+                                                        <span class="m-0 p-0">
+                                                            <ol class="breadcrumb mb-1 p-1">
+                                                                <li th:each="parent, status:${post.hierarchy}" th:classappend="${status.last ? 'active' : ''}" th:title="${parent.toString()}" class="breadcrumb-item"><a th:href="'/sigrh/posts/post-details/'+${parent.strId}">[[${parent.strSigle}]]</a></li>
+                                                            </ol>
+                                                        </span>
                                                         </td>
+                                                        <td>[[${post.nbrPosts}]]</td>
+                                                        <td >[[${post.nbrPostsOccupes}]]</td>
+                                                        <td>[[${post.nbrPostsVacants}]]</td>
                                                         <td>
-                                                            <span class="m-0 p-0">
-                                                                <ol class="breadcrumb mb-1 p-1">
-                                                                    <li th:each="parent, status:${str.hierarchy}" th:classappend="${status.last ? 'active' : ''}" th:title="${parent.toString()}" class="breadcrumb-item"><a th:href="'/sigrh/structures/str-details/'+${parent.strId}">[[${parent.strSigle}]]</a></li>
-                                                                </ol>
-                                                            </span>
-                                                        </td>
-                                                        <td>[[${str.respoName}]]</td>
-                                                        <td>
-                                                            <a class="btn btn-sm btn-outline-warning mx-1" title="Modifier" th:href="@{'/sigrh/structures/update-str-form/'+${str.strId}}"><i class="bi bi-pencil text-sm"></i> </a>
-                                                            <a class="btn btn-sm btn-outline-success mx-1" title="Voir" th:href="@{'/sigrh/structures/str-details/'+${str.strId}}"><i class="bi bi-eye text-sm"></i> </a>
-                                                            <a class="btn btn-sm btn-outline-warning mx-1" th:title="'Ajouter des postes de travail dans la structure ' +${str.toString()}" th:href="@{'/sigrh/structures/add-posts-form?strId='+${str.strId}}"><i class="bi bi-person-workspace"></i></a>
-                                                            <a class="btn btn-sm btn-outline-danger mx-1" title="Supprimer" href="#" data-toggle="modal" th:data-target="${'#delete-confirmation-modal' + str.strId}"><i class="bi bi-trash text-sm"></i></a>
-                                                            <div class="modal fade" th:id="${'delete-confirmation-modal' + str.strId}">
-                                                                <div class="modal-dialog">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h4 class="modal-title">Confirmation</h4>
-                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                                <span aria-hidden="true">&times;</span>
-                                                                            </button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <p>Confirmez-vous la suppression de la structure [[${str.toString()}]] ?</p>
-                                                                            <small class="text-danger">
-                                                                                Attention la suppression est une action irréversible!
-                                                                            </small>
-                                                                        </div>
-                                                                        <div class="modal-footer justify-content-between">
-                                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                                            <a th:href="@{/sigrh/structures/delete(strId=${str.strId})}" type="button" class="btn btn-danger">Confirmer la suppression</a>
-                                                                        </div>
-                                                                    </div>
-                                                                    <!-- /.modal-content -->
-                                                                </div>
-                                                                <!-- /.modal-dialog -->
-                                                            </div>
+                                                            <a class="btn btn-sm btn-outline-warning mx-1" title="Modifier" th:href="@{/sigrh/posts/update-posts-form(postGroupId=${post.postGroupId})}"><i class="bi bi-pencil text-sm"></i> </a>
+                                                            <a class="btn btn-sm btn-outline-success mx-1" title="Voir" th:href="@{'/sigrh/posts/post-details/'+${post.postGroupId}}"><i class="bi bi-eye text-sm"></i> </a>
+                                                            <a class="btn btn-sm btn-outline-danger mx-1" title="Supprimer" href="#" data-toggle="modal" th:data-target="${'#delete-confirmation-modal' + post.strId}"><i class="bi bi-trash text-sm"></i></a>
                                                         </td>
                                                     </tr>
                                                     </tbody>

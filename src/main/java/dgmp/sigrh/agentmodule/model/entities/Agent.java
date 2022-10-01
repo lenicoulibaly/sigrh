@@ -97,6 +97,7 @@ public class Agent
 	//private Position position; //Activite, Detachement, Disponibilite, Sous les drapeaux
 	@Enumerated(EnumType.STRING)
 	private EtatRecrutement etatRecrutement; // En service, En attente de première affectation, En attente d'affectation dans une SD, En attente d'affectation dans un service
+	@Enumerated(EnumType.STRING)
 	private PersistenceStatus status;
 	@OneToOne(fetch = FetchType.EAGER)
 	private AppUser user;

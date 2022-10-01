@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 public @interface ExistingPostId
 {
     String message() default "L'identifiant du post est invalide";
-    Class<?> [] group() default {};
+    Class<?> [] groups() default {};
     Class<? extends Payload> [] payload() default {};
 
     @Component

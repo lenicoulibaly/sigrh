@@ -2,16 +2,20 @@ package dgmp.sigrh.structuremodule.model.dtos.post;
 
 import dgmp.sigrh.auth.model.events.EventActorIdentifier;
 import dgmp.sigrh.emploimodule.controller.repositories.EmploiDAO;
+import dgmp.sigrh.fonctionmodule.model.entities.Fonction;
 import dgmp.sigrh.structuremodule.controller.repositories.post.PostGroupRepo;
 import dgmp.sigrh.structuremodule.controller.repositories.post.PostParamRepo;
 import dgmp.sigrh.structuremodule.controller.repositories.post.PostRepo;
 import dgmp.sigrh.structuremodule.model.entities.post.*;
+import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
 import dgmp.sigrh.structuremodule.model.events.PostEventType;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceContext;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,6 +39,7 @@ public abstract class PostMapper
     @Mapping(target = "nbrPosts", expression = "java(postRepo.countByPostGroupActive(post.getPostGroup().getPostGroupId()))")
     @Mapping(target = "nbrPostsVacants", expression = "java(postRepo.countVacantPostsByPostGroup(post.getPostGroup().getPostGroupId()))")
     @Mapping(target = "nbrPostsOccupes", expression = "java(postRepo.countNoneVacantPostsByPostGroup(post.getPostGroup().getPostGroupId()))")
+    @Mapping(target = "postGroupId", source = "postGroup.postGroupId")
     public abstract ReadPostDTO mapToReadPostDTO(Post post);
 
     @Mapping(target = "nomFonction", source = "fonction.nomFonction")
@@ -90,4 +95,10 @@ public abstract class PostMapper
     @Mapping(target = "eai.actionId", source = "actionId")
     @Mapping(target = "eai.mainActionName", source = "mainActionName")
     public abstract PostParamHisto mapToPostParamHisto(PostParam postParam, PostEventType eventType, EventActorIdentifier eai, String actionId, String mainActionName);
+
+    private Fonction fonction;
+    private String intitule;
+    @ManyToOne
+    @JoinColumn(name = "ID_UNITE_ADMIN")
+    private Structure structure;
 }

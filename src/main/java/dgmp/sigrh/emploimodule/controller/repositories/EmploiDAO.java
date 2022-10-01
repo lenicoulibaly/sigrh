@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Set;
 
 public interface EmploiDAO extends JpaRepository<Emploi, Long>
@@ -20,8 +21,11 @@ public interface EmploiDAO extends JpaRepository<Emploi, Long>
     @Query("select e.nomEmploi from Emploi e where e.idEmploi = ?1")
     String getNomEmploi(Long idEmploi);
 
-    @Query("select e.nomEmploi from Emploi e where e.idEmploi in (select pp.emploiId from PostParam pp where pp.postGroupId = ?1)")
-    Set<String> getEmploisCompatiblesByPostGroup(Long postGroupId);
+    @Query("select e from Emploi e where e.status = 'ACTIVE'")
+    List<Emploi> getActiveEmplois();
+
+    @Query("select e from Emploi e where e.idEmploi in (select pp.emploiId from PostParam pp where pp.postGroupId = ?1 and pp.status = 'ACTIVE')")
+    Set<Emploi> getEmploisCompatiblesByPostGroup(Long postGroupId);
 
     @Query("select e from Emploi e where upper(e.nomEmploi) like upper(concat('%', ?1, '%')) and e.status='ACTIVE'")
     Page<Emploi> searchPageEmploi(String nomEmploi, Pageable pageable);

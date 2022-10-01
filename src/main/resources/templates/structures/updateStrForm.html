@@ -28,37 +28,19 @@
                         <div class="col-md-9">
                             <div class="card card-primary">
                                 <div class="card-header">
-                                    <h3 class="card-title">Création d'une nouvelle structure</h3>
+                                    <h3 class="card-title">Modification d'une structure</h3>
                                 </div>
                                 <!-- /.card-header -->
                                 <div class="card-body p-0">
-                                    <form method="post" th:action="@{/sigrh/structures/str/create}" th:object="${str}">
+                                    <form method="post" th:action="@{/sigrh/structures/str/update}" th:object="${str}">
+                                        <input type="hidden" th:field="*{strId}" />
                                         <div class="modal-body">
 
                                             <div class="row">
+
                                                 <div class="col col-12">
                                                     <div th:if="${globalErrMsg}" th:text="${globalErrMsg}"
                                                          class="alert alert-danger alert-dismissible fade show"/>
-                                                </div>
-                                                <div class="col col-md-6 col-sm-6 ">
-                                                        <div class="form-group">
-                                                            <label for="typeId">Type de structure</label> <small
-                                                                th:if="${typeIdErrMsg}" class="text-danger">[[${typeIdErrMsg}]]</small>
-                                                            <select th:classappend="${typeIdErrMsg} ? 'border-danger' : ''" required th:field="*{typeId}" class="form-control select2bs4" id="typeId">
-                                                                <option value="" >Choisir le type de la structure</option>
-                                                                <option th:each="type:${@strService.getStrTypes()}" th:value="${type.typeId}">[[${type.toString()}]]</option>
-                                                            </select>
-                                                        </div>
-                                                </div>
-
-                                                <div class="col col-md-6 col-sm-6 ">
-                                                    <div class="form-group">
-                                                        <label for="parentId">Tutelle</label> <small
-                                                            th:if="${parentIdErrMsg}" class="text-danger">[[${parentIdErrMsg}]]</small>
-                                                        <select th:classappend="${parentIdErrMsg} ? 'border-danger' : ''" th:field="*{parentId}" class="form-control select2bs4" id="parentId">
-                                                            <option value="" >Choisir la tutelle</option>
-                                                        </select>
-                                                    </div>
                                                 </div>
 
                                                 <div class="col col-md-6 col-sm-6">
@@ -99,10 +81,10 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <th:block th:replace="structures/new-confirmation-modal-frag::new-confirmation-modal"/>
+                                        <th:block th:replace="structures/update-confirmation-modal-frag::update-confirmation-modal"/>
                                         <div class="modal-footer justify-content-between">
-                                            <a href="/sigrh/structures/new-str-form" class="btn btn-default" data-dismiss="modal">Annuler</a>
-                                            <button type="button" data-toggle="modal" data-target="#new-confirmation-modal" class="btn btn-primary">Enregistrer</button>
+                                            <a th:href="@{'/sigrh/structures/update-str-form/'+${str.strId}}" class="btn btn-default" data-dismiss="modal">Annuler</a>
+                                            <button type="button" data-toggle="modal" data-target="#update-confirmation-modal" class="btn btn-primary">Enregistrer</button>
                                         </div>
                                     </form>
                                 </div>

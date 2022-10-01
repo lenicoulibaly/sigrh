@@ -14,11 +14,36 @@ public interface StrRepo extends JpaRepository<Structure, Long>
 {
     @Query("select s from Structure s where s.strParent.strId = ?1 and s.status = 'ACTIVE'")
     List<Structure> findByStrParent(Long strId);
-    @Query("select s from Structure s where upper(s.strName) like upper(concat('%', ?1, '%')) or coalesce(upper(s.strSigle),'')  like upper(concat('%', ?1, '%')) or s.strLevel = ?1 order by s.strName")
+
+    @Query("select s from Structure s where (upper(s.strCode) like upper(concat('%/', ?1, '/%')) or upper(s.strCode) like upper(concat('%', ?1, '/%'))) and s.status = 'ACTIVE' order by s.strCode ASC")
+    Page<Structure> findAllChildren(String strCode, Pageable pageable);
+
+    @Query("select s from Structure s where (?1 like concat('%/', s.strCode, '/%') or ?1 like concat('%', s.strCode, '/%')) and s.status = 'ACTIVE' order by s.strCode ASC")
+    List<Structure> findAllParents(String strCode);
+
+    @Query("select s.strCode from Structure s where s.strId = ?1 and s.status ='ACTIVE'")
+    String getStrCodeIfActive(long strId);
+
+    @Query("select s.strCode from Structure s where s.strId = ?1 ")
+    String getStrCode(long strId);
+
+    @Query("select (count(s)>0) from Structure s where s.strId = ?1 and s.status = 'ACTIVE'")
+    boolean strIsActive(long strId);
+
+
+    @Query("select s from Structure s where upper(s.strName) like upper(concat('%', ?1, '%')) or coalesce(upper(s.strSigle),'')  like upper(concat('%', ?1, '%')) or s.situationGeo = ?1 order by s.strName")
     Page<Structure> searchStructure(String searchKey, Pageable pageable);
 
-    @Query("select s from Structure s where (upper(s.strName) like upper(concat('%', ?1, '%')) or upper(s.strSigle) like upper(concat('%', ?1, '%')) or upper(s.strTel) like upper(concat('%', ?1, '%')) or upper(s.strAddress) like upper(concat('%', ?1, '%')) or upper(s.situationGeo) like upper(concat('%', ?1, '%'))) and s.status = ?2 order by s.strName")
+    @Query("select s from Structure s where (upper(s.strName) like upper(concat('%', ?1, '%')) or upper(s.strSigle) like upper(concat('%', ?1, '%')) or upper(s.strTel) like upper(concat('%', ?1, '%')) or upper(s.strAddress) like upper(concat('%', ?1, '%')) or upper(s.situationGeo) like upper(concat('%', ?1, '%')) or upper(s.strType.name) like upper(concat('%', ?1, '%'))) and s.status = ?2 order by s.strName")
     Page<Structure> searchStr(String key, PersistenceStatus status, Pageable pageable);
+
+    @Query("select s from Structure s where (upper(s.strName) like upper(concat('%', ?1, '%')) or upper(s.strSigle) like upper(concat('%', ?1, '%')) or upper(s.strTel) like upper(concat('%', ?1, '%')) or upper(s.strAddress) like upper(concat('%', ?1, '%')) or upper(s.situationGeo) like upper(concat('%', ?1, '%')) or upper(s.strType.name) like upper(concat('%', ?1, '%'))) and s.status = ?2 order by s.strName")
+    List<Structure> searchStr(String key, PersistenceStatus status);
+
+    List<Structure> findByStatus(PersistenceStatus status);
+
+    @Query("select count(s) from Structure s where (upper(s.strName) like upper(concat('%', ?1, '%')) or upper(s.strSigle) like upper(concat('%', ?1, '%')) or upper(s.strTel) like upper(concat('%', ?1, '%')) or upper(s.strAddress) like upper(concat('%', ?1, '%')) or upper(s.situationGeo) like upper(concat('%', ?1, '%')) or upper(s.strType.name) like upper(concat('%', ?1, '%'))) and s.status = ?2 ")
+    Long countByKey(String key, PersistenceStatus status);
 
     @Query("select s from Structure s where (upper(s.strName) like upper(concat('%', ?1, '%')) or upper(s.strSigle) like upper(concat('%', ?1, '%')) or upper(s.strTel) like upper(concat('%', ?1, '%')) or upper(s.strAddress) like upper(concat('%', ?1, '%')) or upper(s.situationGeo) like upper(concat('%', ?1, '%'))) and s.strType.typeId = ?2 and s.status = ?3 order by s.strName")
     Page<Structure> searchStrByType(String key, Long typeId, PersistenceStatus status, Pageable pageable);
@@ -41,6 +66,12 @@ public interface StrRepo extends JpaRepository<Structure, Long>
 
     @Query("select str.strId from Structure  str where str.strParent.strId = ?1 and str.status = 'ACTIVE'")
     Set<Long> getStrChildrenIds(long strId);
+
+    @Query("select str.strId from Structure  str where str.strParent.strId = ?1 and upper(str.strName) like upper(concat('%', ?2, '%') )  and str.status = 'ACTIVE'")
+    Set<Long> getStrChildrenIds(long strId, String key);
+
+    @Query("select (count(s)>0) from Structure s where s.strId = ?1 and (upper(s.strName) like upper(concat('%', ?2, '%') ) or upper(s.strSigle) like upper(concat('%', ?2, '%') )) and s.status = 'ACTIVE'")
+    boolean strMatchesSearchKey(long strId, String key);
 
     @Query("select count(s) from Structure s where s.status = ?1")
     long countByStatus(PersistenceStatus status);

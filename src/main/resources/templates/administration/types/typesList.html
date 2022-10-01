@@ -35,7 +35,7 @@
 
                                                 <div class="card-tools">
                                                     <ul class="pagination pagination-sm float-right">
-                                                        <li th:title="Début" class="page-item"><a class="page-link" th:href="@{/sigrh/administration/types/types-list(pageNum=0, Key=${key})}">&laquo;&laquo;</a></li>
+                                                        <li th:title="Début" class="page-item"><a class="page-link" th:href="@{/sigrh/administration/types/types-list(pageNum=0, key=${key})}">&laquo;&laquo;</a></li>
                                                         <li  th:title="Précédant" class="page-item"><a class="page-link" th:href="@{/sigrh/administration/types/types-list(pageNum=${currentPage > 0 ? currentPage-1 : 0}, key=${key})}">&laquo;</a></li>
                                                         <li th:each="page, status:${pages}" class="page-item" th:classappend="${status.index == currentPage ? 'active' : T(java.lang.Math).abs(status.index - currentPage) < 4 ? '' : 'd-none'}"><a class="page-link" th:href="@{/sigrh/administration/types/types-list(pageNum=${status.index}, key=${key})}">[[${status.count}]]</a></li>
                                                         <li th:title="Suivant" class="page-item"><a class="page-link" th:href="@{/sigrh/administration/types/types-list(pageNum=${currentPage < pages.length-1 ? currentPage+1 : pages.length-1}, key=${key})}">&raquo;</a></li>

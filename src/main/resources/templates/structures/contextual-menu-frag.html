@@ -9,40 +9,40 @@
                 <span th:fragment="contextual-menu">
                     <ul class="list-group list-group-unbordered mb-3" th:if="${str}">
                         <li class="list-group-item" th:if="${viewMode!='details' && viewMode != 'new' && viewMode != 'trash'}">
-                            <a th:href="@{/sigrh/str/str-details(strId=${str.strId})}" th:title="'Voir le détail de la structure ' +${str.strName}">
+                            <a th:href="@{'/sigrh/structures/str-details/'+${str.strId}}" th:title="'Voir le détail de la structure ' +${str.strName}">
                                 <b>Voir le détail</b> <i class="float-right bi bi-eye-fill"></i>
                             </a>
                         </li>
                         <li class="list-group-item" th:if="${viewMode!='update' && viewMode != 'new' && viewMode != 'trash'}">
-                            <a th:href="@{/sigrh/str/str-form(strId=${str.strId})}" th:title="'Modifier la structure ' +${str.strName}">
+                            <a th:href="@{'/sigrh/structures/update-str-form/'+${str.strId}}" th:title="'Modifier la structure ' +${str.strName}">
                                 <b>Modifier</b> <i class="float-right bi bi-pencil-fill"></i>
                             </a>
                         </li>
                         <li class="list-group-item" th:if="${viewMode!='config' && viewMode != 'new' && viewMode != 'trash'}">
-                            <a th:href="@{/sigrh/str/set-sous-types(str=${str.strId})}" th:title="'Configurer les sous-types du type ' +${str.strName}">
-                                <b>Configuer les sous types</b> <i class="float-right bi bi-gear-fill"></i>
+                            <a th:href="@{/sigrh/structures/add-posts-form(strId=${str.strId})}" th:title="'Créer de nouveaux postes au sein de la structure ' +${str.strName}">
+                                <b>Créer de nouveaux postes</b> <i class="float-right bi bi-gear-fill"></i>
                             </a>
                         </li>
-                        <li class="list-group-item" th:if="${viewMode != 'new' && viewMode != 'trash'}" th:title="'Supprimer le type  ' + ${str.strName}">
+                        <li class="list-group-item" th:if="${viewMode != 'new' && viewMode != 'trash'}" th:title="'Supprimer la structure  ' + ${str.strName}">
                             <a id="lnk-delete" href="#" data-toggle="modal" data-target="#delete-confirmation-modal">
                                 <b>Supprimer</b> <i class="float-right bi bi-trash-fill"></i>
                             </a>
                             <th:block
-                                    th:replace="administration/types/delete-confirmation-modal-frag::delete-confirmation-modal"></th:block>
+                                    th:replace="structures/delete-confirmation-modal-frag::delete-confirmation-modal"></th:block>
                         </li>
                         <li class="list-group-item" th:if="${viewMode != 'new'}">
-                            <a th:href="@{/sigrh/administration/types/new-type-form}" title="Créer un nouveau type">
-                                <b>Nouveau type</b> <i class="float-right bi bi-plus-circle-fill"></i>
+                            <a th:href="@{/sigrh/structures/new-str-form}" title="Créer une nouvelle structure">
+                                <b>Nouvelle structure</b> <i class="float-right bi bi-plus-circle-fill"></i>
                             </a>
                         </li>
                         <li class="list-group-item">
-                            <a th:href="@{/sigrh/administration/types/types-list}" title="Voir la liste des types">
-                                <b>Liste des types</b> <i class="float-right bi bi-list-ul"></i>
+                            <a th:href="@{/sigrh/structures/str-list}" title="Voir la liste des structures">
+                                <b>Liste des structures</b> <i class="float-right bi bi-list-ul"></i>
                             </a>
                         </li>
                         <li class="list-group-item">
-                            <a title="Voir la liste des types supprimés"
-                               th:href="@{/sigrh/administration/types/deleted-types-list}">
+                            <a title="Voir la liste des structures supprimées"
+                               th:href="@{/sigrh/structures/deleted-str-list}">
                                 <b>Corbeille</b> <i class="float-right bi bi-trash-fill"></i>
                             </a>
                         </li>

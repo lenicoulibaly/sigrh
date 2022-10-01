@@ -1,5 +1,5 @@
-<div th:fragment="delete-confirmation-modal">
-    <div class="modal fade" id="delete-confirmation-modal">
+<div th:fragment="update-posts-confirmation-modal">
+    <div class="modal fade" id="update-posts-confirmation-modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -9,11 +9,11 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>Confirmez-vous la suppression de la structure [[${str.strName}]] ?</p>
+                    <p>Confirmez-vous la modification du poste ?</p>
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <a th:href="@{'/sigrh/structures/delete/'+${str.strId}}" type="button" class="btn btn-danger">Confirmer la suppression</a>
+                    <button type="submit" class="btn btn-warning">Confirmer la configuration</button>
                 </div>
             </div>
             <!-- /.modal-content -->

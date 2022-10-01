@@ -36,6 +36,8 @@ public abstract class StrMapper
     @Mapping(target = "status", expression = "java(dgmp.sigrh.shared.model.enums.PersistenceStatus.ACTIVE)")
     public abstract Structure mapToStructure(CreateStrDTO dto);
 
+    public abstract UpdateStrDTO mapToUpdateStrDTO(Structure str);
+
     public Structure mapToStructure(UpdateStrDTO dto)
     {
         if(dto==null) return null;

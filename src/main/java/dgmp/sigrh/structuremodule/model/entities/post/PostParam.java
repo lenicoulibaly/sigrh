@@ -7,9 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
+import javax.persistence.*;
 
 @Entity @NoArgsConstructor @AllArgsConstructor @Getter @Setter
 @IdClass(PostParamId.class)
@@ -19,5 +17,6 @@ public class PostParam
     private Long postGroupId;
     @Id
     private Long emploiId;
+    @Enumerated(EnumType.STRING)
     private PersistenceStatus status;
 }
