@@ -4,6 +4,7 @@ import dgmp.sigrh.brokermodule.services.IHistoService;
 import dgmp.sigrh.emploimodule.controller.repositories.EmploiDAO;
 import dgmp.sigrh.shared.controller.exception.AppException;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
+import dgmp.sigrh.shared.utilities.StringUtils;
 import dgmp.sigrh.structuremodule.controller.repositories.post.PostGroupRepo;
 import dgmp.sigrh.structuremodule.controller.repositories.post.PostParamRepo;
 import dgmp.sigrh.structuremodule.controller.repositories.post.PostRepo;
@@ -26,7 +27,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static dgmp.sigrh.shared.model.enums.PersistenceStatus.ACTIVE;
 
@@ -142,7 +142,7 @@ public class PostService implements IPostService
     @Override
     public Page<ReadPostDTO> searchPosts(String key, int pageNum, int pageSize)
     {
-        Page<PostGroup> postPage = postRepo.searchPosts(key, PageRequest.of(pageNum, pageSize));
+        Page<PostGroup> postPage = postRepo.searchPostGroups(key, PageRequest.of(pageNum, pageSize));
         List<ReadPostDTO> posts = postPage.stream().map(postMapper::mapToReadPostDTO).collect(Collectors.toList());
         return new PageImpl<>(posts, PageRequest.of(pageNum, pageSize), postRepo.countPosts(key));
     }
@@ -164,10 +164,12 @@ public class PostService implements IPostService
     }
 
     @Override
-    public List<ReadPostDTO> searchPostsByStr(String key, Long strId)
+    public Page<ReadPostDTO> searchPostsByStr(long strId, String key, int pageNum, int pageSize)
     {
-        List<PostGroup> postGroups = postRepo.searchPosts(key);
-        return postGroups.stream().filter(pg->strService.childBelongToParent(pg.getStructure().getStrId(), strId)).map(postMapper::mapToReadPostDTO).collect(Collectors.toList());
+        Page<PostGroup> postGroups = postRepo.searchPostGroups(strId, key, PageRequest.of(pageNum, pageSize));
+        List<ReadPostDTO> dtos = postGroups.stream().map(postMapper::mapToReadPostDTO).collect(Collectors.toList());
+        long nbStr = postRepo.countPosts(strId, key);
+        return new PageImpl<>(dtos, PageRequest.of(pageNum, pageSize), nbStr);
     }
 
     @Override
@@ -188,27 +190,32 @@ public class PostService implements IPostService
     }
 
     @Override
-    public List<ReadPostDTO> searchPostsByStr(Long strId)
+    public Page<ReadPostDTO> searchPostsByStr(Long strId, String key, int pageNum, int pageSize)
     {
-        if(strId == null) return new ArrayList<>();
-        if(!strRepo.existsById(strId)) return new ArrayList<>();
-        return Stream.concat(pgRepo.findByStr(strId).stream().map(pg->{
+        if(strId == null) return new PageImpl<>(new ArrayList<>());
+        if(!strRepo.existsById(strId)) return new PageImpl<>(new ArrayList<>());
+        Page<PostGroup> postGroups = key==null ? postRepo.findPostGroupByStr(strId, PageRequest.of(pageNum, pageSize)) :
+                key.trim().equals("") ? postRepo.findPostGroupByStr(strId, PageRequest.of(pageNum, pageSize)) :
+                postRepo.searchPostGroups(strId, StringUtils.stripAccentsToUpperCase(key), PageRequest.of(pageNum, pageSize));
+
+        List<ReadPostDTO> readPostDTOS = postGroups.stream().map(pg->{
             ReadPostDTO dto = postMapper.mapToReadPostDTO(pg);
-            dto.setHierarchy(strService.getParents(pg.getStructure().getStrId()));
+            dto.setHierarchy(strService.getParents(dto.getStrId()));
             return dto;
-        }), strRepo.getStrChildrenIds(strId).stream().flatMap(id->this.searchPostsByStr(id).stream())).collect(Collectors.toList());
+        }).collect(Collectors.toList());
+        return new PageImpl<>(readPostDTOS, PageRequest.of(pageNum, pageSize), postGroups.getTotalElements());
     }
 
     @Override
     public List<ReadPostDTO> searchPostsByStrWithEmplois(String key, Long strId, Set<Long> emploiIds) {
-        return postRepo.searchPostsWithEmplois(key, emploiIds).stream().filter(pg->strService.childBelongToParent(pg.getStructure().getStrId(), strId)).map(postMapper::mapToReadPostDTO).collect(Collectors.toList());
+        return postRepo.searchPostsWithEmplois(StringUtils.stripAccentsToUpperCase(key), emploiIds).stream().filter(pg->strService.childBelongToParent(pg.getStructure().getStrId(), strId)).map(postMapper::mapToReadPostDTO).collect(Collectors.toList());
     }
 
     @Override
     public List<ReadPostDTO> searchPostsByStrInEmplois(String key, Long strId, Set<Long> emploiIds, int pageNum, int pageSize) {
-        return postRepo.searchPostsInEmplois(key, emploiIds).stream().filter(pg->strService.childBelongToParent(pg.getStructure().getStrId(), strId)).map(postMapper::mapToReadPostDTO).collect(Collectors.toList());
+        return postRepo.searchPostsInEmplois(StringUtils.stripAccentsToUpperCase(key), emploiIds).stream().filter(pg->strService.childBelongToParent(pg.getStructure().getStrId(), strId)).map(postMapper::mapToReadPostDTO).collect(Collectors.toList());
     }
-
+/*
     @Override
     public List<ReadPostDTO> searchVacantPostsByStrWithEmplois(String key, Long strId, Set<Long> emploiIds, int pageNum, int pageSize) {
         return postRepo.searchVacantPostsWithEmplois(key, emploiIds).stream().filter(pg->strService.childBelongToParent(pg.getStructure().getStrId(), strId)).map(postMapper::mapToReadPostDTO).collect(Collectors.toList());
@@ -217,5 +224,5 @@ public class PostService implements IPostService
     @Override
     public List<ReadPostDTO> searchVacantPostsByStrInEmplois(String key, Long strId, Set<Long> emploiIds, int pageNum, int pageSize) {
         return postRepo.searchVacantPostsInEmplois(key, emploiIds).stream().filter(pg->strService.childBelongToParent(pg.getStructure().getStrId(), strId)).map(postMapper::mapToReadPostDTO).collect(Collectors.toList());
-    }
+    }*/
 }

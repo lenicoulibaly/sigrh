@@ -22,16 +22,16 @@ public interface IPostService
 
     Page<ReadPostDTO> searchPostsInEmplois(String key, Set<Long> emploiIds, int pageNum, int pageSize);
 
-    List<ReadPostDTO> searchPostsByStr(String key, Long strId);
+    Page<ReadPostDTO> searchPostsByStr(long strId, String key, int pageNum, int pageSize);
 
     Page<ReadStrDTO> searchPostsByParent(String key, Long strId, int pageNum, int pageSize);
 
-    List<ReadPostDTO> searchPostsByStr(Long strId);
+    Page<ReadPostDTO> searchPostsByStr(Long strId, String key, int pageNum, int pageSize);
     List<ReadPostDTO> searchPostsByStrWithEmplois(String key, Long strId, Set<Long> emploiIds);
 
     List<ReadPostDTO> searchPostsByStrInEmplois(String key, Long strId, Set<Long> emploiIds, int pageNum, int pageSize);
-
+    /*
     List<ReadPostDTO> searchVacantPostsByStrWithEmplois(String key, Long strId, Set<Long> emploiIds, int pageNum, int pageSize);
 
-    List<ReadPostDTO> searchVacantPostsByStrInEmplois(String key, Long strId, Set<Long> emploiIds, int pageNum, int pageSize);
+    List<ReadPostDTO> searchVacantPostsByStrInEmplois(String key, Long strId, Set<Long> emploiIds, int pageNum, int pageSize);*/
 }

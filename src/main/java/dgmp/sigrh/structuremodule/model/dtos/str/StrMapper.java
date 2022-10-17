@@ -61,6 +61,7 @@ public abstract class StrMapper
         entityManager.detach(loadedStructure);
         loadedStructure.setStrType(new Type(dto.getNewTypeId()));
         loadedStructure.setStrParent(dto.getNewParentId() == null ? null : new Structure(dto.getNewParentId()));
+        loadedStructure.setStrLevel(dto.getNewParentId() == null ? 0 : strRepo.getStrLevel(dto.getNewParentId())+1);
         return loadedStructure;
     }
 

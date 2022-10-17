@@ -43,6 +43,7 @@ public abstract class PostMapper
     public abstract ReadPostDTO mapToReadPostDTO(Post post);
 
     @Mapping(target = "nomFonction", source = "fonction.nomFonction")
+    @Mapping(target = "strId", source = "structure.strId")
     @Mapping(target = "strName", source = "structure.strName")
     @Mapping(target = "strSigle", source = "structure.strSigle")
     @Mapping(target = "emploisCompatibles", expression = "java(empRepo.getEmploisCompatiblesByPostGroup(pg.getPostGroupId()))")

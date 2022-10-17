@@ -1,8 +1,11 @@
 package dgmp.sigrh.agentmodule.controller.repositories;
 
 import dgmp.sigrh.agentmodule.model.entities.Agent;
+import dgmp.sigrh.agentmodule.model.enums.Civility;
 import dgmp.sigrh.agentmodule.model.enums.EtatRecrutement;
+import dgmp.sigrh.agentmodule.model.enums.TypeAgent;
 import dgmp.sigrh.agentmodule.model.projections.AgentInfo;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -82,4 +85,39 @@ public interface AgentDAO extends JpaRepository<Agent, Long>
 
     @Query("select a from Agent a where a.structure.strId = ?1 and a.etatRecrutement in ?2 and a.status = 'ACTIVE'")
     List<Agent> getAgentsByStrAndEtat(long strId, List<EtatRecrutement> states);
+
+    @Query("select a from Agent  a where locate(concat(function('getStrCode', ?1) , '/') , a.structure.strCode) = 1 and a.etatRecrutement in ?2 and a.status = 'ACTIVE'")
+    Page<Agent> findAgentByStrAndEtat(long strId, List<EtatRecrutement> states, Pageable pageable);
+
+    @Query("select a from Agent  a left join Structure s on a.structure.strId = s.strId where locate(concat(function('getStrCode', ?1) , '/') , a.structure.strCode) = 1 and a.etatRecrutement in ?2 and a.status = 'ACTIVE' and " +
+            "(upper(function('strip_accents', a.nom) ) like concat('%', ?3, '%' ) or " +
+            "upper(function('strip_accents', a.prenom) ) like concat('%', ?3, '%' ) or " +
+            "upper(function('strip_accents', a.email) ) like concat('%', ?3, '%' ) or " +
+            "upper(function('strip_accents', a.emailPro) ) like concat('%', ?3, '%' ) or " +
+            "upper(function('strip_accents', a.matricule) ) like concat('%', ?3, '%' ) or " +
+            "upper(function('strip_accents', a.titre) ) like concat('%', ?3, '%' ) or " +
+            "upper(function('strip_accents', a.tel) ) like concat('%', ?3, '%' ) )")
+    Page<Agent> searchAgentByStrAndEtat(long strId, List<EtatRecrutement> states, String key, Pageable pageable);
+
+    @Query("select a from Agent  a left join Structure s on a.structure.strId = s.strId left join Fonction f on a.fonction.idFonction = f.idFonction where locate(concat(function('getStrCode', :strId) , '/') , a.structure.strCode) = 1 and a.etatRecrutement in :states and " +
+            "a.civilite in (:civilities) and " +
+            "a.typeAgent in (:typeAgents) and " +
+            "a.fonction.idFonction in (:fonctionsIds) and " +
+            "a.grade.idGrade in (:gradesIds) and " +
+            "a.emploi.idEmploi in (:emploisIds) and " +
+            "a.status = 'ACTIVE' and " +
+            "(upper(function('strip_accents', a.nom) ) like concat('%', :searchKey, '%' ) or " +
+            "upper(function('strip_accents', a.prenom) ) like concat('%', :searchKey, '%' ) or " +
+            "upper(function('strip_accents', a.email) ) like concat('%', :searchKey, '%' ) or " +
+            "upper(function('strip_accents', a.emailPro) ) like concat('%', :searchKey, '%' ) or " +
+            "upper(function('strip_accents', a.matricule) ) like concat('%', :searchKey, '%' ) or " +
+            "upper(function('strip_accents', a.titre) ) like concat('%', :searchKey, '%' ) or " +
+            "upper(function('strip_accents', a.tel) ) like concat('%', :searchKey, '%' ) )")
+    Page<Agent> searchAgentsMultiCriteres(@Param("strId") long strId, @Param("states") List<EtatRecrutement> states, @Param("searchKey") String key,
+                                        @Param("civilities") List<Civility> civilities,
+                                        @Param("typeAgents") List<TypeAgent> typeAgents,
+                                        @Param("fonctionsIds") List<Long> fonctionsIds,
+                                        @Param("gradesIds") List<Long> gradesIds,
+                                        @Param("emploisIds") List<Long> emploisIds,
+                                       Pageable pageable);
 }

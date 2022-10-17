@@ -14,14 +14,15 @@ public interface IStrService
     ReadStrDTO deleteStr(Long strId);
     ReadStrDTO restoreStr(Long strId);
     ReadStrDTO changeAncrage(ChangeAncrageDTO dto);
+
+    String generateStrCode(Structure str);
+
     List<Type> getStrTypes();
     Structure loadChildrenTree(Long strId);
 
     List<StrTreeView> loadStrTreeView(Long strId);
 
     List<StrTreeView> loadStrTreeView(Long strId, String critere);
-
-    List<Structure> getAllChildren(Long strId);
 
     List<Structure> getParents(Long strId);
 
@@ -33,10 +34,8 @@ public interface IStrService
     Page<ReadStrDTO> searchStr(String key, int pageNum, int pageSize);
     Page<ReadStrDTO> searchStrByType(String key, Long typeId, int pageNum, int pageSize);
     Page<ReadStrDTO> searchStrByParent(String key, Long parentId, int pageNum, int pageSize);
-    long countAllChildren(Long parentId);
 
-    long countAllChildren(Long strId, String key);
 
-    long countVacantPosts(Long StrId);
-    long countNoneVacantPosts(Long StrId);
+    /*long countVacantPosts(Long StrId);
+    long countNoneVacantPosts(Long StrId);*/
 }

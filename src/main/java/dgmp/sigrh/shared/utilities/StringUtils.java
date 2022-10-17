@@ -15,16 +15,12 @@ public class StringUtils
 	public static String stripAccentsToUpperCase(String string)
 	{
 		if(string==null) return null;
-		string = Normalizer.normalize(string, Normalizer.Form.NFD);
-		string = string.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
-		return string.toUpperCase();
+		return stripAccents(string).toUpperCase();
 	}
 	
 	public static String stripAccentsToLowerCase(String string)
 	{
 		if(string==null) return null;
-		string = Normalizer.normalize(string, Normalizer.Form.NFD);
-		string = string.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
-		return string.toLowerCase();
+		return stripAccents(string).toLowerCase();
 	}
 }

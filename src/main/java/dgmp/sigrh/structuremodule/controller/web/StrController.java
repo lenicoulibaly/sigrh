@@ -1,6 +1,7 @@
 package dgmp.sigrh.structuremodule.controller.web;
 
 import dgmp.sigrh.agentmodule.controller.services.IAgentService;
+import dgmp.sigrh.agentmodule.model.dtos.ReadAgentDTO;
 import dgmp.sigrh.agentmodule.model.enums.EtatRecrutement;
 import dgmp.sigrh.auth.security.services.SecurityContextManager;
 import dgmp.sigrh.structuremodule.controller.repositories.post.PostGroupRepo;
@@ -18,6 +19,7 @@ import dgmp.sigrh.structuremodule.model.entities.post.PostGroup;
 import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,12 +76,18 @@ public class StrController
     public String gotoStrAddPostsForm(Model model, @RequestParam(defaultValue = "0") long strId)
     {
         Long visibility = scm.getCurrentRoleAss() == null ? null : scm.getCurrentRoleAss().getStructure() == null ? null : scm.getCurrentRoleAss().getStructure().getStrId();
-        List<Structure> structures = visibility == null ? strRepo.findByStatus(ACTIVE) : strService.getAllChildren(visibility);
+        List<Structure> structures = visibility == null ? strRepo.findByStatus(ACTIVE) : strRepo.findAllChildren(visibility);
+        List<ReadStrDTO> dtos = structures.stream().map(s->{
+            ReadStrDTO dto = strMapper.mapToReadStrDTO(s);
+            dto.setHierarchy(strService.getParents(s.getStrId()));
+            return dto;
+        }).collect(Collectors.toList());
+        dtos.forEach(s-> s.setStrName(s.getStrName() + "(" + s.getHierarchy().stream().map(s0->s0.getStrSigle()).reduce("", (sg1, sg2)->sg1 + "/" + sg2).substring(1) +")"));
         CreatePostDTO dto = new CreatePostDTO();
         dto.setStrId(strId);
         model.addAttribute("dto", dto);
         model.addAttribute("str", strRepo.findById(strId).orElse(new Structure()));
-        model.addAttribute("structures", structures);
+        model.addAttribute("structures", dtos);
         return "structures/addPostsForm";
     }
 
@@ -99,7 +108,7 @@ public class StrController
     }
 
     @PostMapping(path = "/sigrh/structures/update-posts")
-    public String updatePosts(Model model, @Valid UpdatePostDTO dto, BindingResult br)
+    public String updatePosts(Model model, RedirectAttributes ra, @Valid UpdatePostDTO dto, BindingResult br)
     {
         if(br.hasErrors())
         {
@@ -112,7 +121,7 @@ public class StrController
     }
 
     @PostMapping(path = "/sigrh/structures/add-posts")
-    public String addPostesToStr(Model model, @Valid CreatePostDTO dto, BindingResult br)
+    public String addPostesToStr(Model model, RedirectAttributes ra, @Valid CreatePostDTO dto, BindingResult br)
     {
         if(br.hasErrors())
         {
@@ -120,19 +129,41 @@ public class StrController
             br.getGlobalErrors().forEach(ge->model.addAttribute("globalErrMsg", ge.getDefaultMessage()));
             return gotoStrAddPostsForm(model, dto.getStrId());
         }
-       postService.createPosts(dto);
-        return "redirect:/sigrh/structures/str-details/"+dto.getStrId();
+        postService.createPosts(dto);
+        ra.addAttribute("strId", dto.getStrId());
+        ra.addAttribute("tab", "str-posts-list");
+        return "redirect:/sigrh/structures/str-details?strId="+dto.getStrId();
     }
 
-    @GetMapping(path = "/sigrh/structures/str-details/{strId}")
-    public String gotoStrDetails(Model model, @PathVariable Long strId)
+    @GetMapping(path = "/sigrh/structures/str-details")
+    public String gotoStrDetails(Model model, @RequestParam(defaultValue = "0") Long strId, @RequestParam(defaultValue = "str-details")String tab
+            , @RequestParam(defaultValue = "") String persKey, @RequestParam(defaultValue = "0") int persPageNum, @RequestParam(defaultValue = "10") int persPageSize
+            , @RequestParam(defaultValue = "") String pgKey, @RequestParam(defaultValue = "0") int pgPageNum, @RequestParam(defaultValue = "10") int pgPageSize)
     {
+        Page<ReadAgentDTO> persPages = agentService.searchAgentByStrAndEtat(strId, EtatRecrutement.getWithUs(true), persKey, PageRequest.of(persPageNum, persPageSize));
+        model.addAttribute("persPageNum", persPageNum);
+        model.addAttribute("persCurrentPage", persPageNum);
+        model.addAttribute("persPageSize", persPageSize);
+        model.addAttribute("persKey", persKey);
+        model.addAttribute("persPages", new long[persPages.getTotalPages()]);
+        model.addAttribute("agents", persPages);
+
+        Page<ReadPostDTO> pgPages = postService.searchPostsByStr(strId, pgKey, pgPageNum, pgPageSize);
+        model.addAttribute("pgPageNum", pgPageNum);
+        model.addAttribute("pgCurrentPage", pgPageNum);
+        model.addAttribute("pgPageSize", pgPageSize);
+        model.addAttribute("pgKey", pgKey);
+        model.addAttribute("pgPages", new long[pgPages.getTotalPages()]);
+        model.addAttribute("posts", pgPages);
+
         model.addAttribute("viewMode", "details");
-        ReadStrDTO str = strMapper.mapToReadStrDTO( strRepo.findById(strId).orElse(new Structure()));
+        ReadStrDTO str = strMapper.mapToReadStrDTO(strRepo.findById(strId).orElse(new Structure()));
         str.setHierarchy(strService.getParents(strId));
         model.addAttribute("str",str);
-        model.addAttribute("agents", agentService.getAllAgentsByStr(strId, EtatRecrutement.getWithUs(true)));
-        model.addAttribute("posts", postService.searchPostsByStr(strId));
+
+        model.addAttribute("tab", tab);
+
+
 
         return "structures/strDetails";
     }
@@ -143,7 +174,7 @@ public class StrController
         model.addAttribute("viewMode", "details");
         PostGroup postGroup = pgRepo.findById(postGroupId).orElse(null);
         ReadPostDTO pg = postMapper.mapToReadPostDTO(postGroup == null ? new PostGroup() : postGroup);
-        pg.setHierarchy(strService.getParents(postGroup.getStructure().getStrId()));
+        pg.setHierarchy(postGroup == null ? new ArrayList<>() : strService.getParents(postGroup.getStructure().getStrId()));
         model.addAttribute( "pg",pg);
         model.addAttribute("noneVacantPosts", postRepo.findNoneVacantPostsByPostGroup(postGroupId));
         return "structures/postDetails";
@@ -204,7 +235,9 @@ public class StrController
     public List<ReadStrDTO> getStrByChildType(@PathVariable Long childTypeId)
     {
         List<Structure> strs = strRepo.findByChildType(childTypeId);
-        return strs.stream().map(strMapper::mapToReadStrDTO).collect(Collectors.toList());
+        return strs.stream().map(str->{ReadStrDTO dto = strMapper.mapToReadStrDTO(str);
+            dto.setStrName(strService.getParents(str.getStrId()).stream().map(Structure::getStrSigle).reduce("",(s1, s2)->s1+"/"+s2).substring(1));
+        return dto;}).collect(Collectors.toList());
     }
 
     @GetMapping(path = "/sigrh/structures/loadStrTreeView/{strId}") @ResponseBody
@@ -222,6 +255,12 @@ public class StrController
     @GetMapping(path = "/sigrh/structures/countAllChildren/{strId}") @ResponseBody
     public long countAllChildren(@PathVariable Long strId)
     {
-        return this.strService.countAllChildren(strId);
+        return this.strRepo.countAllChildren(strId);
+    }
+
+    @GetMapping(path = "/sigrh/structures/getChildrenMaxLevel/{strId}") @ResponseBody
+    public long getChildrenMaxLevel(@PathVariable long strId)
+    {
+        return this.strRepo.getChildrenMaxLevel(strRepo.getStrCode(strId));
     }
 }

@@ -22,6 +22,7 @@ public class ReadPostDTO
 
     private String strName;
     private String strSigle;
+    private long strId;
 
     private String agentNom;
     private String agentPrenom;

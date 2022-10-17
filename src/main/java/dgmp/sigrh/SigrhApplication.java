@@ -21,6 +21,31 @@ public class SigrhApplication {
     {
         return args ->
         {
+            /*strRepo.findByStrLevel(0).forEach(str->{
+                str.setStrCode(str.getStrType().getUniqueCode() + "-" + str.getStrId());
+                strRepo.save(str);
+            });
+
+            strRepo.findByStrLevel(1).forEach(str->{
+                str.setStrCode(str.getStrParent().getStrCode() + "/" +str.getStrType().getUniqueCode() + "-" + str.getStrId());
+                strRepo.save(str);
+            });
+
+            strRepo.findByStrLevel(2).forEach(str->{
+                str.setStrCode(str.getStrParent().getStrCode() + "/" +str.getStrType().getUniqueCode() + "-" + str.getStrId());
+                strRepo.save(str);
+            });
+
+            strRepo.findByStrLevel(3).forEach(str->{
+                str.setStrCode(str.getStrParent().getStrCode() + "/" +str.getStrType().getUniqueCode() + "-" + str.getStrId());
+                strRepo.save(str);
+            });
+
+            strRepo.findByStrLevel(4).forEach(str->{
+                str.setStrCode(str.getStrParent().getStrCode() + "/" +str.getStrType().getUniqueCode() + "-" + str.getStrId());
+                strRepo.save(str);
+            });*/
+
             CreateActiveUserDTO dto = CreateActiveUserDTO.builder()
                     .username("lenigauss")
                     .tel("0505471049")

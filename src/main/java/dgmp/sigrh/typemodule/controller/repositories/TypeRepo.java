@@ -83,4 +83,6 @@ public interface TypeRepo extends JpaRepository<Type, Long>
     @Query("update Type t set t.typeGroup = :typeGroup, t.uniqueCode = :uniqueCode, t.name = :name where t.typeId =:typeId")
     long updateType(@Param("typeId") long typeId, @Param("typeGroup") String typeGroup, @Param("uniqueCode") String uniqueCode, @Param("name") String name);
 
+    @Query("select t.uniqueCode from Type t where t.typeId = ?1")
+    String getUniqueCode(Long typeId);
 }

@@ -10,6 +10,7 @@ public enum StrEventType
     UPDATE_STR("modification d'une structure"),
     DELETE_STR("Suppression d'une structure"),
     RESTORE_STR("Restoration d'une structure"),
-    CHANGE_STR_ANCHOR("Changement d'ancrage institutionel");
+    CHANGE_STR_ANCHOR("Changement d'ancrage institutionel"),
+    CHANGE_STR_CODE("Modification du code structure");
     private String event;
 }

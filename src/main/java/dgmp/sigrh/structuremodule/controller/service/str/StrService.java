@@ -1,6 +1,7 @@
 package dgmp.sigrh.structuremodule.controller.service.str;
 
 import dgmp.sigrh.brokermodule.services.IHistoService;
+import dgmp.sigrh.shared.controller.exception.AppException;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
 import dgmp.sigrh.structuremodule.controller.repositories.post.PostRepo;
 import dgmp.sigrh.structuremodule.controller.repositories.structure.StrRepo;
@@ -18,12 +19,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static dgmp.sigrh.shared.model.enums.PersistenceStatus.ACTIVE;
 
@@ -35,6 +38,16 @@ public class StrService implements IStrService
     private final TypeRepo typeRepo;
     private final PostRepo postRepo;
     private final IHistoService<Structure, StrHisto, StrEventType> strHistoService;
+    @PersistenceContext
+    private EntityManager em;
+
+    public String stripAccent(String str)
+    {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        //cb.function()
+        return null;
+    }
+
     @Override @Transactional
     public ReadStrDTO createStr(CreateStrDTO dto)
     {
@@ -45,7 +58,7 @@ public class StrService implements IStrService
             else str.setStrLevel(strRepo.getStrLevel(str.getStrParent().getStrId()) + 1);
         }
         str = strRepo.save(str);
-        str.setStrCode(str==null ? str.getStrType().getUniqueCode() + "-" + str.getStrId() : str.getStrCode() + "/" + str.getStrType().getUniqueCode() + "-" + str.getStrId());
+        str.setStrCode(this.generateStrCode(str));
         strHistoService.storeEntity(str, StrEventType.CREATE_STR);
         return strMapper.mapToReadStrDTO(str);
     }
@@ -86,10 +99,39 @@ public class StrService implements IStrService
     @Override @Transactional
     public ReadStrDTO changeAncrage(ChangeAncrageDTO dto)
     {
+        String actionId = UUID.randomUUID().toString();
+
         Structure str = strMapper.mapToStructure(dto);
         str = strRepo.save(str);
-        strHistoService.storeEntity(str, StrEventType.CHANGE_STR_ANCHOR);
+        String oldStrCode = str.getStrCode();
+        long childrenMaxLevel = strRepo.getChildrenMaxLevel(oldStrCode);
+        str.setStrCode(this.generateStrCode(str));
+        strHistoService.storeEntity(str, StrEventType.CHANGE_STR_ANCHOR, actionId, StrEventType.CHANGE_STR_ANCHOR.name());
+
+        for(long level = str.getStrLevel() + 1; level <= childrenMaxLevel; level++)
+        {
+            strRepo.findChildrenByLevel(dto.getStrId(), level).forEach(s->{
+                s.setStrCode(this.generateStrCode(s));
+                s = strRepo.save(s);
+                strHistoService.storeEntity(s, StrEventType.CHANGE_STR_CODE, actionId, StrEventType.CHANGE_STR_ANCHOR.name());
+            });
+        }
         return strMapper.mapToReadStrDTO(str);
+    }
+
+    @Override
+    public String generateStrCode(Structure str)
+    {
+        if(str == null) throw new AppException("Impossible de généré le code d'une structure non enregistrée");
+        if(str.getStrId() == null) throw new AppException("Impossible de généré le code d'une structure non enregistrée");
+        String strTypeCode = str.getStrType().getUniqueCode() != null ? str.getStrType().getUniqueCode() : strRepo.getStrTypeUniqueCode(str.getStrId());
+        Structure strParent = str.getStrParent() != null ? str.getStrParent() : strRepo.getStrParent(str.getStrId());
+        if(strParent == null)
+        {
+           return strTypeCode + "-" + str.getStrId();
+        }
+        String parentStrCode = strParent.getStrCode() != null ? strParent.getStrCode() : strRepo.getStrCode(strParent.getStrId());
+        return parentStrCode + "/" + strTypeCode + "-" + str.getStrId();
     }
 
     @Override
@@ -118,7 +160,7 @@ public class StrService implements IStrService
         //str.setStrChildren(strRepo.findByStrParent(strId));
         StrTreeView strTreeView = new StrTreeView();
         strTreeView.setText(str.toString());
-        strTreeView.setHref("/sigrh/structures/str-details/"+str.getStrId());
+        strTreeView.setHref("/sigrh/structures/str-details?tab=str-tree&strId="+str.getStrId());
         List<StrTreeView> childrenNodes = strRepo.getStrChildrenIds(strId).stream().filter(id->this.strHasAnyChildMatching(id, key)).flatMap(childId->this.loadStrTreeView(childId, key).stream()).collect(Collectors.toList());
         strTreeView.setNodes(childrenNodes);
         return Arrays.asList(strTreeView);
@@ -133,39 +175,13 @@ public class StrService implements IStrService
         //str.setStrChildren(strRepo.findByStrParent(strId));
         StrTreeView strTreeView = new StrTreeView();
         strTreeView.setText(str.toString());
-        strTreeView.setHref("/sigrh/structures/str-details/"+str.getStrId());
+        strTreeView.setHref("/sigrh/structures/str-details?tab=str-tree&strId="+str.getStrId());
         List<StrTreeView> childrenNodes = strRepo.getStrChildrenIds(strId).stream().flatMap(childId->this.loadStrTreeView(childId).stream()).collect(Collectors.toList());
         strTreeView.setNodes(childrenNodes);
         return Arrays.asList(strTreeView);
     }
 
-    @Override
-    public List<Structure> getAllChildren(Long strId)
-    {
-        if(!strRepo.existsById(strId)) return new ArrayList<>();
-        Structure str = strRepo.findById(strId).orElse(null);
-        if(str == null) return new ArrayList<>();
-        return Stream.concat(Stream.of(str), strRepo.findByStrParent(strId).stream().flatMap(s->this.getAllChildren(s.getStrId()).stream())).collect(Collectors.toList());
-    }
-
-    @Override
-    public long countAllChildren(Long strId)
-    {
-        if(strId == null) return strRepo.countByStatus(ACTIVE);
-        if(!strRepo.existsById(strId)) return 0;
-        long nbrChildren = this.getAllChildren(strId).stream().map(str->strRepo.countDirectChildren(str.getStrId(), ACTIVE)).reduce(0L, (nb1, nb2)->nb1+nb2);
-        return nbrChildren;
-    }
-
-    @Override
-    public long countAllChildren(Long strId, String key)
-    {
-        if(strId == null) return strRepo.countByKey(key, ACTIVE);
-        if(!strRepo.existsById(strId)) return 0;
-        strRepo.searchStr(key, ACTIVE).stream().filter(str->this.childBelongToParent(str.getStrId(), strId)).count();
-        return strRepo.searchStr(key, ACTIVE).stream().filter(str->this.childBelongToParent(str.getStrId(), strId)).count();
-    }
-
+    /*
     @Override
     public long countVacantPosts(Long strId)
     {
@@ -175,22 +191,21 @@ public class StrService implements IStrService
     @Override
     public long countNoneVacantPosts(Long strId) {
         return this.getAllChildren(strId).stream().map(str->postRepo.countNoneVacantByStr(str.getStrId())).reduce(0L, (nb1, nb2)->nb1+nb2);
-    }
+    }*/
 
     @Override
     public List<Structure> getParents(Long strId)
     {
         Structure str = strRepo.findById(strId).orElse(null);
-        if(str == null) return  null;
-        return Stream.concat(Stream.of(str), str.getStrParent() == null ? new ArrayList<Structure>().stream() :  getParents(str.getStrParent().getStrId()).stream())
-                .sorted(Comparator.comparingLong(Structure::getStrLevel)).collect(Collectors.toList());
+        if(str == null) return  new ArrayList<>();
+        return strRepo.findAllParents(strId);
     }
 
     @Override
     public boolean strHasAnyChildMatching(long strId, String key)
     {
         if(strRepo.strMatchesSearchKey(strId, key)) return true;
-        return strRepo.getStrChildrenIds(strId).stream().anyMatch(id->this.strHasAnyChildMatching(id, key));
+        return strRepo.strHasAnyChildMatching(strRepo.getStrCode(strId), key);
     }
 
     @Override
@@ -198,8 +213,7 @@ public class StrService implements IStrService
     {
         if(childId == null || parentId == null) return false;
         if(!strRepo.existsById(childId) || !strRepo.existsById(parentId)) return false;
-        if(strRepo.isDirectChildOf(childId, parentId) || this.childBelongToParent(strRepo.getStrParentId(childId), parentId)) return true;
-        return false;
+        return strRepo.getStrCode(childId).startsWith(strRepo.getStrCode(parentId) + "/");
     }
 
     @Override
@@ -232,12 +246,16 @@ public class StrService implements IStrService
             if (!strRepo.existsById(parentId))
                 return new PageImpl<>(new ArrayList<>(), PageRequest.of(pageNum, pageSize), 0);
         }
-        Page<Structure> strPage = strRepo.searchStr(key.trim(), ACTIVE, PageRequest.of(pageNum, pageSize));
+        Page<Structure> strPage = parentId == null ?
+                strRepo.searchStr(key, ACTIVE, PageRequest.of(pageNum, pageSize)) :
+                strRepo.searchStr(parentId, key.trim(), ACTIVE, PageRequest.of(pageNum, pageSize));
 
-        List<ReadStrDTO> strDTOS = parentId == null ?
-                strPage.stream().map(strMapper::mapToReadStrDTO).collect(Collectors.toList()) :
-                strPage.stream().filter(str->this.childBelongToParent(str.getStrId(), parentId)).map(strMapper::mapToReadStrDTO).collect(Collectors.toList());
+        List<ReadStrDTO> strDTOS = strPage.stream().map(strMapper::mapToReadStrDTO).collect(Collectors.toList());
+        long nbStr =
+                parentId == null && (key==null || "".equals(key)) ? strRepo.countAllStr(ACTIVE) :
+                parentId == null ? strRepo.countStr(key, ACTIVE) :
+                key==null || "".equals(key) ? strRepo.countAllChildren(parentId, ACTIVE) : strRepo.countStr(parentId, key);
 
-        return new PageImpl<>(strDTOS, PageRequest.of(pageNum, pageSize), key==null || "".equals(key) ? countAllChildren(parentId) : countAllChildren(parentId, key));
+        return new PageImpl<>(strDTOS, PageRequest.of(pageNum, pageSize), nbStr);
     }
 }

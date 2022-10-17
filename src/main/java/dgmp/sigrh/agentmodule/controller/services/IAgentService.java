@@ -5,6 +5,7 @@ import dgmp.sigrh.agentmodule.model.dtos.ReadAgentDTO;
 import dgmp.sigrh.agentmodule.model.dtos.UpdateAgentDTO;
 import dgmp.sigrh.agentmodule.model.enums.EtatRecrutement;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ public interface IAgentService
     Page<ReadAgentDTO> findPresentAgentsPageByGrade(long strId, long gradeId); // Déduction faite de tous les absents y compris les non actifs
 
     Page<ReadAgentDTO> searchAllAgentsPage(long strId, String searchKey);
-    Page<ReadAgentDTO> searchActiveAgentsPage(long strId, String searchKey); // Déduction faite des retraités, décédés et partis
+    Page<ReadAgentDTO> searchActiveAgentsPage(long strId, String searchKey, Pageable pageable); // Déduction faite des retraités, décédés et partis
     Page<ReadAgentDTO> searchPresentAgentsPage(long strId, String searchKey); // Déduction faite de tous les absents y compris les non actifs
+    Page<ReadAgentDTO> searchAgentByStrAndEtat(long strId, List<EtatRecrutement> states, String searchKey, Pageable pageable);
 }

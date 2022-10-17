@@ -9,10 +9,13 @@ import dgmp.sigrh.agentmodule.model.dtos.ReadAgentDTO;
 import dgmp.sigrh.agentmodule.model.dtos.UpdateAgentDTO;
 import dgmp.sigrh.agentmodule.model.entities.Agent;
 import dgmp.sigrh.agentmodule.model.enums.EtatRecrutement;
+import dgmp.sigrh.shared.utilities.StringUtils;
 import dgmp.sigrh.structuremodule.controller.repositories.structure.StrRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,6 +31,8 @@ public class AgentService implements IAgentService
     //private final IBrokerMessageSender<Agent> brokerMessageSender;
     private final AgentMapper agentMapper;
     private final StrRepo strRepo;
+    private final EnumsService enumsService;
+
     @Override
     public ReadAgentDTO createAgent(CreateAgentDTO dto)
     {
@@ -121,12 +126,23 @@ public class AgentService implements IAgentService
     }
 
     @Override
-    public Page<ReadAgentDTO> searchActiveAgentsPage(long strId, String searchKey) {
+    public Page<ReadAgentDTO> searchActiveAgentsPage(long strId, String searchKey, Pageable pageable)
+    {
         return null;
     }
 
     @Override
     public Page<ReadAgentDTO> searchPresentAgentsPage(long strId, String searchKey) {
         return null;
+    }
+
+    @Override
+    public Page<ReadAgentDTO> searchAgentByStrAndEtat(long strId, List<EtatRecrutement> states, String searchKey, Pageable pageable)
+    {
+        Page<Agent> agentPage = searchKey == null ? agentRepo.findAgentByStrAndEtat(strId, states, pageable) :
+                searchKey.trim().equals("") ? agentRepo.findAgentByStrAndEtat(strId, states, pageable) :
+                agentRepo.searchAgentByStrAndEtat(strId, states, StringUtils.stripAccentsToUpperCase(searchKey), pageable);
+        List<ReadAgentDTO> readAgentDTOS = agentPage.stream().map(agentMapper::getReadAgentDTO).collect(Collectors.toList());
+        return new PageImpl<>(readAgentDTOS, pageable, agentPage.getTotalElements());
     }
 }

@@ -21,7 +21,7 @@
                 <div class="row mb-2">
                     <div class="col-sm-8">
                         <h1 class="m-0 text-dark">
-                            <a th:href="@{'/sigrh/structures/str-details/' + ${str.strId}}">[[${str.toString()}]]</a>
+                            <a th:href="@{/sigrh/structures/str-details(strId=${str.strId})}">[[${str.toString()}]]</a>
                         </h1>
                     </div><!-- /.col -->
                     <div class="col-sm-4">
@@ -81,26 +81,26 @@
                                 <div class="card-header p-0 pt-1 border-bottom-0">
                                     <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
                                         <li class="nav-item">
-                                            <a class="nav-link active" id="custom-tabs-two-home-tab" data-toggle="pill" href="#str-details" role="tab" aria-controls="custom-tabs-two-home" aria-selected="true">Détails</a>
+                                            <a class="nav-link" th:classappend="${tab=='str-details' ? 'active' : ''}" id="custom-tabs-two-home-tab" data-toggle="pill" href="#str-details" role="tab" aria-controls="custom-tabs-two-home" aria-selected="true">Détails</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" id="str-tree-tab" data-toggle="pill" href="#str-tree" role="tab" aria-controls="custom-tabs-two-home" aria-selected="true">Structures sous tutelle</a>
+                                            <a class="nav-link" th:classappend="${tab=='str-tree' ? 'active' : ''}" id="str-tree-tab" data-toggle="pill" href="#str-tree" role="tab" aria-controls="custom-tabs-two-home" aria-selected="true">Structures sous tutelle</a>
                                         </li>
 
                                         <li class="nav-item">
-                                            <a class="nav-link" data-toggle="pill" href="#str-personnel-list" role="tab" aria-controls="custom-tabs-two-profile" aria-selected="false">Le personnel</a>
+                                            <a class="nav-link" th:classappend="${tab=='str-pers-list' ? 'active' : ''}" data-toggle="pill" href="#str-personnel-list" role="tab" aria-controls="custom-tabs-two-profile" aria-selected="false">Le personnel</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" data-toggle="pill" href="#str-posts-list" role="tab" aria-controls="custom-tabs-two-profile" aria-selected="false">Liste des posts</a>
+                                            <a class="nav-link" th:classappend="${tab=='str-posts-list' ? 'active' : ''}" data-toggle="pill" href="#str-posts-list" role="tab" aria-controls="custom-tabs-two-profile" aria-selected="false">Liste des posts</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" data-toggle="pill" href="#modifications-story" role="tab" aria-controls="custom-tabs-two-profile" aria-selected="false">Historique des modifications</a>
+                                            <a class="nav-link" th:classappend="${tab=='str-histo' ? 'active' : ''}" data-toggle="pill" href="#modifications-story" role="tab" aria-controls="custom-tabs-two-profile" aria-selected="false">Historique des modifications</a>
                                         </li>
                                     </ul>
                                 </div>
                                 <div class="card-body pt-1">
                                     <div class="tab-content" id="custom-tabs-two-tabContent">
-                                        <div class="tab-pane fade show active" id="str-details" role="tabpanel" aria-labelledby="custom-tabs-two-home-tab">
+                                        <div class="tab-pane fade" th:classappend="${tab=='str-details' ? 'active show' : ''}" id="str-details" role="tabpanel" aria-labelledby="custom-tabs-two-home-tab">
                                             <table class="table table-bordered table-sm">
                                                 <tr>
                                                     <td class="text-right text-bold" style="width: 50%">Le responsable</td>
@@ -123,7 +123,7 @@
                                                     <td><span class="text-left">
                                                         <span class="m-0 p-0">
                                                                 <ol class="breadcrumb mb-1 p-1">
-                                                                    <li th:each="parent, status:${str.hierarchy}" th:classappend="${status.last ? 'active' : ''}" th:title="${parent.toString()}" class="breadcrumb-item"><a th:href="'/sigrh/structures/str-details/'+${parent.strId}">[[${parent.strSigle}]]</a></li>
+                                                                    <li th:each="parent, status:${str.hierarchy}" th:classappend="${status.last ? 'active' : ''}" th:title="${parent.toString()}" class="breadcrumb-item"><a th:href="@{/sigrh/structures/str-details(strId=${parent.strId})}">[[${parent.strSigle}]]</a></li>
                                                                 </ol>
                                                             </span>
                                                     </span></td>
@@ -142,7 +142,7 @@
                                                 </tr>
                                             </table>
                                         </div>
-                                        <div class="tab-pane fade" id="str-tree" role="tabpanel" aria-labelledby="custom-tabs-two-profile-tab">
+                                        <div class="tab-pane fade" th:classappend="${tab=='str-tree' ? 'active show' : ''}" id="str-tree" role="tabpanel" aria-labelledby="custom-tabs-two-profile-tab">
                                             <input th:if="${str}" id="strId" th:value="${str.strId}" type="hidden">
 
                                             <div class="col-md-8 mx-0 p-0" style="display: inline">
@@ -164,7 +164,7 @@
                                             </div>
                                             <span class="m-0 p-0">
                                                 <ol class="breadcrumb mb-1 p-1 float-sm-right">
-                                                    <li th:each="parent, status:${str.hierarchy}" th:classappend="${status.last ? 'active' : ''}" th:title="${parent.toString()}" class="breadcrumb-item"><a th:href="'/sigrh/structures/str-details/'+${parent.strId}">[[${parent.strSigle}]]</a></li>
+                                                    <li th:each="parent, status:${str.hierarchy}" th:classappend="${status.last ? 'active' : ''}" th:title="${parent.toString()}" class="breadcrumb-item"><a th:href="@{/sigrh/structures/str-details(strId=${parent.strId}, tab='str-tree')}">[[${parent.strSigle}]]</a></li>
                                                 </ol>
                                             </span>
                                             <span id="treeview-container">
@@ -172,71 +172,171 @@
                                             </span>
 
                                         </div>
-                                        <div class="tab-pane fade" id="str-personnel-list" role="tabpanel" aria-labelledby="custom-tabs-two-profile-tab">
-                                            <table class="mt-2 table dataTable table-hover table-striped">
-                                                <thead>
-                                                <tr>
-                                                    <th>Nom</th>
-                                                    <th>Prénom</th>
-                                                    <th>Matricule</th>
-                                                    <th>Fixe bureau</th>
-                                                    <th>Tel</th>
-                                                    <th>E-mail</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr th:each="agent:${agents}">
-                                                    <td>[[${agent.nom}]]</td>
-                                                    <td>[[${agent.prenom}]]</td>
-                                                    <td>[[${agent.matricule}]]</td>
-                                                    <td>[[${agent.fixeBureau}]]</td>
-                                                    <td>[[${agent.tel}]]</td>
-                                                    <td>[[${agent.email}]]</td>
+                                        <div class="tab-pane fade" th:classappend="${tab=='str-pers-list' ? 'active show' : ''}" id="str-personnel-list" role="tabpanel" aria-labelledby="custom-tabs-two-profile-tab">
+                                            <div class="card">
+                                                <div class="card-body p-0">
+                                                    <div class="card-header">
+                                                        <h3 class="card-title">
+                                                            [[${agents.getNumberOfElements()}]] items affichés sur [[${posts.getTotalElements()}]]
+                                                        </h3>
 
-                                                    <td></td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
+                                                        <div class="card-tools">
+                                                            <ul class="pagination pagination-sm float-right">
+                                                                <li th:title="Début" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-details(strId=${str.strId},persPageNum=0, persKey=${persKey}, tab='str-pers-list')}">&laquo;&laquo;</a></li>
+                                                                <li  th:title="Précédant" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-details(strId=${str.strId},persPageNum=${persCurrentPage > 0 ? persCurrentPage-1 : 0}, persKey=${persKey}, tab='str-pers-list')}">&laquo;</a></li>
+                                                                <li th:each="page, status:${persPages}" class="page-item" th:classappend="${status.index == persCurrentPage ? 'active' : T(java.lang.Math).abs(status.index - persCurrentPage) < 4 ? '' : 'd-none'}"><a class="page-link" th:href="@{/sigrh/structures/str-details(strId=${str.strId},persPageNum=${status.index}, persKey=${persKey}, tab='str-pers-list')}">[[${status.count}]]</a></li>
+                                                                <li th:title="Suivant" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-details(strId=${str.strId},persPageNum=${persPages.length==0 ? 0 : persCurrentPage < persPages.length-1 ? persCurrentPage+1 : persPages.length-1}, persKey=${persKey}, tab='str-pers-list')}">&raquo;</a></li>
+                                                                <li th:title="Fin" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-details(strId=${str.strId},persPageNum= ${persPages.length==0 ? 0 : persPages.length-1}, persKey=${persKey}, tab='str-pers-list')}">&raquo;&raquo;</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <form class="form-horizontal" th:action="@{/sigrh/structures/str-details}">
+                                                        <div class="card-body mt-2 m-0 p-0">
+                                                            <div class="form-group row">
+                                                                <input type="hidden" th:value="${str.strId}" name="strId">
+                                                                <input type="hidden" th:value="str-pers-list" name="tab">
+                                                                <input type="hidden" th:value="${persCurrentPage}" name="pageNum">
+                                                                <input type="hidden" th:value="0" name="navigating">
 
+                                                                <div class="col-md-12 mx-0 ml-3 p-0" style="display: inline">
+                                                                    <table class="d-inline">
+                                                                        <tr>
+                                                                            <td >
+                                                                                <a id="lnk-reinitialize" th:href="@{/sigrh/structures/str-details(strId=${str.strId},persPageNum=0, persKey='', tab='str-pers-list')}" class="btn btn-primary" >Réinitialiser</a>
+                                                                            </td>
+                                                                            <td style="width: 500px;">
+                                                                                <input type="text" style="height: 40px;"  class="form-control p-0 m-0" th:value="${persKey}" name="persKey" id="persKey" placeholder="Rechercher une structure">
+                                                                            </td>
+                                                                            <td>
+                                                                                <button class=" btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                    <a id="lnk-new-post" th:href="@{/sigrh/posts/new-post-form}" class="btn btn-primary float-right mr-4" >Nouvelle structure</a>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                    <hr />
+                                                    <table class="mt-2 table table-hover table-striped">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Nom</th>
+                                                        <th>Prénom</th>
+                                                        <th>Matricule</th>
+                                                        <th>Fixe bureau</th>
+                                                        <th>Tel</th>
+                                                        <th>E-mail</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr th:each="agent:${agents}">
+                                                        <td>[[${agent.nom}]]</td>
+                                                        <td>[[${agent.prenom}]]</td>
+                                                        <td>[[${agent.matricule}]]</td>
+                                                        <td>[[${agent.fixeBureau}]]</td>
+                                                        <td>[[${agent.tel}]]</td>
+                                                        <td>[[${agent.email}]]</td>
+
+                                                        <td></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="tab-pane fade" id="str-posts-list" role="tabpanel" aria-labelledby="custom-tabs-two-profile-tab">
-                                            <table id="posts-list" class="dataTable table table-hover table-striped table-sm">
-                                                <thead>
-                                                <tr>
-                                                    <th>Intitulé</th>
-                                                    <th>Fonction</th>
-                                                    <th>Structure</th>
-                                                    <th>Nbr</th>
-                                                    <th>OQP</th>
-                                                    <th>Vacants</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr th:each="post:${posts}">
-                                                    <td>[[${post.intitule}]]</td>
-                                                    <td>[[${post.nomFonction}]]</td>
-                                                    <td>
-                                                        <span class="m-0 p-0">
-                                                            <ol class="breadcrumb mb-1 p-1">
-                                                                <li th:each="parent, status:${post.hierarchy}" th:classappend="${status.last ? 'active' : ''}" th:title="${parent.toString()}" class="breadcrumb-item"><a th:href="'/sigrh/structures/str-details/'+${parent.strId}">[[${parent.strSigle}]]</a></li>
-                                                            </ol>
-                                                        </span>
-                                                    </td>
-                                                    <td>[[${post.nbrPosts}]]</td>
-                                                    <td >[[${post.nbrPostsOccupes}]]</td>
-                                                    <td>[[${post.nbrPostsVacants}]]</td>
-                                                    <td>
-                                                        <a class="btn btn-sm btn-outline-warning mx-1" title="Modifier" th:href="@{/sigrh/structures/update-posts-form(postGroupId=${post.postGroupId})}"><i class="bi bi-pencil text-sm"></i> </a>
-                                                        <a class="btn btn-sm btn-outline-success mx-1" title="Voir" th:href="@{'/sigrh/posts/post-details/'+${post.postGroupId}}"><i class="bi bi-eye text-sm"></i> </a>
-                                                        <a class="btn btn-sm btn-outline-danger mx-1" title="Supprimer" href="#" data-toggle="modal" th:data-target="${'#delete-confirmation-modal' + str.strId}"><i class="bi bi-trash text-sm"></i></a>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
+                                        <div class="tab-pane fade" th:classappend="${tab=='str-posts-list' ? 'active show' : ''}" id="str-posts-list" role="tabpanel" aria-labelledby="custom-tabs-two-profile-tab">
+
+                                                    <div class="card">
+                                                        <div class="card-header">
+                                                            <h3 class="card-title">
+                                                                [[${posts.getNumberOfElements()}]] items affichés sur [[${posts.getTotalElements()}]]
+                                                            </h3>
+
+                                                            <div class="card-tools">
+                                                                <ul class="pagination pagination-sm float-right">
+                                                                    <li th:title="Début" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-details(strId=${str.strId},pgPageNum=0, pgKey=${pgKey}, tab='str-posts-list')}">&laquo;&laquo;</a></li>
+                                                                    <li  th:title="Précédant" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-details(strId=${str.strId},pgPageNum=${pgCurrentPage > 0 ? pgCurrentPage-1 : 0}, pgKey=${pgKey}, tab='str-posts-list')}">&laquo;</a></li>
+                                                                    <li th:each="page, status:${pgPages}" class="page-item" th:classappend="${status.index == pgCurrentPage ? 'active' : T(java.lang.Math).abs(status.index - pgCurrentPage) < 4 ? '' : 'd-none'}"><a class="page-link" th:href="@{/sigrh/structures/str-details(strId=${str.strId},pgPageNum=${status.index}, pgKey=${pgKey}, tab='str-posts-list')}">[[${status.count}]]</a></li>
+                                                                    <li th:title="Suivant" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-details(strId=${str.strId},pgPageNum=${pgPages.length == 0 ? 0 : pgCurrentPage < pgPages.length-1 ? pgCurrentPage+1 : pgPages.length-1}, pgKey=${pgKey}, tab='str-posts-list')}">&raquo;</a></li>
+                                                                    <li th:title="Fin" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-details(strId=${str.strId},pgPageNum= ${pgPages.length == 0 ? 0 : pgPages.length-1}, pgKey=${pgKey}, tab='str-posts-list')}">&raquo;&raquo;</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                        <!-- /.card-header -->
+                                                        <div class="card-body p-0">
+
+                                                            <form class="form-horizontal" th:action="@{/sigrh/structures/str-details}">
+                                                                <div class="card-body mt-2 m-0 p-0">
+                                                                    <div class="form-group row">
+                                                                        <input type="hidden" th:value="${str.strId}" name="strId">
+                                                                        <input type="hidden" th:value="${pgCurrentPage}" name="pageNum">
+                                                                        <input type="hidden" th:value="0" name="navigating">
+                                                                        <input type="hidden" th:value="str-posts-list" name="tab">
+
+                                                                        <div class="col-md-12 mx-0 ml-3 p-0" style="display: inline">
+                                                                            <table class="d-inline">
+                                                                                <tr>
+                                                                                    <td >
+                                                                                        <a id="lnk-reinitialize" th:href="@{/sigrh/structures/str-details(strId=${str.strId}, pgPageNum=0, pgKey='', tab='str-posts-list')}" class="btn btn-primary" >Réinitialiser</a>
+                                                                                    </td>
+                                                                                    <td style="width: 500px;">
+                                                                                        <input type="text" style="height: 40px;"  class="form-control p-0 m-0" th:value="${pgKey}" name="pgKey" id="pgKey" placeholder="Rechercher une structure">
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <button class=" btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </table>
+                                                                            <a id="lnk-new-post" th:href="@{/sigrh/posts/new-post-form}" class="btn btn-primary float-right mr-4" >Nouvelle structure</a>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                            <hr />
+                                                            <table id="posts-list" class="table table-hover table-striped table-sm">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th style="width: 40%;">Intitulé</th>
+                                                                    <th>Fonction</th>
+                                                                    <th style="width: 20%;">Structure</th>
+                                                                    <th>Nbr</th>
+                                                                    <th>OQP</th>
+                                                                    <th>Vacants</th>
+                                                                    <th style="width: 20%;">Actions</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr th:each="post:${posts}">
+                                                                    <td>[[${post.intitule}]]</td>
+                                                                    <td>[[${post.nomFonction}]]</td>
+                                                                    <td>
+                                                                        <span class="m-0 p-0">
+                                                                            <ol class="breadcrumb mb-1 p-1">
+                                                                                <li th:each="parent, status:${post.hierarchy}" th:classappend="${status.last ? 'active' : ''}" th:title="${parent.toString()}" class="breadcrumb-item"><a th:href="@{/sigrh/structures/str-details(strId=${parent.strId}, tab='str-posts-list')}">[[${parent.strSigle}]]</a></li>
+                                                                            </ol>
+                                                                        </span>
+                                                                    </td>
+                                                                    <td>[[${post.nbrPosts}]]</td>
+                                                                    <td >[[${post.nbrPostsOccupes}]]</td>
+                                                                    <td>[[${post.nbrPostsVacants}]]</td>
+                                                                    <td>
+                                                                        <a class="btn btn-sm btn-outline-warning mx-1" title="Modifier" th:href="@{/sigrh/posts/update-posts-form(postGroupId=${post.postGroupId})}"><i class="bi bi-pencil text-sm"></i> </a>
+                                                                        <a class="btn btn-sm btn-outline-success mx-1" title="Voir" th:href="@{'/sigrh/posts/post-details/'+${post.postGroupId}}"><i class="bi bi-eye text-sm"></i> </a>
+                                                                        <a class="btn btn-sm btn-outline-danger mx-1" title="Supprimer" href="#" data-toggle="modal" th:data-target="${'#delete-confirmation-modal' + post.postGroupId}"><i class="bi bi-trash text-sm"></i></a>
+                                                                    </td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <!-- /.card-body -->
+                                                    </div>
+                                                    <!-- /.card -->
                                         </div>
-                                        <div class="tab-pane fade" id="modifications-strory" role="tabpanel" aria-labelledby="custom-tabs-two-profile-tab">
+                                        <div class="tab-pane fade" th:classappend="${tab=='str-histo' ? 'active show' : ''}" id="modifications-strory" role="tabpanel" aria-labelledby="custom-tabs-two-profile-tab">
                                             <table class="table table-hover table-striped">
                                                 <thead>
                                                 <tr>
