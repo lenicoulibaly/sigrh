@@ -53,7 +53,7 @@ public abstract class StrMapper
         return loadedStructure;
     }
 
-    public Structure mapToStructure(ChangeAncrageDTO dto)
+    public Structure mapToStructure(ChangeAnchorDTO dto)
     {
         if(dto==null) return null;
         Structure loadedStructure = strRepo.findById(dto.getStrId()).orElse(null);

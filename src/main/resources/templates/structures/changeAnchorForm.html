@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+                layout:decorate="~{structures/str-layout}">
+    <head>
+		<th:block layout:fragment="specific-css-links">
+            <!-- Select2 -->
+            <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}" />
+        </th:block>
+	</head>
+
+	<body>
+        <div layout:fragment="content">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <!-- Profile Image -->
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Menu contextuel</h3>
+                                </div>
+                                <div class="card-body box-profile">
+                                    <th:block th:replace="structures/contextual-menu-frag::contextual-menu"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Changement d'ancrage institutionnel</h3>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body p-0">
+                                    <form method="post" th:action="@{/sigrh/structures/str/changeAchor}" th:object="${dto}">
+                                        <input type="hidden" th:field="*{strId}" />
+                                        <div class="modal-body">
+
+                                            <div class="row">
+
+                                                <div class="col col-12">
+                                                    <div th:if="${globalErrMsg}" th:text="${globalErrMsg}"
+                                                         class="alert alert-danger alert-dismissible fade show"/>
+                                                </div>
+
+                                                <div class="col col-md-6 col-sm-6 ">
+                                                    <div class="form-group">
+                                                        <label for="newTypeId">Type de structure</label> <small
+                                                            th:if="${newTypeIdErrMsg}" class="text-danger">[[${newTypeIdErrMsg}]]</small>
+                                                        <select th:classappend="${newTypeIdErrMsg} ? 'border-danger' : ''" required th:field="*{newTypeId}" class="form-control select2bs4" id="newTypeId">
+                                                            <option value="" >Choisir le nouveau type de la structure</option>
+                                                            <option th:each="type:${@strService.getStrTypes()}" th:value="${type.typeId}">[[${type.toString()}]]</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col col-md-6 col-sm-6 ">
+                                                    <div class="form-group">
+                                                        <label for="newParentId">Tutelle</label> <small
+                                                            th:if="${newParentIdErrMsg}" class="text-danger">[[${newParentIdErrMsg}]]</small>
+                                                        <select th:classappend="${newParentIdErrMsg} ? 'border-danger' : ''" th:field="*{newParentId}" class="form-control select2bs4" id="newParentId">
+                                                            <option value="" >Choisir la nouvelle tutelle</option>
+                                                            <option th:each="parent : ${parents}" th:value="${parent.strId}" >[[${parent.strName}]]</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <th:block th:replace="structures/change-anchor-confirmation-modal-frag::change-anchor-confirmation-modal"/>
+                                        <div class="modal-footer justify-content-between">
+                                            <a th:href="@{'/sigrh/structures/change-anchor-form?strId='+${dto.strId}}" class="btn btn-default" data-dismiss="modal">Annuler</a>
+                                            <button type="button" data-toggle="modal" data-target="#change-anchor-confirmation-modal" class="btn btn-primary">Enregistrer</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                    </div>
+        </div>
+        <div layout:fragment="specific-scripts">
+            <script th:src="@{/dist/js/demo.js}"></script>
+
+            <!-- Select2 -->
+            <script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
+            <script th:src="@{/plugins/bootstrap-switch/js/bootstrap-switch.min.js}"></script>
+
+
+            <script>
+                $(function () {
+                    //Initialize Select2 Elements
+                    $('.select2').select2();
+
+                    //Initialize Select2 Elements
+                    $('.select2bs4').select2({theme: 'bootstrap4'});
+
+                    //SWITCH
+                    $("input[data-bootstrap-switch]").each(function(){
+                        $(this).bootstrapSwitch('state', $(this).prop('checked'));
+                    });
+                });
+            </script>
+            <script>
+                $("#newTypeId").change(e=>
+                {
+                    $.ajax(
+                        {
+                            url: "/sigrh/structures/child-type/" + $("#newTypeId").val(),
+                            success: response=>
+                            {
+                                console.log(response)
+                                $("#newParentId").empty();
+                                $("#newParentId").append('<option value="" >Choisir la nouvelle tutelle</option>')
+                                $.each(response, (index, str)=>
+                                {
+                                    $("#newParentId").append('<option value="' + str.strId + '">'+ str.strName + '</option>')
+                                });
+                            },
+                            error: err=>
+                            {
+                                console.log(err);
+                            }
+                        }
+                    );
+                });
+            </script>
+            <script>
+            </script>
+        </div>
+    </body>
+</html>

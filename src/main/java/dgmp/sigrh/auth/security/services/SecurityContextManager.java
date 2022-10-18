@@ -7,6 +7,7 @@ import dgmp.sigrh.auth.model.entities.AppUser;
 import dgmp.sigrh.auth.model.entities.RoleToUserAss;
 import dgmp.sigrh.auth.model.events.EventActorIdentifier;
 import dgmp.sigrh.auth.security.authentication.token.AppUsernamePasswordAuthToken;
+import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -76,6 +77,14 @@ public class SecurityContextManager implements ISecurityContextManager
     {
         Optional<AppUser> user$ = userDAO.findByUsername(getAuthUsername());
         return !user$.isPresent() ? null : authService.getActiveRoleAss(user$.get().getUserId());
+    }
+
+    @Override
+    public Long getVisibilityId()
+    {
+        RoleToUserAss rtuAss = this.getCurrentRoleAss();
+        Structure str = rtuAss == null ? null : rtuAss.getStructure();
+        return rtuAss == null ? null : str == null ? null : str.getStrId();
     }
 
     @Override

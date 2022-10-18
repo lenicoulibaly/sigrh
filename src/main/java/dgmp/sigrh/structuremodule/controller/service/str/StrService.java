@@ -97,7 +97,7 @@ public class StrService implements IStrService
     }
 
     @Override @Transactional
-    public ReadStrDTO changeAncrage(ChangeAncrageDTO dto)
+    public ReadStrDTO changeAncrage(ChangeAnchorDTO dto)
     {
         String actionId = UUID.randomUUID().toString();
 

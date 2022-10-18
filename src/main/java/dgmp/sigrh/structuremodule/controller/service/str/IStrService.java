@@ -13,7 +13,7 @@ public interface IStrService
     ReadStrDTO updateStr(UpdateStrDTO dto);
     ReadStrDTO deleteStr(Long strId);
     ReadStrDTO restoreStr(Long strId);
-    ReadStrDTO changeAncrage(ChangeAncrageDTO dto);
+    ReadStrDTO changeAncrage(ChangeAnchorDTO dto);
 
     String generateStrCode(Structure str);
 

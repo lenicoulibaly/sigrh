@@ -20,11 +20,11 @@ public @interface CompatibleTypeAndParentStr
     Class<?> [] groups() default {};
     Class<? extends Payload> [] payload() default {};
     @Component @RequiredArgsConstructor
-    class CompatibleTypeAndParentStrValidator implements ConstraintValidator<CompatibleTypeAndParentStr, ChangeAncrageDTO>
+    class CompatibleTypeAndParentStrValidator implements ConstraintValidator<CompatibleTypeAndParentStr, ChangeAnchorDTO>
     {
         private final StrRepo strRepo;
         @Override
-        public boolean isValid(ChangeAncrageDTO dto, ConstraintValidatorContext context)
+        public boolean isValid(ChangeAnchorDTO dto, ConstraintValidatorContext context)
         {
             if(dto.getNewParentId()==null) return true;
             return strRepo.parentHasCompatibleSousType(dto.getNewParentId(), dto.getNewTypeId());

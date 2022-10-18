@@ -92,7 +92,7 @@
                                                         <td>
                                                             <span class="m-0 p-0">
                                                                 <ol class="breadcrumb mb-1 p-1">
-                                                                    <li th:each="parent, status:${str.hierarchy}" th:classappend="${status.last ? 'active' : ''}" th:title="${parent.toString()}" class="breadcrumb-item"><a th:href="'/sigrh/structures/str-details/'+${parent.strId}">[[${parent.strSigle}]]</a></li>
+                                                                    <li th:each="parent, status:${str.hierarchy}" th:classappend="${status.last ? 'active' : ''}" th:title="${parent.toString()}" class="breadcrumb-item"><a th:href="'/sigrh/structures/str-details?strId='+${parent.strId}">[[${parent.strSigle}]]</a></li>
                                                                 </ol>
                                                             </span>
                                                         </td>
@@ -101,6 +101,7 @@
                                                             <a class="btn btn-sm btn-outline-warning mx-1" title="Modifier" th:href="@{'/sigrh/structures/update-str-form/'+${str.strId}}"><i class="bi bi-pencil text-sm"></i> </a>
                                                             <a class="btn btn-sm btn-outline-success mx-1" title="Voir" th:href="@{/sigrh/structures/str-details(strId=${str.strId})}"><i class="bi bi-eye text-sm"></i> </a>
                                                             <a class="btn btn-sm btn-outline-warning mx-1" th:title="'Ajouter des postes de travail dans la structure ' +${str.toString()}" th:href="@{'/sigrh/structures/add-posts-form?strId='+${str.strId}}"><i class="bi bi-person-workspace"></i></a>
+                                                            <a class="btn btn-sm btn-outline-warning mx-1" th:title="'Changer l\'ancrage institutionnel de la structure ' +${str.toString()}" th:href="@{'/sigrh/structures/change-anchor-form?strId='+${str.strId}}"><i class="bi bi-link"></i></a>
                                                             <a class="btn btn-sm btn-outline-danger mx-1" title="Supprimer" href="#" data-toggle="modal" th:data-target="${'#delete-confirmation-modal' + str.strId}"><i class="bi bi-trash text-sm"></i></a>
                                                             <div class="modal fade" th:id="${'delete-confirmation-modal' + str.strId}">
                                                                 <div class="modal-dialog">

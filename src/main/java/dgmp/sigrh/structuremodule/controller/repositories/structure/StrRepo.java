@@ -1,6 +1,7 @@
 package dgmp.sigrh.structuremodule.controller.repositories.structure;
 
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
+import dgmp.sigrh.structuremodule.model.dtos.str.ChangeAnchorDTO;
 import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -95,8 +96,17 @@ public interface StrRepo extends JpaRepository<Structure, Long>
     Page<Structure> searchStrByType(String key, Long typeId, PersistenceStatus status, Pageable pageable);
 
     // Structure dont le type a pour sous type, le type passé en paramètre
+    @Query("select s from Structure s where s.strType.typeId in (select tp.parent.typeId from TypeParam tp where tp.child.typeId = ?1 and tp.status = 'ACTIVE') and (s.strId = ?2 or locate(concat(function('getStrCode', ?2), '/'), s.strCode) = 1)  and s.status = 'ACTIVE'")
+    List<Structure> findByChildType(Long childTypeId, long visibility);
+
     @Query("select s from Structure s where s.strType.typeId in (select tp.parent.typeId from TypeParam tp where tp.child.typeId = ?1 and tp.status = 'ACTIVE') and s.status = 'ACTIVE'")
     List<Structure> findByChildType(Long childTypeId);
+
+    @Query("select s from Structure s where s.strType.typeId in (select tp.parent.typeId from TypeParam tp where tp.child.typeId = function('getStrTypeId', ?1) and tp.status = 'ACTIVE') and s.status = 'ACTIVE'")
+    List<Structure> findPossibleParents(Long strChildId);
+
+    @Query("select s from Structure s where s.strType.typeId in (select tp.parent.typeId from TypeParam tp where tp.child.typeId = function('getStrTypeId', ?1) and tp.status = 'ACTIVE') and (s.strId = ?2 or locate(concat(function('getStrCode', ?2), '/'), s.strCode) = 1)  and s.status = 'ACTIVE'")
+    List<Structure> findPossibleParents(Long childTypeId, long visibility);
 
     @Query("select ( count(str) > 0) from Structure str where str.strParent.strId = ?1 and str.strId = ?2")
     boolean isDirectParentOf(long parentId, long childId);
@@ -146,4 +156,7 @@ public interface StrRepo extends JpaRepository<Structure, Long>
 
     @Query("select max(s.strLevel) from Structure s where s.strCode like concat(?1, '/%') and s.status = 'ACTIVE'")
     long getChildrenMaxLevel(String strCode);
+
+    @Query("select new dgmp.sigrh.structuremodule.model.dtos.str.ChangeAnchorDTO(s.strId, s.strType.typeId, s.strParent.strId) from Structure s where s.strId = ?1")
+    ChangeAnchorDTO getChangeAnchorDTO(Long strId);
 }

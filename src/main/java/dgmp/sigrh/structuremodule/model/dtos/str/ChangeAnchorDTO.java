@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @CompatibleTypeAndParentStr
-public class ChangeAncrageDTO
+public class ChangeAnchorDTO
 {
     @ExistingStrId @NotNull(message = "L'ID de la structure ne peut être nul")
     private Long strId;

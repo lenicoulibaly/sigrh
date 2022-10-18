@@ -205,6 +205,33 @@ public class StrController
         return "structures/updateStrForm";
     }
 
+
+    @GetMapping(path = "/sigrh/structures/change-anchor-form")
+    public String gotoChangeAnchorForm(Model model, @RequestParam long strId)
+    {
+        ChangeAnchorDTO dto = strRepo.getChangeAnchorDTO(strId);
+        Long visibility = scm.getVisibilityId();
+
+        model.addAttribute("dto", dto != null ? dto : new ChangeAnchorDTO());
+        model.addAttribute("parents", visibility == null ? strRepo.findPossibleParents(strId) : strRepo.findPossibleParents(strId, visibility));
+        model.addAttribute("viewMode", "change-anchor");
+        return "structures/changeAnchorForm";
+    }
+
+    @PostMapping(path = "/sigrh/structures/str/changeAnchor")
+    public String ChangeAnchor(RedirectAttributes ra, Model model, @Valid ChangeAnchorDTO dto, BindingResult br)
+    {
+        if(br.hasErrors())
+        {
+            br.getFieldErrors().forEach(err->model.addAttribute(err.getField() + "ErrMsg", err.getDefaultMessage()));
+            br.getGlobalErrors().forEach(ge->model.addAttribute("globalErrMsg", ge.getDefaultMessage()));
+            return gotoStrUpdateForm(model, dto.getStrId());
+        }
+        strService.changeAncrage(dto);
+        ra.addAttribute("strId", dto.getStrId());
+        return "redirect:/sigrh/structures/str-details";
+    }
+
     @PostMapping(path = "/sigrh/structures/str/create")
     public String createStr(RedirectAttributes ra, Model model, @Valid CreateStrDTO dto, BindingResult br)
     {
@@ -234,9 +261,10 @@ public class StrController
     @GetMapping(path = "/sigrh/structures/child-type/{childTypeId}") @ResponseBody
     public List<ReadStrDTO> getStrByChildType(@PathVariable Long childTypeId)
     {
-        List<Structure> strs = strRepo.findByChildType(childTypeId);
+        Long visibility = scm.getVisibilityId();
+        List<Structure> strs = visibility == null ? strRepo.findByChildType(childTypeId) : strRepo.findByChildType(childTypeId, visibility);
         return strs.stream().map(str->{ReadStrDTO dto = strMapper.mapToReadStrDTO(str);
-            dto.setStrName(strService.getParents(str.getStrId()).stream().map(Structure::getStrSigle).reduce("",(s1, s2)->s1+"/"+s2).substring(1));
+            dto.setStrName(str.getStrName() + "(" +strService.getParents(str.getStrId()).stream().map(Structure::getStrSigle).reduce("",(s1, s2)->s1+"/"+s2).substring(1) + ")");
         return dto;}).collect(Collectors.toList());
     }
 

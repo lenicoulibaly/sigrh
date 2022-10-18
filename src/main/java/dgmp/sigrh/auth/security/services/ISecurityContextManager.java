@@ -15,6 +15,9 @@ public interface ISecurityContextManager
 
     String getAuthUsername();
     RoleToUserAss getCurrentRoleAss();
+
+    Long getVisibilityId();
+
     AppUserDetails getDetails();
 
     EventActorIdentifier getEventActorIdFromSCM();
