@@ -158,6 +158,7 @@ public class StrController
 
         model.addAttribute("viewMode", "details");
         ReadStrDTO str = strMapper.mapToReadStrDTO(strRepo.findById(strId).orElse(new Structure()));
+        str.setStrId(strId);
         str.setHierarchy(strService.getParents(strId));
         model.addAttribute("str",str);
 

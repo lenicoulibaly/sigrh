@@ -163,7 +163,7 @@ public interface StrRepo extends JpaRepository<Structure, Long>
     @Query("select max(s.strLevel) from Structure s where s.strCode like concat(?1, '/%') and s.status = 'ACTIVE'")
     Long getChildrenMaxLevel(String strCode);
 
-    @Query("select new dgmp.sigrh.structuremodule.model.dtos.str.ChangeAnchorDTO(s.strId, s.strType.typeId, s.strParent.strId) from Structure s where s.strId = ?1")
+    @Query("select new dgmp.sigrh.structuremodule.model.dtos.str.ChangeAnchorDTO(s.strId, s.strType.typeId, s.strParent.strId, s.strName, s.strSigle) from Structure s where s.strId = ?1")
     ChangeAnchorDTO getChangeAnchorDTO(Long strId);
 
     @Query("select s.strSigle from Structure s where (locate(concat(s.strCode, '/') , function('getStrCode', ?1)) = 1 or s.strId = ?1) and s.status = 'ACTIVE' order by s.strLevel asc ")
