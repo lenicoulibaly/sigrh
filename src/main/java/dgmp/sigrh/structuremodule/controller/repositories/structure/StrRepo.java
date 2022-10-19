@@ -47,6 +47,9 @@ public interface StrRepo extends JpaRepository<Structure, Long>
     @Query("select s from Structure s where locate(concat(function('getStrCode', ?1), '/') , s.strCode) = 1 and s.strLevel = ?2 and s.status = 'ACTIVE' order by s.strCode ASC")
     List<Structure> findChildrenByLevel(long strId, long strLevel);
 
+    @Query("select s from Structure s where locate(concat(?1, '/') , s.strCode) = 1 and s.strLevel = ?2 and s.status = 'ACTIVE' order by s.strCode ASC")
+    List<Structure> findChildrenByLevel(String strCode, long strLevel);
+
     //@Query("select s from Structure s, Structure s2 where s2.strId = ?1 and (locate(concat(s.strCode, '/') , s2.strCode) = 1 or s.strId = s2.strId)  and s.status = 'ACTIVE' order by s.strCode ASC")
     @Query("select s from Structure s where (locate(concat(s.strCode, '/') , function('getStrCode', ?1)) = 1 or s.strId = ?1)  and s.status = 'ACTIVE' order by s.strCode ASC")
     List<Structure> findAllParents(long strId);
@@ -56,6 +59,9 @@ public interface StrRepo extends JpaRepository<Structure, Long>
 
     @Query("select s.strCode from Structure s where s.strId = ?1 ")
     String getStrCode(long strId);
+
+    @Query("select s.strName from Structure s where s.strId = ?1 ")
+    String getStrName(long strId);
 
     @Procedure("getStrCode")
     String getStrCodeFromDbFunction(long strId);
@@ -155,8 +161,11 @@ public interface StrRepo extends JpaRepository<Structure, Long>
     String getStrTypeUniqueCode(long strId);
 
     @Query("select max(s.strLevel) from Structure s where s.strCode like concat(?1, '/%') and s.status = 'ACTIVE'")
-    long getChildrenMaxLevel(String strCode);
+    Long getChildrenMaxLevel(String strCode);
 
     @Query("select new dgmp.sigrh.structuremodule.model.dtos.str.ChangeAnchorDTO(s.strId, s.strType.typeId, s.strParent.strId) from Structure s where s.strId = ?1")
     ChangeAnchorDTO getChangeAnchorDTO(Long strId);
+
+    @Query("select s.strSigle from Structure s where (locate(concat(s.strCode, '/') , function('getStrCode', ?1)) = 1 or s.strId = ?1) and s.status = 'ACTIVE' order by s.strLevel asc ")
+    List<String> getHierarchySigles(Long strId);
 }

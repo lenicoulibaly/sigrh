@@ -19,7 +19,7 @@ public class StrHisto
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long histoId;
     private Long strId;
-    @Column(unique = true)
+    //@Column(unique = true)
     private String strCode;
     private String strName;
     private long strLevel;

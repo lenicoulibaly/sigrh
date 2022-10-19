@@ -29,6 +29,7 @@ public class ReadStrDTO
     private String respoName;
     private String respoMatricule;
     private List<Structure> hierarchy;
+    private String hierarchySigles;
 
     @Override
     public String toString()

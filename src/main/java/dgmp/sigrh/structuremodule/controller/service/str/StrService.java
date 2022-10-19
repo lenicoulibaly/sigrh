@@ -22,10 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static dgmp.sigrh.shared.model.enums.PersistenceStatus.ACTIVE;
@@ -100,22 +97,29 @@ public class StrService implements IStrService
     public ReadStrDTO changeAncrage(ChangeAnchorDTO dto)
     {
         String actionId = UUID.randomUUID().toString();
-
+        ChangeAnchorDTO dtoBeforeUpdate = strRepo.getChangeAnchorDTO(dto.getStrId());
         Structure str = strMapper.mapToStructure(dto);
-        str = strRepo.save(str);
+        if(dtoBeforeUpdate.equals(dto)) return strMapper.mapToReadStrDTO(str); // Si l'objet n'a pas été modifié, on ne fait aucune action
+
         String oldStrCode = str.getStrCode();
-        long childrenMaxLevel = strRepo.getChildrenMaxLevel(oldStrCode);
-        str.setStrCode(this.generateStrCode(str));
+        str = strRepo.save(str);
+        if(!Objects.equals(dtoBeforeUpdate.getNewParentId(), dto.getNewParentId()))
+        {
+            str.setStrCode(this.generateStrCode(str));
+            Long childrenMaxLevel = strRepo.getChildrenMaxLevel(oldStrCode);
+            childrenMaxLevel = childrenMaxLevel == null ? 0L : childrenMaxLevel;
+            for(long level = str.getStrLevel() + 1; level <= childrenMaxLevel; level++)
+            {
+                List<Structure> children = strRepo.findChildrenByLevel(oldStrCode, level);
+                children.forEach(s->{
+                    s.setStrCode(this.generateStrCode(s));
+                    s = strRepo.save(s);
+                    strHistoService.storeEntity(s, StrEventType.CHANGE_STR_CODE, actionId, StrEventType.CHANGE_STR_ANCHOR.name());
+                });
+            }
+        }
         strHistoService.storeEntity(str, StrEventType.CHANGE_STR_ANCHOR, actionId, StrEventType.CHANGE_STR_ANCHOR.name());
 
-        for(long level = str.getStrLevel() + 1; level <= childrenMaxLevel; level++)
-        {
-            strRepo.findChildrenByLevel(dto.getStrId(), level).forEach(s->{
-                s.setStrCode(this.generateStrCode(s));
-                s = strRepo.save(s);
-                strHistoService.storeEntity(s, StrEventType.CHANGE_STR_CODE, actionId, StrEventType.CHANGE_STR_ANCHOR.name());
-            });
-        }
         return strMapper.mapToReadStrDTO(str);
     }
 
@@ -199,6 +203,13 @@ public class StrService implements IStrService
         Structure str = strRepo.findById(strId).orElse(null);
         if(str == null) return  new ArrayList<>();
         return strRepo.findAllParents(strId);
+    }
+
+    @Override
+    public String getHierarchySigles(long strId)
+    {
+        if(!strRepo.existsById(strId)) return "/";
+        return strRepo.getHierarchySigles(strId).stream().reduce("", (s1, s2)->s1 + "/" + s2).substring(1);
     }
 
     @Override

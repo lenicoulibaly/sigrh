@@ -30,6 +30,15 @@ public abstract class StrMapper
     @Mapping(target = "respoMatricule", source ="strRespoPost.agent.matricule")
     public abstract ReadStrDTO mapToReadStrDTO(Structure str);
 
+    public ReadStrDTO mapToReadSimpleReadStrDto(Structure str)
+    {
+        ReadStrDTO str0 = new ReadStrDTO();
+        str0.setStrId(str.getStrId());
+        str0.setHierarchySigles(strRepo.getHierarchySigles(str.getStrId()).stream().reduce("", (s1, s2)->s1 + "/" + s2).substring(1));
+        str0.setStrName(strRepo.getStrName(str.getStrId()));
+        return str0;
+    }
+
 
     @Mapping(target = "strParent.strId", source = "parentId")
     @Mapping(target = "strType.typeId", source = "typeId")
@@ -68,5 +77,16 @@ public abstract class StrMapper
     public abstract StrHisto mapToStrHisto(Structure str, StrEventType eventType, EventActorIdentifier eai);
     @Mapping(target = "eai.actionId", source = "actionId")
     @Mapping(target = "eai.mainActionName", source = "mainActionName")
+    @Mapping(target = "eai.modificationDate", source = "eai.modificationDate")
+    @Mapping(target = "eai.modifierUserId", source = "eai.modifierUserId")
+    @Mapping(target = "eai.modifierUsername", source = "eai.modifierUsername")
+    @Mapping(target = "eai.modifierAssId", source = "eai.modifierAssId")
+    @Mapping(target = "eai.modifierStrId", source = "eai.modifierStrId")
+    @Mapping(target = "eai.modifierRoleId", source = "eai.modifierRoleId")
+    @Mapping(target = "eai.modifierRoleName", source = "eai.modifierRoleName")
+    @Mapping(target = "eai.agentId", source = "eai.agentId")
+    @Mapping(target = "eai.nom", source = "eai.nom")
+    @Mapping(target = "eai.prenom", source = "eai.prenom")
+    @Mapping(target = "eai.matricule", source = "eai.matricule")
     public abstract StrHisto mapToStrHisto(Structure str, StrEventType eventType, EventActorIdentifier eai, String actionId, String mainActionName);
 }

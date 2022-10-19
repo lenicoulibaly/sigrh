@@ -209,14 +209,19 @@ public class StrController
     @GetMapping(path = "/sigrh/structures/change-anchor-form")
     public String gotoChangeAnchorForm(Model model, @RequestParam long strId)
     {
+        ReadStrDTO str = new ReadStrDTO();
+        str.setHierarchySigles(strService.getHierarchySigles(strId));
+        str.setStrName(strRepo.getStrName(strId));
         ChangeAnchorDTO dto = strRepo.getChangeAnchorDTO(strId);
         Long visibility = scm.getVisibilityId();
 
+        model.addAttribute("str", str);
         model.addAttribute("dto", dto != null ? dto : new ChangeAnchorDTO());
-        model.addAttribute("parents", visibility == null ? strRepo.findPossibleParents(strId) : strRepo.findPossibleParents(strId, visibility));
+        model.addAttribute("parents", visibility == null ? strRepo.findPossibleParents(strId).stream().map(strMapper::mapToReadSimpleReadStrDto).collect(Collectors.toList()) : strRepo.findPossibleParents(strId, visibility).stream().map(strMapper::mapToReadSimpleReadStrDto).collect(Collectors.toList()));
         model.addAttribute("viewMode", "change-anchor");
         return "structures/changeAnchorForm";
     }
+
 
     @PostMapping(path = "/sigrh/structures/str/changeAnchor")
     public String ChangeAnchor(RedirectAttributes ra, Model model, @Valid ChangeAnchorDTO dto, BindingResult br)
@@ -255,7 +260,8 @@ public class StrController
             return gotoStrUpdateForm(model, dto.getStrId());
         }
         strService.updateStr(dto);
-        return "redirect:/sigrh/structures/str-details/"+dto.getStrId();
+        ra.addAttribute("strId", dto.getStrId());
+        return "redirect:/sigrh/structures/str-details";
     }
 
     @GetMapping(path = "/sigrh/structures/child-type/{childTypeId}") @ResponseBody

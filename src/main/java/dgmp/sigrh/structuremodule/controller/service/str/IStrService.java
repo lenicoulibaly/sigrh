@@ -25,7 +25,7 @@ public interface IStrService
     List<StrTreeView> loadStrTreeView(Long strId, String critere);
 
     List<Structure> getParents(Long strId);
-
+    String getHierarchySigles(long strId);
     boolean strHasAnyChildMatching(long strId, String key);
     boolean childBelongToParent(Long childId, Long parentId);
     boolean parentHasChild(Long parentId, Long childId);
