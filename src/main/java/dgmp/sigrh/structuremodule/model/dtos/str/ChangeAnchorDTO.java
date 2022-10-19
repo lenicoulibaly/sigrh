@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
@@ -19,6 +20,13 @@ public class ChangeAnchorDTO
     private Long newTypeId;
     @ExistingStrId @NotNull(message = "L'ID de la structure de tutelle ne peut être nul")
     private Long newParentId;
+
+    @Length(message = "Le nom de la structure doit contenir au moins 3 caractères", min = 3)
+    @NotNull(message = "Le nom de la structure ne peut être nul")
+    private String newStrName;
+
+    @NotNull(message = "Le sigle de la structure ne peut être nul")
+    private String newStrSigle;
 
     @Override
     public boolean equals(Object o)

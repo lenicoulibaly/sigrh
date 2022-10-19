@@ -44,12 +44,12 @@
                                                 </div>
                                                 <div class="col col-md-12 col-sm-12 ">
                                                     <div class="form-group">
-                                                        <label >Structure</label>
+                                                        <label >Ancien nom de la structure</label>
                                                         <input class="form-control font-weight-bold text-cyan" readonly th:value="${str.strName + '(' +str.hierarchySigles +')'} " />
                                                     </div>
                                                 </div>
 
-                                                <div class="col col-md-6 col-sm-6 ">
+                                                <div class="col col-md-6 col-sm-12 ">
                                                     <div class="form-group">
                                                         <label for="newTypeId">Type de structure</label> <small
                                                             th:if="${newTypeIdErrMsg}" class="text-danger">[[${newTypeIdErrMsg}]]</small>
@@ -60,14 +60,26 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col col-md-6 col-sm-6 ">
+                                                <div class="col col-md-6 col-sm-12 ">
                                                     <div class="form-group">
-                                                        <label for="newParentId">Tutelle</label> <small
-                                                            th:if="${newParentIdErrMsg}" class="text-danger">[[${newParentIdErrMsg}]]</small>
+                                                        <label for="newParentId">Tutelle</label> <small th:if="${newParentIdErrMsg}" class="text-danger">[[${newParentIdErrMsg}]]</small>
                                                         <select th:classappend="${newParentIdErrMsg} ? 'border-danger' : ''" th:field="*{newParentId}" class="form-control select2bs4" id="newParentId">
                                                             <option value="" >Choisir la nouvelle tutelle</option>
                                                             <option th:each="parent : ${parents}" th:value="${parent.strId}" >[[${parent.strName}]]([[${parent.hierarchySigles}]])</option>
                                                         </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col col-md-6 col-sm-12 ">
+                                                    <div class="form-group">
+                                                        <label>Nouveau nom de la structure</label>  <small th:if="${newStrNameErrMsg}" class="text-danger">[[${newStrNameErrMsg}]]</small>
+                                                        <input class="form-control" th:field="*{newStrName}" />
+                                                    </div>
+                                                </div>
+                                                <div class="col col-md-6 col-sm-12 ">
+                                                    <div class="form-group">
+                                                        <label>Nouveau sigle de la structure</label>  <small th:if="${newStrSigleErrMsg}" class="text-danger">[[${newStrSigleErrMsg}]]</small>
+                                                        <input class="form-control" th:field="*{newStrSigle}" />
                                                     </div>
                                                 </div>
                                             </div>

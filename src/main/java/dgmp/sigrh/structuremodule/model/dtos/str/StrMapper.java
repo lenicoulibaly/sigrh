@@ -71,6 +71,8 @@ public abstract class StrMapper
         loadedStructure.setStrType(new Type(dto.getNewTypeId()));
         loadedStructure.setStrParent(dto.getNewParentId() == null ? null : new Structure(dto.getNewParentId()));
         loadedStructure.setStrLevel(dto.getNewParentId() == null ? 0 : strRepo.getStrLevel(dto.getNewParentId())+1);
+        loadedStructure.setStrName(dto.getNewStrName());
+        loadedStructure.setStrSigle(dto.getNewStrSigle());
         return loadedStructure;
     }
 
