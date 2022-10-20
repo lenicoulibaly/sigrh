@@ -138,7 +138,8 @@ public class StrController
     @GetMapping(path = "/sigrh/structures/str-details")
     public String gotoStrDetails(Model model, @RequestParam(defaultValue = "0") Long strId, @RequestParam(defaultValue = "str-details")String tab
             , @RequestParam(defaultValue = "") String persKey, @RequestParam(defaultValue = "0") int persPageNum, @RequestParam(defaultValue = "10") int persPageSize
-            , @RequestParam(defaultValue = "") String pgKey, @RequestParam(defaultValue = "0") int pgPageNum, @RequestParam(defaultValue = "10") int pgPageSize)
+            , @RequestParam(defaultValue = "") String pgKey, @RequestParam(defaultValue = "0") int pgPageNum, @RequestParam(defaultValue = "10") int pgPageSize
+            , String modifierUsername, @RequestParam(defaultValue = "  ") List<String> eventTypes, @RequestParam(defaultValue = "0") int strHistoPageNum, @RequestParam(defaultValue = "10") int strHistoPageSize)
     {
         Page<ReadAgentDTO> persPages = agentService.searchAgentByStrAndEtat(strId, EtatRecrutement.getWithUs(true), persKey, PageRequest.of(persPageNum, persPageSize));
         model.addAttribute("persPageNum", persPageNum);
@@ -155,6 +156,14 @@ public class StrController
         model.addAttribute("pgKey", pgKey);
         model.addAttribute("pgPages", new long[pgPages.getTotalPages()]);
         model.addAttribute("posts", pgPages);
+
+        /*Page<ReadPostDTO> pgPages = postService.searchPostsByStr(strId, pgKey, pgPageNum, pgPageSize);
+        model.addAttribute("pgPageNum", pgPageNum);
+        model.addAttribute("pgCurrentPage", pgPageNum);
+        model.addAttribute("pgPageSize", pgPageSize);
+        model.addAttribute("pgKey", pgKey);
+        model.addAttribute("pgPages", new long[pgPages.getTotalPages()]);
+        model.addAttribute("posts", pgPages);*/
 
         model.addAttribute("viewMode", "details");
         ReadStrDTO str = strMapper.mapToReadStrDTO(strRepo.findById(strId).orElse(new Structure()));
@@ -211,6 +220,7 @@ public class StrController
     public String gotoChangeAnchorForm(Model model, @RequestParam long strId)
     {
         ReadStrDTO str = new ReadStrDTO();
+        str.setStrId(strId);
         str.setHierarchySigles(strService.getHierarchySigles(strId));
         str.setStrName(strRepo.getStrName(strId));
         ChangeAnchorDTO dto = strRepo.getChangeAnchorDTO(strId);

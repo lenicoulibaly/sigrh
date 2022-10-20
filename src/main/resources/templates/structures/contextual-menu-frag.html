@@ -9,7 +9,7 @@
                 <span th:fragment="contextual-menu">
                     <ul class="list-group list-group-unbordered mb-3" th:if="${str}">
                         <li class="list-group-item" th:if="${viewMode!='details' && viewMode != 'new' && viewMode != 'trash'}">
-                            <a th:href="@{'/sigrh/structures/str-details/'+${str.strId}}" th:title="'Voir le détail de la structure ' +${str.strName}">
+                            <a th:href="@{'/sigrh/structures/str-details?strId='+${str.strId}}" th:title="'Voir le détail de la structure ' +${str.strName}">
                                 <b>Voir le détail</b> <i class="float-right bi bi-eye-fill"></i>
                             </a>
                         </li>
@@ -18,6 +18,13 @@
                                 <b>Modifier</b> <i class="float-right bi bi-pencil-fill"></i>
                             </a>
                         </li>
+
+                        <li class="list-group-item" th:if="${viewMode != 'new' && viewMode != 'trash' && viewMode != 'change-anchor'}">
+                            <a th:title="'Changer l\'ancrage institutionnel de la structure ' +${str.toString()}" th:href="@{'/sigrh/structures/change-anchor-form?strId='+${str.strId}}">
+                                <b>Changer l'ancrage institutionnel</b> <i class="float-right bi bi-link"></i>
+                            </a>
+                        </li>
+
                         <li class="list-group-item" th:if="${viewMode!='config' && viewMode != 'new' && viewMode != 'trash'}">
                             <a th:href="@{/sigrh/structures/add-posts-form(strId=${str.strId})}" th:title="'Créer de nouveaux postes au sein de la structure ' +${str.strName}">
                                 <b>Créer de nouveaux postes</b> <i class="float-right bi bi-gear-fill"></i>

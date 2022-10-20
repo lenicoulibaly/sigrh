@@ -36,10 +36,13 @@
     </th:block>
         <div layout:fragment="content">
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-12">
                             <!-- Profile Image -->
                             <div class="card card-primary card-outline">
-                                <div class="card-body box-profile">
+                                <div class="card-header" style="cursor: pointer;" data-toggle="collapse" data-target="#str-general-infos">
+                                    <h4 class="font-weight-bold text-blue">Informations générales<!-- sur <span class="text-success">[[${str.strName}]] ([[${str.strSigle}]])</span>--></h4>
+                                </div>
+                                <div class="card-body box-profile collapse" id="str-general-infos">
                                     <div class="text-center">
                                         <img class="profile-user-img img-fluid img-circle"
                                              th:src="@{/dist/img/user4-128x128.jpg}"
@@ -67,16 +70,8 @@
                                 <!-- /.card-body -->
                             </div>
 
-                            <div class="card card-primary">
-                                <div class="card-header">
-                                    <h3 class="card-title">Menu contextuel</h3>
-                                </div>
-                                <div class="card-body box-profile">
-                                    <th:block th:replace="structures/contextual-menu-frag::contextual-menu"/>
-                                </div>
-                            </div>
                         </div>
-                        <div class="col-md-9">
+                        <div class="col-md-12">
                             <div class="card card-primary card-tabs">
                                 <div class="card-header p-0 pt-1 border-bottom-0">
                                     <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
@@ -95,6 +90,10 @@
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" th:classappend="${tab=='str-histo' ? 'active' : ''}" data-toggle="pill" href="#modifications-story" role="tab" aria-controls="custom-tabs-two-profile" aria-selected="false">Historique des modifications</a>
+                                        </li>
+
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:classappend="${tab=='actions' ? 'active' : ''}" data-toggle="pill" href="#actions" role="tab" aria-controls="custom-tabs-two-profile" aria-selected="false">Actions</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -336,7 +335,23 @@
                                                     </div>
                                                     <!-- /.card -->
                                         </div>
-                                        <div class="tab-pane fade" th:classappend="${tab=='str-histo' ? 'active show' : ''}" id="modifications-strory" role="tabpanel" aria-labelledby="custom-tabs-two-profile-tab">
+                                        <div class="tab-pane fade" th:classappend="${tab=='str-histo' ? 'active show' : ''}" id="modifications-story" role="tabpanel" aria-labelledby="custom-tabs-two-profile-tab">
+                                            <div class="card-header">
+                                                <h3 class="card-title">
+                                                    [[${structures.getNumberOfElements()}]] items affichés sur [[${structures.getTotalElements()}]]
+                                                </h3>
+
+                                                <div class="card-tools">
+                                                    <ul class="pagination pagination-sm float-right">
+                                                        <li th:title="Début" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-list(pageNum=0, key=${key})}">&laquo;&laquo;</a></li>
+                                                        <li  th:title="Précédant" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-list(pageNum=${currentPage > 0 ? currentPage-1 : 0}, key=${key})}">&laquo;</a></li>
+                                                        <li th:each="page, status:${pages}" class="page-item" th:classappend="${status.index == currentPage ? 'active' : T(java.lang.Math).abs(status.index - currentPage) < 4 ? '' : 'd-none'}"><a class="page-link" th:href="@{/sigrh/structures/str-list(pageNum=${status.index}, key=${key})}">[[${status.count}]]</a></li>
+                                                        <li th:title="Suivant" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-list(pageNum=${currentPage < pages.length-1 ? currentPage+1 : pages.length-1}, key=${key})}">&raquo;</a></li>
+                                                        <li th:title="Fin" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-list(pageNum= ${pages.length-1}, key=${key})}">&raquo;&raquo;</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+
                                             <table class="table table-hover table-striped">
                                                 <thead>
                                                 <tr>
@@ -359,6 +374,10 @@
                                             </table>
                                         </div>
 
+
+                                        <div class="tab-pane fade" th:classappend="${tab=='actions' ? 'active show' : ''}" id="actions" role="tabpanel" aria-labelledby="custom-tabs-two-profile-tab">
+                                            <th:block th:replace="structures/contextual-menu-frag::contextual-menu"/>
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- /.card -->
