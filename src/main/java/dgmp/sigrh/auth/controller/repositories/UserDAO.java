@@ -18,6 +18,12 @@ public interface UserDAO extends JpaRepository<AppUser, Long>
 
     boolean existsByUserIdAndUsername(Long userId, String username);
 
+    @Query("select u from AppUser u left join Structure s on u.structure.strId = s.strId where locate(concat(function('getStrCode', coalesce(?1, s.strId)), '/') , s.strCode) = 1 or coalesce(?1, s.strId) = s.strId ")
+    List<AppUser> findUserUnderStr(Long strId);
+
+    @Query("select u from AppUser u left join Structure s on u.structure.strId = s.strId where locate(concat(coalesce(?1, s.strCode) , '/'), s.strCode) = 1 or coalesce(?1, s.strCode) = s.strCode")
+    List<AppUser> findUserUnderStr(String strCode);
+
     @Query("select a from AppUser a order by a.creationDate DESC")
     Page<AppUser> getUsersPage(Pageable pageable);
 

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Entity
@@ -27,7 +28,7 @@ public class StrHisto
     @ManyToOne @JoinColumn(name = "PARENT_ID")
     private Structure strParent;
     @ManyToOne @JoinColumn(name="ID_TYPE_UA")
-    private Type typeStructure;
+    private Type strType;
 
     private String strTel;
     private String strAddress;
@@ -45,4 +46,7 @@ public class StrHisto
     private StrEventType eventType;
     @Embedded
     private EventActorIdentifier eai;
+
+    @Transient
+    private List<Structure> hierarchy;
 }

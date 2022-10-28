@@ -5,6 +5,7 @@ import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
 import dgmp.sigrh.typemodule.model.entities.Type;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IStrService
@@ -25,7 +26,9 @@ public interface IStrService
     List<StrTreeView> loadStrTreeView(Long strId, String critere);
 
     List<Structure> getParents(Long strId);
+    List<Structure> getHistoParents(Long strId, LocalDateTime dateTime);
     String getHierarchySigles(long strId);
+    String getHistoHierarchySigles(long strId, LocalDateTime dateTime);
     boolean strHasAnyChildMatching(long strId, String key);
     boolean childBelongToParent(Long childId, Long parentId);
     boolean parentHasChild(Long parentId, Long childId);

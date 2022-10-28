@@ -2,6 +2,9 @@ package dgmp.sigrh.structuremodule.model.events;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.lang3.EnumUtils;
+
+import java.util.List;
 
 @Getter @AllArgsConstructor
 public enum StrEventType
@@ -13,4 +16,14 @@ public enum StrEventType
     CHANGE_STR_ANCHOR("Changement d'ancrage institutionel"),
     CHANGE_STR_CODE("Modification du code structure");
     private String event;
+
+    public static List<StrEventType> getAll()
+    {
+        return EnumUtils.getEnumList(StrEventType.class);
+    }
+
+    public static StrEventType getEnum(String name)
+    {
+        return EnumUtils.getEnum(StrEventType.class, name);
+    }
 }

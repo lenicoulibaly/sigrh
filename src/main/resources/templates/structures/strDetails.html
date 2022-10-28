@@ -102,15 +102,15 @@
                                         <div class="tab-pane fade" th:classappend="${tab=='str-details' ? 'active show' : ''}" id="str-details" role="tabpanel" aria-labelledby="custom-tabs-two-home-tab">
                                             <table class="table table-bordered table-sm">
                                                 <tr>
-                                                    <td class="text-right text-bold" style="width: 50%">Le responsable</td>
+                                                    <td class="text-right text-bold" style="width: 30%">Le responsable</td>
                                                     <td class="text-left">[[${str.respoName}]]</td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="text-right text-bold" style="width: 50%">Intitulé</td>
+                                                    <td class="text-right text-bold" style="">Intitulé</td>
                                                     <td class="text-left">[[${str.strName}]]</td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="text-right text-bold" style="width: 50%">Sigle</td>
+                                                    <td class="text-right text-bold" style="">Sigle</td>
                                                     <td class="text-left">[[${str.strSigle}]]</td>
                                                 </tr>
                                                 <tr>
@@ -128,11 +128,11 @@
                                                     </span></td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="text-right text-bold" style="width: 50%">Tel</td>
+                                                    <td class="text-right text-bold" style="">Tel</td>
                                                     <td class="text-left">[[${str.strTel}]]</td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="text-right text-bold" style="width: 50%">Adresse</td>
+                                                    <td class="text-right text-bold" style="">Adresse</td>
                                                     <td class="text-left">[[${str.strAddress}]]</td>
                                                 </tr>
                                                 <tr>
@@ -267,31 +267,13 @@
                                                         <!-- /.card-header -->
                                                         <div class="card-body p-0">
 
-                                                            <form class="form-horizontal" th:action="@{/sigrh/structures/str-details}">
+                                                            <form th:action="@{/sigrh/structures/str-details}">
                                                                 <div class="card-body mt-2 m-0 p-0">
                                                                     <div class="form-group row">
                                                                         <input type="hidden" th:value="${str.strId}" name="strId">
                                                                         <input type="hidden" th:value="${pgCurrentPage}" name="pageNum">
                                                                         <input type="hidden" th:value="0" name="navigating">
                                                                         <input type="hidden" th:value="str-posts-list" name="tab">
-
-                                                                        <div class="col-md-12 mx-0 ml-3 p-0" style="display: inline">
-                                                                            <table class="d-inline">
-                                                                                <tr>
-                                                                                    <td >
-                                                                                        <a id="lnk-reinitialize" th:href="@{/sigrh/structures/str-details(strId=${str.strId}, pgPageNum=0, pgKey='', tab='str-posts-list')}" class="btn btn-primary" >Réinitialiser</a>
-                                                                                    </td>
-                                                                                    <td style="width: 500px;">
-                                                                                        <input type="text" style="height: 40px;"  class="form-control p-0 m-0" th:value="${pgKey}" name="pgKey" id="pgKey" placeholder="Rechercher une structure">
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <button class=" btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
-                                                                                    </td>
-                                                                                </tr>
-                                                                            </table>
-                                                                            <a id="lnk-new-post" th:href="@{/sigrh/posts/new-post-form}" class="btn btn-primary float-right mr-4" >Nouvelle structure</a>
-                                                                        </div>
-
                                                                     </div>
                                                                 </div>
                                                             </form>
@@ -338,37 +320,124 @@
                                         <div class="tab-pane fade" th:classappend="${tab=='str-histo' ? 'active show' : ''}" id="modifications-story" role="tabpanel" aria-labelledby="custom-tabs-two-profile-tab">
                                             <div class="card-header">
                                                 <h3 class="card-title">
-                                                    [[${structures.getNumberOfElements()}]] items affichés sur [[${structures.getTotalElements()}]]
+                                                    [[${modificationList.getNumberOfElements()}]] items affichés sur [[${modificationList.getTotalElements()}]]
                                                 </h3>
 
                                                 <div class="card-tools">
                                                     <ul class="pagination pagination-sm float-right">
-                                                        <li th:title="Début" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-list(pageNum=0, key=${key})}">&laquo;&laquo;</a></li>
-                                                        <li  th:title="Précédant" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-list(pageNum=${currentPage > 0 ? currentPage-1 : 0}, key=${key})}">&laquo;</a></li>
-                                                        <li th:each="page, status:${pages}" class="page-item" th:classappend="${status.index == currentPage ? 'active' : T(java.lang.Math).abs(status.index - currentPage) < 4 ? '' : 'd-none'}"><a class="page-link" th:href="@{/sigrh/structures/str-list(pageNum=${status.index}, key=${key})}">[[${status.count}]]</a></li>
-                                                        <li th:title="Suivant" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-list(pageNum=${currentPage < pages.length-1 ? currentPage+1 : pages.length-1}, key=${key})}">&raquo;</a></li>
-                                                        <li th:title="Fin" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-list(pageNum= ${pages.length-1}, key=${key})}">&raquo;&raquo;</a></li>
+                                                        <li th:title="Début" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-details(strId=${str.strId}, modifierUsername=${modifierUsername}, eventTypes = ${eventTypes}, strHistoPageNum=0, befor=${befor}, after=${after}, tab='str-histo')}">&laquo;&laquo;</a></li>
+                                                        <li  th:title="Précédant" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-details(strId=${str.strId}, modifierUsername=${modifierUsername}, eventTypes = ${eventTypes}, strHistoPageNum=${strHistoCurrentPage > 0 ? strHistoCurrentPage-1 : 0}, befor=${befor}, after=${after}, tab='str-histo')}">&laquo;</a></li>
+                                                        <li th:each="page, status:${strHistoPages}" class="page-item" th:classappend="${status.index == strHistoCurrentPage ? 'active' : T(java.lang.Math).abs(status.index - strHistoCurrentPage) < 4 ? '' : 'd-none'}"><a class="page-link" th:href="@{/sigrh/structures/str-details(strId=${str.strId}, modifierUsername=${modifierUsername}, eventTypes = ${eventTypes}, strHistoPageNum=${status.index}, before=${before}, after=${after}, tab='str-histo')}">[[${status.count}]]</a></li>
+                                                        <li th:title="Suivant" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-details(strId=${str.strId}, modifierUsername=${modifierUsername}, eventTypes = ${eventTypes},strHistoPageNum=${strHistoCurrentPage < strHistoPages.length-1 ? strHistoCurrentPage+1 : strHistoPages.length-1}, befor=${befor}, after=${after}, tab='str-histo')}">&raquo;</a></li>
+                                                        <li th:title="Fin" class="page-item"><a class="page-link" th:href="@{/sigrh/structures/str-details(strId=${str.strId}, modifierUsername=${modifierUsername}, eventTypes = ${eventTypes},strHistoPageNum= ${strHistoPages.length-1}, befor=${befor}, after=${after}, tab='str-histo')}">&raquo;&raquo;</a></li>
                                                     </ul>
                                                 </div>
                                             </div>
 
+                                            <form th:action="@{/sigrh/structures/str-details}">
+                                                <div class="card-body mt-2 m-0 p-0">
+                                                    <div class="form-group row">
+                                                        <input type="hidden" th:value="${str.strId}" name="strId">
+                                                        <input type="hidden" th:value="0" name="strHistoPageNum">
+                                                        <input type="hidden" th:value="${strHistoCurrentPage}" name="strHistoCurrentPage">
+                                                        <input type="hidden" th:value="str-histo" name="tab">
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-11">
+                                                            <div class="row">
+                                                                <div class="col-lg-3 col-md-6 xs-12">
+                                                                    <div class="form-group">
+                                                                        <label for="utilisateur">Utilisateur</label>
+                                                                        <select id="utilisateur" th:value="${modifierUsername}"
+                                                                                name="modifierUsername"
+                                                                                class="form-control select2bs4">
+                                                                            <option value="">Tous les
+                                                                                utilisateurs
+                                                                            </option>
+                                                                            <option th:each="user : ${users}"  th:value="${user.username}" th:text="${user.username}" th:selected="${modifierUsername == user.username}" />
+
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-lg-3 col-md-6 xs-12">
+                                                                    <div class="form-group">
+                                                                        <label for="eventTypesList">Type
+                                                                            d'actions</label>
+                                                                        <select id="eventTypesList"
+                                                                                name="eventTypes"
+                                                                                class="form-control select2bs4"
+                                                                                multiple>
+                                                                            <option value="">Tous les types
+                                                                                d'actions
+                                                                            </option>
+                                                                            <option th:each="type:${eventTypesList}" th:selected="${eventTypes == null ? false : eventTypes.contains(type.name)}"
+                                                                                    th:value="${type.name}">
+                                                                                [[${type.event}]]
+                                                                            </option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-lg-3 col-md-6 xs-12">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label"
+                                                                               for="after">Après le</label>
+                                                                        <input class="form-control" th:value="${after}"
+                                                                               type="date" name="after"
+                                                                               id="after">
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-lg-3 col-md-6 xs-12">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label"
+                                                                               for="before">Avant le</label>
+                                                                        <input class="form-control" th:value="${before}"
+                                                                               type="date" name="before"
+                                                                               id="before">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-1">
+                                                            <button type="submit" title="rechercher" class="btn btn-primary" style="margin-top: 30px;">
+                                                                <i class="bi bi-search"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+
                                             <table class="table table-hover table-striped">
                                                 <thead>
                                                 <tr>
-                                                    <th>Intitulé du post</th>
-                                                    <th>Nombre</th>
-                                                    <th>Occupés</th>
-                                                    <th>Vscants</th>
+                                                    <th>Nom</th>
+                                                    <th>Hierarchie</th>
+                                                    <th>Tel</th>
+                                                    <th>Site Géo</th>
                                                     <th>Action</th>
+                                                    <th>Acteur</th>
+                                                    <th>Date action</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td ></td>
+                                                <tr th:each="histo, status : ${modificationList.getContent()}">
+                                                    <td th:class="${modificationList.getContent().get(status.last ? status.count-1 : status.index+1).strName == histo.strName || modificationList.getContent().get(status.last ? status.count-1 : status.index+1).strSigle == histo.strSigle ? '' : 'text-danger'}" >[[${histo.strName}]] ([[${histo.strSigle}]])</td>
+                                                    <td>
+                                                        <span class="text-left">
+                                                        <span class="m-0 p-0">
+                                                                <ol class="breadcrumb mb-1 p-1">
+                                                                    <li th:each="parent, status:${histo.hierarchy}" th:classappend="${status.last ? 'active' : ''}" th:title="${parent.toString()}" class="breadcrumb-item"><a th:href="@{/sigrh/structures/str-details(strId=${parent.strId})}">[[${parent.strSigle}]]</a></li>
+                                                                </ol>
+                                                            </span>
+                                                    </span>
+                                                    </td>
+                                                    <td modificationList.getContent().get(status.last ? status.count-1 : status.index+1).strTel == histo.strTel>[[${histo.strTel}]]</td>
+                                                    <td modificationList.getContent().get(status.last ? status.count-1 : status.index+1).strTel == histo.strTel>[[${histo.situationGeo}]]</td>
+                                                    <td>[[${histo.eventType.event}]]</td>
+                                                    <td>[[${histo.eai.modifierUsername}]]</td>
+                                                    <td >[[${#temporals.format(histo.eai.modificationDate, 'dd-MM-yyyy HH:mm:ss')}]]</td>
                                                 </tr>
                                                 </tbody>
                                             </table>

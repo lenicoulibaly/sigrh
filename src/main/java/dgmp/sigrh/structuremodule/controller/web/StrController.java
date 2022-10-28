@@ -3,10 +3,13 @@ package dgmp.sigrh.structuremodule.controller.web;
 import dgmp.sigrh.agentmodule.controller.services.IAgentService;
 import dgmp.sigrh.agentmodule.model.dtos.ReadAgentDTO;
 import dgmp.sigrh.agentmodule.model.enums.EtatRecrutement;
+import dgmp.sigrh.auth.controller.repositories.UserDAO;
 import dgmp.sigrh.auth.security.services.SecurityContextManager;
+import dgmp.sigrh.shared.utilities.DateParser;
 import dgmp.sigrh.structuremodule.controller.repositories.post.PostGroupRepo;
 import dgmp.sigrh.structuremodule.controller.repositories.post.PostParamRepo;
 import dgmp.sigrh.structuremodule.controller.repositories.post.PostRepo;
+import dgmp.sigrh.structuremodule.controller.repositories.structure.StrHistoRepo;
 import dgmp.sigrh.structuremodule.controller.repositories.structure.StrRepo;
 import dgmp.sigrh.structuremodule.controller.service.post.IPostService;
 import dgmp.sigrh.structuremodule.controller.service.str.IStrService;
@@ -16,7 +19,9 @@ import dgmp.sigrh.structuremodule.model.dtos.post.ReadPostDTO;
 import dgmp.sigrh.structuremodule.model.dtos.post.UpdatePostDTO;
 import dgmp.sigrh.structuremodule.model.dtos.str.*;
 import dgmp.sigrh.structuremodule.model.entities.post.PostGroup;
+import dgmp.sigrh.structuremodule.model.entities.structure.StrHisto;
 import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
+import dgmp.sigrh.structuremodule.model.events.StrEventType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +32,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,6 +53,8 @@ public class StrController
     private final IAgentService agentService;
     private final IPostService postService;
     private final PostParamRepo ppRepo;
+    private final StrHistoRepo strHistoRepo;
+    private final UserDAO userDAO;
 
     @GetMapping(path = "/sigrh/structures")
     public String gotoStrLayout(Model model)
@@ -139,8 +148,11 @@ public class StrController
     public String gotoStrDetails(Model model, @RequestParam(defaultValue = "0") Long strId, @RequestParam(defaultValue = "str-details")String tab
             , @RequestParam(defaultValue = "") String persKey, @RequestParam(defaultValue = "0") int persPageNum, @RequestParam(defaultValue = "10") int persPageSize
             , @RequestParam(defaultValue = "") String pgKey, @RequestParam(defaultValue = "0") int pgPageNum, @RequestParam(defaultValue = "10") int pgPageSize
-            , String modifierUsername, @RequestParam(defaultValue = "  ") List<String> eventTypes, @RequestParam(defaultValue = "0") int strHistoPageNum, @RequestParam(defaultValue = "10") int strHistoPageSize)
+            , @RequestParam(required = false) String modifierUsername, @RequestParam(required = false) ArrayList<String> eventTypes, @RequestParam(defaultValue = "0") int strHistoPageNum, @RequestParam(defaultValue = "10") int strHistoPageSize,
+              @RequestParam(defaultValue = "#{T(java.time.LocalDateTime).now().plusDays(1)}") String before,
+              @RequestParam(defaultValue = "#{T(java.time.LocalDateTime).now().minusYears(2)}") String after)
     {
+
         Page<ReadAgentDTO> persPages = agentService.searchAgentByStrAndEtat(strId, EtatRecrutement.getWithUs(true), persKey, PageRequest.of(persPageNum, persPageSize));
         model.addAttribute("persPageNum", persPageNum);
         model.addAttribute("persCurrentPage", persPageNum);
@@ -157,13 +169,25 @@ public class StrController
         model.addAttribute("pgPages", new long[pgPages.getTotalPages()]);
         model.addAttribute("posts", pgPages);
 
-        /*Page<ReadPostDTO> pgPages = postService.searchPostsByStr(strId, pgKey, pgPageNum, pgPageSize);
-        model.addAttribute("pgPageNum", pgPageNum);
-        model.addAttribute("pgCurrentPage", pgPageNum);
-        model.addAttribute("pgPageSize", pgPageSize);
-        model.addAttribute("pgKey", pgKey);
-        model.addAttribute("pgPages", new long[pgPages.getTotalPages()]);
-        model.addAttribute("posts", pgPages);*/
+        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter beforeFormatter = DateTimeFormatter.ofPattern(DateParser.determineDateFormat(before));
+        DateTimeFormatter afterFormatter = DateTimeFormatter.ofPattern(DateParser.determineDateFormat(after));
+        modifierUsername = modifierUsername == null ? null : modifierUsername.trim().equals("") ? null : modifierUsername;
+        Page<StrHisto> strHistoPages = strHistoRepo.getHistoPageBetweenPeriod(strId, modifierUsername, eventTypes == null ? StrEventType.getAll() : eventTypes.isEmpty() ? StrEventType.getAll() : eventTypes.stream().map(StrEventType::getEnum).collect(Collectors.toList()), LocalDate.parse(before, beforeFormatter), LocalDate.parse(after, afterFormatter),  PageRequest.of(strHistoPageNum, strHistoPageSize));
+        strHistoPages.forEach(histo->histo.setHierarchy(strService.getHistoParents(strId, histo.getEai().getModificationDate())));
+        model.addAttribute("strHistoPageNum", strHistoPageNum);
+        model.addAttribute("strHistoCurrentPage", strHistoPageNum);
+        model.addAttribute("strHistoPageSize", strHistoPageSize);
+        model.addAttribute("modifierUsername", modifierUsername);
+        model.addAttribute("eventTypes", eventTypes);
+        model.addAttribute("before", before);
+        model.addAttribute("after", after);
+        model.addAttribute("strHistoPages", new long[strHistoPages.getTotalPages()]);
+        model.addAttribute("modificationList", strHistoPages);
+        Long visibility = scm.getVisibilityId();
+        model.addAttribute("users", visibility == null ? userDAO.findAll() : userDAO.findUserUnderStr(visibility));
+        model.addAttribute("eventTypesList", StrEventType.getAll());
 
         model.addAttribute("viewMode", "details");
         ReadStrDTO str = strMapper.mapToReadStrDTO(strRepo.findById(strId).orElse(new Structure()));

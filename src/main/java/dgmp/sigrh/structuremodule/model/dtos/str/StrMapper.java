@@ -76,6 +76,10 @@ public abstract class StrMapper
         return loadedStructure;
     }
 
+    public abstract Structure mapToStructure(StrHisto histo);
+
+    //====================================
+
     public abstract StrHisto mapToStrHisto(Structure str, StrEventType eventType, EventActorIdentifier eai);
     @Mapping(target = "eai.actionId", source = "actionId")
     @Mapping(target = "eai.mainActionName", source = "mainActionName")

@@ -3,7 +3,7 @@ package dgmp.sigrh.structuremodule.controller.service.str;
 import dgmp.sigrh.brokermodule.services.IHistoService;
 import dgmp.sigrh.shared.controller.exception.AppException;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
-import dgmp.sigrh.structuremodule.controller.repositories.post.PostRepo;
+import dgmp.sigrh.structuremodule.controller.repositories.structure.StrHistoRepo;
 import dgmp.sigrh.structuremodule.controller.repositories.structure.StrRepo;
 import dgmp.sigrh.structuremodule.model.dtos.str.*;
 import dgmp.sigrh.structuremodule.model.entities.structure.StrHisto;
@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,7 @@ public class StrService implements IStrService
     private final StrRepo strRepo;
     private final StrMapper strMapper;
     private final TypeRepo typeRepo;
-    private final PostRepo postRepo;
+    private final StrHistoRepo strHistoRepo;
     private final IHistoService<Structure, StrHisto, StrEventType> strHistoService;
     @PersistenceContext
     private EntityManager em;
@@ -185,18 +186,6 @@ public class StrService implements IStrService
         return Arrays.asList(strTreeView);
     }
 
-    /*
-    @Override
-    public long countVacantPosts(Long strId)
-    {
-        return this.getAllChildren(strId).stream().map(str->postRepo.countVacantByStr(str.getStrId())).reduce(0L, (nb1, nb2)->nb1+nb2);
-    }
-
-    @Override
-    public long countNoneVacantPosts(Long strId) {
-        return this.getAllChildren(strId).stream().map(str->postRepo.countNoneVacantByStr(str.getStrId())).reduce(0L, (nb1, nb2)->nb1+nb2);
-    }*/
-
     @Override
     public List<Structure> getParents(Long strId)
     {
@@ -206,10 +195,23 @@ public class StrService implements IStrService
     }
 
     @Override
+    public List<Structure> getHistoParents(Long strId, LocalDateTime dateTime)
+    {
+        return strHistoRepo.getStrHistoParents(strId, dateTime).stream().map(strMapper::mapToStructure).collect(Collectors.toList());
+    }
+
+    @Override
     public String getHierarchySigles(long strId)
     {
         if(!strRepo.existsById(strId)) return "/";
         return strRepo.getHierarchySigles(strId).stream().reduce("", (s1, s2)->s1 + "/" + s2).substring(1);
+    }
+
+    @Override
+    public String getHistoHierarchySigles(long strId, LocalDateTime dateTime)
+    {
+        if(!strRepo.existsById(strId)) return "/";
+        return strHistoRepo.getStrHistoParentSigles(strId, dateTime).stream().reduce("", (s1, s2)->s1 + "/" + s2).substring(1);
     }
 
     @Override
