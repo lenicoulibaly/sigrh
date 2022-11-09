@@ -1,6 +1,6 @@
 package dgmp.sigrh.fonctionmodule.controller.service;
 
-import dgmp.sigrh.auth.security.services.ISecurityContextManager;
+import dgmp.sigrh.auth2.security.services.ISecurityContextManager;
 import dgmp.sigrh.brokermodule.services.IHistoService;
 import dgmp.sigrh.fonctionmodule.controller.repositories.FonctionHistoDAO;
 import dgmp.sigrh.fonctionmodule.model.dtos.FonctionMapper;

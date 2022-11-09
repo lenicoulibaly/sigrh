@@ -3,7 +3,7 @@ package dgmp.sigrh.agentmodule.controller.web;
 import dgmp.sigrh.agentmodule.controller.repositories.AgentDAO;
 import dgmp.sigrh.agentmodule.controller.services.IAgentService;
 import dgmp.sigrh.agentmodule.model.dtos.CreateAgentDTO;
-import dgmp.sigrh.auth.security.services.ISecurityContextManager;
+import dgmp.sigrh.auth2.security.services.ISecurityContextManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;

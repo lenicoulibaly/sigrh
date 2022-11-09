@@ -1,6 +1,6 @@
 package dgmp.sigrh.structuremodule.controller.service.post;
 
-import dgmp.sigrh.auth.security.services.ISecurityContextManager;
+import dgmp.sigrh.auth2.security.services.ISecurityContextManager;
 import dgmp.sigrh.brokermodule.services.IHistoService;
 import dgmp.sigrh.structuremodule.controller.repositories.post.PostGroupHistoRepo;
 import dgmp.sigrh.structuremodule.model.dtos.post.PostMapper;

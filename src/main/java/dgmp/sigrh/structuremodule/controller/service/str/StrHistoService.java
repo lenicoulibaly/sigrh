@@ -1,6 +1,6 @@
 package dgmp.sigrh.structuremodule.controller.service.str;
 
-import dgmp.sigrh.auth.security.services.ISecurityContextManager;
+import dgmp.sigrh.auth2.security.services.ISecurityContextManager;
 import dgmp.sigrh.brokermodule.services.IHistoService;
 import dgmp.sigrh.structuremodule.controller.repositories.structure.StrHistoRepo;
 import dgmp.sigrh.structuremodule.model.dtos.str.StrMapper;

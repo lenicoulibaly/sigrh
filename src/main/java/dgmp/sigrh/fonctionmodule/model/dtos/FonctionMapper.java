@@ -1,7 +1,7 @@
 package dgmp.sigrh.fonctionmodule.model.dtos;
 
 import dgmp.sigrh.agentmodule.controller.repositories.AgentDAO;
-import dgmp.sigrh.auth.model.events.EventActorIdentifier;
+import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
 import dgmp.sigrh.fonctionmodule.model.entities.Fonction;
 import dgmp.sigrh.fonctionmodule.model.events.FonctionEventType;
 import dgmp.sigrh.fonctionmodule.model.histo.FonctionHisto;

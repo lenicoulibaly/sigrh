@@ -1,6 +1,6 @@
 package dgmp.sigrh.brokermodule.model;
 
-import dgmp.sigrh.auth.model.events.EventActorIdentifier;
+import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
 import lombok.*;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder

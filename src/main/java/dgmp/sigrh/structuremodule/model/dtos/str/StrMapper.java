@@ -1,6 +1,6 @@
 package dgmp.sigrh.structuremodule.model.dtos.str;
 
-import dgmp.sigrh.auth.model.events.EventActorIdentifier;
+import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
 import dgmp.sigrh.structuremodule.controller.repositories.structure.StrRepo;
 import dgmp.sigrh.structuremodule.model.entities.structure.StrHisto;
 import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
@@ -88,8 +88,6 @@ public abstract class StrMapper
     @Mapping(target = "eai.modifierUsername", source = "eai.modifierUsername")
     @Mapping(target = "eai.modifierAssId", source = "eai.modifierAssId")
     @Mapping(target = "eai.modifierStrId", source = "eai.modifierStrId")
-    @Mapping(target = "eai.modifierRoleId", source = "eai.modifierRoleId")
-    @Mapping(target = "eai.modifierRoleName", source = "eai.modifierRoleName")
     @Mapping(target = "eai.agentId", source = "eai.agentId")
     @Mapping(target = "eai.nom", source = "eai.nom")
     @Mapping(target = "eai.prenom", source = "eai.prenom")

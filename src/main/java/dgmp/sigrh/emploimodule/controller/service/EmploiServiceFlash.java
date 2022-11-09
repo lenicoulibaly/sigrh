@@ -12,7 +12,6 @@ import dgmp.sigrh.emploimodule.model.events.EmploiEventType;
 import dgmp.sigrh.emploimodule.model.histo.EmploiHisto;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service("emploiService") @Profile("flash")
+@Service("emploiService") ///@Profile("flash")
 @RequiredArgsConstructor
 public class EmploiServiceFlash implements IEmploiService
 {

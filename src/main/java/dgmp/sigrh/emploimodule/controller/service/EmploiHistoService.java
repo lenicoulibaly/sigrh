@@ -1,6 +1,6 @@
 package dgmp.sigrh.emploimodule.controller.service;
 
-import dgmp.sigrh.auth.security.services.ISecurityContextManager;
+import dgmp.sigrh.auth2.security.services.ISecurityContextManager;
 import dgmp.sigrh.brokermodule.services.IHistoService;
 import dgmp.sigrh.emploimodule.controller.repositories.EmploiHistoDAO;
 import dgmp.sigrh.emploimodule.model.dtos.EmploiMapper;

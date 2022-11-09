@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+                layout:decorate="~{security/security-layout}">
+    <head>
+		<th:block layout:fragment="specific-css-links">
+            <!-- Select2
+            <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}" />-->
+        </th:block>
+	</head>
+
+	<body>
+        <div layout:fragment="content">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <!-- Profile Image -->
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Menu contextuel</h3>
+                                </div>
+                                <div class="card-body box-profile">
+                                    <th:block th:replace="security/contextual-menu-frag::contextual-menu"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Création d'un nouvel utilisateur</h3>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body p-0">
+                                    <form method="post" th:action="@{/sigrh/security/users/create}" th:object="${dto}">
+                                        <div class="modal-body">
+
+                                            <div class="row">
+                                                <div class="col col-12">
+                                                    <div th:if="${globalErrMsg}" th:text="${globalErrMsg}"
+                                                         class="alert alert-danger alert-dismissible fade show"/>
+                                                </div>
+                                                <div class="col col-md-6 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label for="email">Email</label> <small
+                                                            th:if="${emailErrMsg}" class="text-danger">[[${emailErrMsg}]]</small>
+                                                        <input th:classappend="${emailErrMsg} ? 'border-danger' : ''" required th:field="*{email}" type="email" class="form-control" id="email" />
+                                                    </div>
+                                                </div>
+                                                <div class="col col-md-6 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label for="tel">Tel</label> <small
+                                                            th:if="${telErrMsg}" class="text-danger">[[${telErrMsg}]]</small>
+                                                        <input th:classappend="${telErrMsg} ? 'border-danger' : ''" th:field="*{tel}" type="text" class="form-control" id="tel" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <th:block th:replace="security/users/new-confirmation-modal-frag::new-confirmation-modal"/>
+                                        <div class="modal-footer justify-content-between">
+                                            <a href="/sigrh/security/users/new-user-form" class="btn btn-default" data-dismiss="modal">Annuler</a>
+                                            <button type="button" data-toggle="modal" data-target="#new-confirmation-modal" class="btn btn-primary">Enregistrer</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                    </div>
+        </div>
+        <div layout:fragment="specific-scripts">
+            <script th:src="@{/dist/js/demo.js}"></script>
+
+            <!-- Select2 -->
+            <script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
+            <script th:src="@{/plugins/bootstrap-switch/js/bootstrap-switch.min.js}"></script>
+
+
+            <script>
+                $(function () {
+                    //Initialize Select2 Elements
+                    $('.select2').select2();
+
+                    //Initialize Select2 Elements
+                    $('.select2bs4').select2({theme: 'bootstrap4'});
+
+                    //SWITCH
+                    $("input[data-bootstrap-switch]").each(function(){
+                        $(this).bootstrapSwitch('state', $(this).prop('checked'));
+                    });
+                });
+            </script>
+            <script>
+                $("#typeId").change(e=>
+                {
+                    $.ajax(
+                        {
+                            url: "/sigrh/structures/child-type/" + $("#typeId").val(),
+                            success: response=>
+                            {
+                                console.log(response)
+                                $("#parentId").empty();
+                                $("#parentId").append('<option value="" >Choisir la tutelle</option>')
+                                $.each(response, (index, str)=>
+                                {
+                                    $("#parentId").append('<option value="' + str.strId + '">'+ str.strName + '-' + str.strSigle + '</option>')
+                                });
+                            },
+                            error: err=>
+                            {
+                                console.log(err);
+                            }
+                        }
+                    );
+                });
+            </script>
+            <script>
+            </script>
+        </div>
+    </body>
+</html>

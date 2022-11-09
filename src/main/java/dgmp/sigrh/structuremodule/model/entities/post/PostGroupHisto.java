@@ -1,6 +1,6 @@
 package dgmp.sigrh.structuremodule.model.entities.post;
 
-import dgmp.sigrh.auth.model.events.EventActorIdentifier;
+import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
 import dgmp.sigrh.emploimodule.model.entities.Emploi;
 import dgmp.sigrh.fonctionmodule.model.entities.Fonction;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;

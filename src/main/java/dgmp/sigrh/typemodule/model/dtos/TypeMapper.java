@@ -1,6 +1,6 @@
 package dgmp.sigrh.typemodule.model.dtos;
 
-import dgmp.sigrh.auth.model.events.EventActorIdentifier;
+import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
 import dgmp.sigrh.typemodule.model.entities.Type;
 import dgmp.sigrh.typemodule.model.entities.TypeHisto;
 import dgmp.sigrh.typemodule.model.entities.TypeParam;

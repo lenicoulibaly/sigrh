@@ -3,8 +3,8 @@ package dgmp.sigrh.structuremodule.controller.web;
 import dgmp.sigrh.agentmodule.controller.services.IAgentService;
 import dgmp.sigrh.agentmodule.model.dtos.ReadAgentDTO;
 import dgmp.sigrh.agentmodule.model.enums.EtatRecrutement;
-import dgmp.sigrh.auth.controller.repositories.UserDAO;
-import dgmp.sigrh.auth.security.services.SecurityContextManager;
+import dgmp.sigrh.auth2.controller.repositories.UserRepo;
+import dgmp.sigrh.auth2.security.services.SecurityContextManager;
 import dgmp.sigrh.shared.utilities.DateParser;
 import dgmp.sigrh.structuremodule.controller.repositories.post.PostGroupRepo;
 import dgmp.sigrh.structuremodule.controller.repositories.post.PostParamRepo;
@@ -54,7 +54,7 @@ public class StrController
     private final IPostService postService;
     private final PostParamRepo ppRepo;
     private final StrHistoRepo strHistoRepo;
-    private final UserDAO userDAO;
+    private final UserRepo userRepo;
 
     @GetMapping(path = "/sigrh/structures")
     public String gotoStrLayout(Model model)
@@ -66,7 +66,7 @@ public class StrController
     public String gotoStrList(Model model, @RequestParam(defaultValue = "0") int pageNum, @RequestParam(defaultValue = "5") int pageSize, @RequestParam(defaultValue = "") String key, @RequestParam(defaultValue = "1") int navigating)
     {
         pageNum = navigating == 1 ? pageNum : 0;
-        Long parentId = scm.getCurrentRoleAss() == null ? null : scm.getCurrentRoleAss().getStructure() == null ? null : scm.getCurrentRoleAss().getStructure().getStrId();
+        Long parentId = scm.getVisibilityId();
         Page<ReadStrDTO> structures = strService.searchStrByParent(key,parentId, pageNum, pageSize);
         structures.forEach(str->str.setHierarchy(strService.getParents(str.getStrId())));
 
@@ -84,7 +84,7 @@ public class StrController
     @GetMapping(path = "/sigrh/structures/add-posts-form")
     public String gotoStrAddPostsForm(Model model, @RequestParam(defaultValue = "0") long strId)
     {
-        Long visibility = scm.getCurrentRoleAss() == null ? null : scm.getCurrentRoleAss().getStructure() == null ? null : scm.getCurrentRoleAss().getStructure().getStrId();
+        Long visibility = scm.getUserVisibilityId();
         List<Structure> structures = visibility == null ? strRepo.findByStatus(ACTIVE) : strRepo.findAllChildren(visibility);
         List<ReadStrDTO> dtos = structures.stream().map(s->{
             ReadStrDTO dto = strMapper.mapToReadStrDTO(s);
@@ -186,7 +186,7 @@ public class StrController
         model.addAttribute("strHistoPages", new long[strHistoPages.getTotalPages()]);
         model.addAttribute("modificationList", strHistoPages);
         Long visibility = scm.getVisibilityId();
-        model.addAttribute("users", visibility == null ? userDAO.findAll() : userDAO.findUserUnderStr(visibility));
+        model.addAttribute("users", visibility == null ? userRepo.findAll() : userRepo.findUserUnderStr(visibility, PageRequest.of(strHistoPageNum, strHistoPageSize)));
         model.addAttribute("eventTypesList", StrEventType.getAll());
 
         model.addAttribute("viewMode", "details");

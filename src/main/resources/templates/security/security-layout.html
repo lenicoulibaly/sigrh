@@ -13,10 +13,10 @@
 
 	<body>
     <th:block layout:fragment="module-menu">
-        <th:block th:replace="security/security-menu-frag.html::administration-menu"/>
+        <th:block th:replace="security/security-menu-frag.html::security-menu"/>
     </th:block>
         <th:block layout:fragment="breadcrumb">
-            <th:block th:replace="personnel/form-personnel-breadcrumb-frag.html::form-personnel-breadcrumb"/>
+            <th:block th:replace="security/security-breadcrumb-frag.html::security-breadcrumb"/>
         </th:block>
         <div layout:fragment="content">
 

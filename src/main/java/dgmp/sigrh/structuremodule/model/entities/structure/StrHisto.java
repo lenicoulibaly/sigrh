@@ -1,6 +1,6 @@
 package dgmp.sigrh.structuremodule.model.entities.structure;
 
-import dgmp.sigrh.auth.model.events.EventActorIdentifier;
+import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
 import dgmp.sigrh.structuremodule.model.entities.post.Post;
 import dgmp.sigrh.structuremodule.model.events.StrEventType;

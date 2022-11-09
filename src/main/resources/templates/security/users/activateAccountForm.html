@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+                layout:decorate="~{security/security-layout}">
+    <head>
+		<th:block layout:fragment="specific-css-links">
+            <!-- Select2
+            <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}" />-->
+        </th:block>
+	</head>
+
+	<body>
+        <div layout:fragment="content">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <!-- Profile Image -->
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Menu contextuel</h3>
+                                </div>
+                                <div class="card-body box-profile">
+                                    <th:block th:replace="security/contextual-menu-frag::contextual-menu"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Activation de compte </h3> <span class="text-warning text-bold float-right"> (Veuillez définir votre mot de passe pour activer votre compte)</span>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body p-0">
+                                    <form method="get" th:action="@{/open/sigrh/security/users/activate-account}" th:object="${dto}">
+                                        <input type="hidden" th:field="*{activationToken}">
+                                        <div class="modal-body">²
+                                            <div class="row">
+                                                <div class="col col-12">
+                                                    <div th:if="${globalErrMsg}" th:text="${globalErrMsg}"
+                                                         class="alert alert-danger alert-dismissible fade show"/>
+                                                </div>
+                                                <div class="col col-md-4 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label for="username">Login</label> <small
+                                                            th:if="${usernameErrMsg}" class="text-danger">[[${usernameErrMsg}]]</small>
+                                                        <input th:classappend="${usernameErrMsg} ? 'border-danger' : ''" required th:field="*{username}" type="text" class="form-control" id="username" />
+                                                    </div>
+                                                </div>
+                                                <div class="col col-md-4 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label for="password">Mot de passe</label> <small
+                                                            th:if="${passwordErrMsg}" class="text-danger">[[${passwordErrMsg}]]</small>
+                                                        <input th:classappend="${passwordErrMsg} ? 'border-danger' : ''" th:field="*{password}" type="password" class="form-control" id="password" />
+                                                    </div>
+                                                </div>
+                                                <div class="col col-md-4 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label for="confirmPassword">Confirmation du mot de passe</label> <small
+                                                            th:if="${confirmPasswordErrMsg}" class="text-danger">[[${confirmPasswordErrMsg}]]</small>
+                                                        <input th:classappend="${confirmPasswordErrMsg} ? 'border-danger' : ''" th:field="*{confirmPassword}" type="password" class="form-control" id="confirmPassword" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <th:block th:replace="security/users/new-confirmation-modal-frag::new-confirmation-modal"/>
+                                        <div class="modal-footer justify-content-between">
+                                            <a href="/sigrh/security/users/new-user-form" class="btn btn-default" data-dismiss="modal">Annuler</a>
+                                            <button type="button" th:disabled="${globalErrMsg}" data-toggle="modal" data-target="#new-confirmation-modal" class="btn btn-primary">Enregistrer</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                    </div>
+        </div>
+        <div layout:fragment="specific-scripts">
+            <script th:src="@{/dist/js/demo.js}"></script>
+
+            <!-- Select2 -->
+            <script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
+            <script th:src="@{/plugins/bootstrap-switch/js/bootstrap-switch.min.js}"></script>
+
+
+            <script>
+                $(function () {
+                    //Initialize Select2 Elements
+                    $('.select2').select2();
+
+                    //Initialize Select2 Elements
+                    $('.select2bs4').select2({theme: 'bootstrap4'});
+
+                    //SWITCH
+                    $("input[data-bootstrap-switch]").each(function(){
+                        $(this).bootstrapSwitch('state', $(this).prop('checked'));
+                    });
+                });
+            </script>
+            <script>
+                $("#typeId").change(e=>
+                {
+                    $.ajax(
+                        {
+                            url: "/sigrh/structures/child-type/" + $("#typeId").val(),
+                            success: response=>
+                            {
+                                console.log(response)
+                                $("#parentId").empty();
+                                $("#parentId").append('<option value="" >Choisir la tutelle</option>')
+                                $.each(response, (index, str)=>
+                                {
+                                    $("#parentId").append('<option value="' + str.strId + '">'+ str.strName + '-' + str.strSigle + '</option>')
+                                });
+                            },
+                            error: err=>
+                            {
+                                console.log(err);
+                            }
+                        }
+                    );
+                });
+            </script>
+            <script>
+            </script>
+        </div>
+    </body>
+</html>

@@ -1,6 +1,6 @@
 package dgmp.sigrh.emploimodule.model.histo;
 
-import dgmp.sigrh.auth.model.events.EventActorIdentifier;
+import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
 import dgmp.sigrh.emploimodule.model.events.EmploiEventType;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
 import lombok.AllArgsConstructor;

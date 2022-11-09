@@ -1,6 +1,6 @@
 package dgmp.sigrh.typemodule.model.entities;
 
-import dgmp.sigrh.auth.model.events.EventActorIdentifier;
+import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
 import dgmp.sigrh.typemodule.model.events.TypeEventType;
 import lombok.AllArgsConstructor;

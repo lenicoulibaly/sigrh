@@ -2,9 +2,9 @@ package dgmp.sigrh.agentmodule.model.histo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dgmp.sigrh.agentmodule.model.entities.Agent;
-import dgmp.sigrh.auth.model.entities.AppUser;
-import dgmp.sigrh.auth.model.events.EventActorIdentifier;
-import dgmp.sigrh.auth.model.events.types.agent.AgentEventTypes;
+import dgmp.sigrh.auth2.model.entities.AppUser;
+import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
+import dgmp.sigrh.auth2.model.events.types.agent.AgentEventTypes;
 import dgmp.sigrh.emploimodule.model.entities.Emploi;
 import dgmp.sigrh.grademodule.model.entities.Grade;
 import dgmp.sigrh.structuremodule.model.entities.post.Post;

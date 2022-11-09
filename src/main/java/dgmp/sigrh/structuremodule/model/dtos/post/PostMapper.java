@@ -1,6 +1,6 @@
 package dgmp.sigrh.structuremodule.model.dtos.post;
 
-import dgmp.sigrh.auth.model.events.EventActorIdentifier;
+import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
 import dgmp.sigrh.emploimodule.controller.repositories.EmploiDAO;
 import dgmp.sigrh.fonctionmodule.model.entities.Fonction;
 import dgmp.sigrh.structuremodule.controller.repositories.post.PostGroupRepo;

@@ -1,6 +1,7 @@
 package dgmp.sigrh.emploimodule.model.events;
 
-import dgmp.sigrh.auth.model.events.types.EventType;
+
+import dgmp.sigrh.shared.model.enums.EventType;
 
 public enum EmploiEventType implements EventType
 {

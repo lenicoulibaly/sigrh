@@ -1,6 +1,6 @@
 package dgmp.sigrh.grademodule.model.dtos;
 
-import dgmp.sigrh.auth.model.events.EventActorIdentifier;
+import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
 import dgmp.sigrh.grademodule.model.entities.Grade;
 import dgmp.sigrh.grademodule.model.entities.GradeHisto;
 import dgmp.sigrh.grademodule.model.events.GradeEventType;

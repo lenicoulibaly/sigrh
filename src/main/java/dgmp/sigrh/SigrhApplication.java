@@ -1,7 +1,7 @@
 package dgmp.sigrh;
 
-import dgmp.sigrh.auth.controller.services.spec.IUserService;
-import dgmp.sigrh.auth.model.dtos.appuser.CreateActiveUserDTO;
+import dgmp.sigrh.auth2.controller.services.spec.IUserService;
+import dgmp.sigrh.auth2.model.dtos.appuser.CreateActiveUserDTO;
 import dgmp.sigrh.structuremodule.controller.repositories.structure.StrRepo;
 import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 import org.springframework.boot.CommandLineRunner;
@@ -53,7 +53,7 @@ public class SigrhApplication {
                     .password("1234")
                     .rePassword("1234")
                     .email("lenigauss@gmail.com").build();
-            userService.createActiveUser(dto);
+            //userService.cr(dto);
         };
     }
 

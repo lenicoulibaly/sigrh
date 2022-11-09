@@ -1,7 +1,7 @@
 package dgmp.sigrh.emploimodule.model.dtos;
 
 import dgmp.sigrh.agentmodule.controller.repositories.AgentDAO;
-import dgmp.sigrh.auth.model.events.EventActorIdentifier;
+import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
 import dgmp.sigrh.emploimodule.controller.repositories.EmploiDAO;
 import dgmp.sigrh.emploimodule.model.entities.Emploi;
 import dgmp.sigrh.emploimodule.model.events.EmploiEventType;

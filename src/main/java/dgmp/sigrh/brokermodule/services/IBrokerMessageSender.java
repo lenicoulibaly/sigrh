@@ -1,6 +1,7 @@
 package dgmp.sigrh.brokermodule.services;
 
-import dgmp.sigrh.auth.model.events.types.EventType;
+
+import dgmp.sigrh.shared.model.enums.EventType;
 
 public interface IBrokerMessageSender<DTO>
 {

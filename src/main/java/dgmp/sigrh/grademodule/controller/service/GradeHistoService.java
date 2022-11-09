@@ -1,6 +1,6 @@
 package dgmp.sigrh.grademodule.controller.service;
 
-import dgmp.sigrh.auth.security.services.ISecurityContextManager;
+import dgmp.sigrh.auth2.security.services.ISecurityContextManager;
 import dgmp.sigrh.brokermodule.services.IHistoService;
 import dgmp.sigrh.grademodule.controller.repositories.GradeHistoDAO;
 import dgmp.sigrh.grademodule.model.dtos.GrageMapper;

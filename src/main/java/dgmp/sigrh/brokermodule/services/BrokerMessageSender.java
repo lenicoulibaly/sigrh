@@ -1,9 +1,9 @@
 package dgmp.sigrh.brokermodule.services;
 
 import dgmp.sigrh.agentmodule.model.entities.Agent;
-import dgmp.sigrh.auth.model.events.types.EventType;
-import dgmp.sigrh.auth.security.services.ISecurityContextManager;
+import dgmp.sigrh.auth2.security.services.ISecurityContextManager;
 import dgmp.sigrh.brokermodule.model.MutatedEventPayload;
+import dgmp.sigrh.shared.model.enums.EventType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.function.StreamBridge;

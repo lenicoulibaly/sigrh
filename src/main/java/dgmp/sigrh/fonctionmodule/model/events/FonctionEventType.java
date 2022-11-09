@@ -1,6 +1,6 @@
 package dgmp.sigrh.fonctionmodule.model.events;
 
-import dgmp.sigrh.auth.model.events.types.EventType;
+import dgmp.sigrh.shared.model.enums.EventType;
 
 public enum FonctionEventType implements EventType
 {

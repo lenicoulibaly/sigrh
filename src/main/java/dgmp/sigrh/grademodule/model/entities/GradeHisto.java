@@ -1,6 +1,6 @@
 package dgmp.sigrh.grademodule.model.entities;
 
-import dgmp.sigrh.auth.model.events.EventActorIdentifier;
+import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
 import dgmp.sigrh.grademodule.model.enums.Categorie;
 import dgmp.sigrh.grademodule.model.events.GradeEventType;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;

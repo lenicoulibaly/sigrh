@@ -1,6 +1,6 @@
 package dgmp.sigrh.agentmodule.model.dtos;
 
-import dgmp.sigrh.auth.model.dtos.appuser.ReadUserDTO;
+import dgmp.sigrh.auth2.model.dtos.appuser.ReadUserDTO;
 import dgmp.sigrh.emploimodule.model.dtos.ReadEmploiDTO;
 import dgmp.sigrh.grademodule.model.dtos.ReadGradeDTO;
 import dgmp.sigrh.structuremodule.model.dtos.post.ReadPostDTO;

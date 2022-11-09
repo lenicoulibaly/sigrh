@@ -1,6 +1,6 @@
 package dgmp.sigrh.grademodule.model.events;
 
-import dgmp.sigrh.auth.model.events.types.EventType;
+import dgmp.sigrh.shared.model.enums.EventType;
 import lombok.Getter;
 
 public enum GradeEventType implements EventType

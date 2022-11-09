@@ -3,7 +3,7 @@ package dgmp.sigrh.agentmodule.model.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dgmp.sigrh.agentmodule.model.dtos.CreateAgentDTO;
 import dgmp.sigrh.agentmodule.model.enums.*;
-import dgmp.sigrh.auth.model.entities.AppUser;
+import dgmp.sigrh.auth2.model.entities.AppUser;
 import dgmp.sigrh.emploimodule.model.entities.Emploi;
 import dgmp.sigrh.fonctionmodule.model.entities.Fonction;
 import dgmp.sigrh.grademodule.model.entities.Grade;

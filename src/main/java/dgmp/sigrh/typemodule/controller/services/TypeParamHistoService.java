@@ -1,6 +1,6 @@
 package dgmp.sigrh.typemodule.controller.services;
 
-import dgmp.sigrh.auth.security.services.ISecurityContextManager;
+import dgmp.sigrh.auth2.security.services.ISecurityContextManager;
 import dgmp.sigrh.brokermodule.services.IHistoService;
 import dgmp.sigrh.typemodule.controller.repositories.TypeParamHistoRepo;
 import dgmp.sigrh.typemodule.model.dtos.TypeMapper;

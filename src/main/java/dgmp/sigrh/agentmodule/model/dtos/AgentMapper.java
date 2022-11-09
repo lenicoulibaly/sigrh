@@ -1,7 +1,7 @@
 package dgmp.sigrh.agentmodule.model.dtos;
 
 import dgmp.sigrh.agentmodule.model.entities.Agent;
-import dgmp.sigrh.auth.model.dtos.appuser.UserMapper;
+import dgmp.sigrh.auth2.model.dtos.appuser.UserMapper;
 import dgmp.sigrh.emploimodule.model.dtos.EmploiMapper;
 import dgmp.sigrh.grademodule.model.dtos.GrageMapper;
 import dgmp.sigrh.structuremodule.model.dtos.post.PostMapper;
@@ -23,7 +23,7 @@ public abstract class AgentMapper
         @Mapping(target="readPostDTO", expression = "java(postMapper.mapToReadPostDTO(agent.getPost()))"),
         @Mapping(target="readEmploiDTO", expression = "java(emploiMapper.mapToReadEmploiDTO(agent.getEmploi()))"),
         @Mapping(target="readGradeDTO", expression = "java(grageMapper.mapToReadGradeDTO(agent.getGrade()))"),
-        @Mapping(target="readUserDTO", expression = "java(userMapper.getReadUserDTO(agent.getUser()))"),
+        @Mapping(target="readUserDTO", expression = "java(userMapper.mapToReadUserDTO(agent.getUser()))"),
 
         @Mapping(target="civilite", expression = "java(org.apache.commons.lang3.EnumUtils.getEnum(dgmp.sigrh.agentmodule.model.enums.Civility.class, agent.getCivilite().name()).toString())"),
         @Mapping(target="typePiece", expression = "java(org.apache.commons.lang3.EnumUtils.getEnum(dgmp.sigrh.agentmodule.model.enums.TypePiece.class, agent.getTypePiece().name()).toString())"),
