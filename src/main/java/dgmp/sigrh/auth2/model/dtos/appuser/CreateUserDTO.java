@@ -1,16 +1,15 @@
 package dgmp.sigrh.auth2.model.dtos.appuser;
 
+import dgmp.sigrh.structuremodule.model.dtos.str.ExistingOrNullStrId;
 import lombok.*;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class CreateUserDTO
 {
-    //@UniqueUsername
-    //private String username;
-    @UniqueEmail
+    @UniqueEmail(message = "Adresse mail déjà attribuée")
     private String email;
-    @UniqueTel
+    @UniqueTel(message = "N° de téléphone déjà attribué")
     private String tel;
-    @ExistingOrNullUserId
+    @ExistingOrNullStrId
     private Long strId;
 }

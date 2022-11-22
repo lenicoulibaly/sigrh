@@ -23,7 +23,6 @@ public class EmailSenderServiceImpl implements EmailSenderService
     @Value("${auth.server.address}")
     private String authServerAddress;
 
-
     @Override
     @Async
     public void sendEmail(String senderMail, String receiverMail, String mailObject, String message) throws IllegalAccessException {

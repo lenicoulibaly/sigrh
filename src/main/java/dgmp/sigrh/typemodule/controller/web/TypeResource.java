@@ -20,7 +20,7 @@ import javax.validation.constraints.Positive;
 import java.util.List;
 
 @Profile({"test", "prod"})
-@RestController
+//@RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/types") @Validated
 public class TypeResource
@@ -49,21 +49,21 @@ public class TypeResource
         return typeRepo.findSousTypeOf(parentId);
     }
 
-    @PreAuthorize("isAnonymous()")
+    @PreAuthorize("permitAll()")
     @GetMapping(path = "/isSousTypeOf/{parentId}/{childId}")
     public boolean isSousTypeOf(@PathVariable @Positive Long parentId, @PathVariable @Positive Long childId)
     {
         return typeRepo.isSousTypeOf(parentId, childId);
     }
 
-    @PreAuthorize("isAnonymous()")
+    @PreAuthorize("permitAll()")
     @GetMapping(path = "/isDeletable/{typeId}")
     public boolean isDeletable(@PathVariable @Positive Long typeId)
     {
         return typeRepo.isDeletable(typeId);
     }
 
-    @PreAuthorize("isAnonymous()")
+    @PreAuthorize("permitAll()")
     @GetMapping(path = "/existsByUniqueCode")
     public boolean existsByUniqueCode(@RequestParam(defaultValue = "0") Long typeId, @RequestParam String uniqueCode)
     {

@@ -13,6 +13,9 @@ public interface ISecurityContextManager
     void refreshSecurityContext(String username);
     void refreshSecurityContext();
     Set<String> getAuthorities();
+
+    boolean isAuthenticated();
+
     boolean hasAuthority(String auth);
     boolean hasAnyAuthority(String ...auths);
 

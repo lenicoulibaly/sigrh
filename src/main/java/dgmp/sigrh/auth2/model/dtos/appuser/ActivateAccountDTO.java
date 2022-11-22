@@ -3,7 +3,6 @@ package dgmp.sigrh.auth2.model.dtos.appuser;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -11,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @UniqueUsername(message = "username::Login déjà attribué") @ValidToken(message = "activationToken::Lien invalide") @ConcordantPassword
 public class ActivateAccountDTO
 {
-    @Id
+    @ExistingUserId
     private Long userId;
     @NotBlank(message = "Le login ne peut être nul")
     @Length(message = "Le login doit contenir au moins 4 caractères", min = 4)

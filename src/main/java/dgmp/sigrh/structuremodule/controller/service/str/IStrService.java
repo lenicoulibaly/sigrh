@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface IStrService
+public interface IStrService extends IHierarchySiglesGenerator
 {
     ReadStrDTO createStr(CreateStrDTO dto);
     ReadStrDTO updateStr(UpdateStrDTO dto);
@@ -27,7 +27,7 @@ public interface IStrService
 
     List<Structure> getParents(Long strId);
     List<Structure> getHistoParents(Long strId, LocalDateTime dateTime);
-    String getHierarchySigles(long strId);
+
     String getHistoHierarchySigles(long strId, LocalDateTime dateTime);
     boolean strHasAnyChildMatching(long strId, String key);
     boolean childBelongToParent(Long childId, Long parentId);

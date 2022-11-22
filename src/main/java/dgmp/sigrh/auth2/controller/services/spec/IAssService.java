@@ -3,11 +3,14 @@ package dgmp.sigrh.auth2.controller.services.spec;
 import dgmp.sigrh.auth2.model.dtos.asignation.*;
 import dgmp.sigrh.auth2.model.entities.PrincipalAss;
 
-public interface IAssignationService
+public interface IAssService
 {
-    PrincipalAss CreatePrincipalAss(CreatePrincipalAssDTO dto);
+    PrincipalAss createPrincipalAss(CreatePrincipalAssDTO dto);
     void setPrincipalAssAsDefault(Long principalAssId);
-    void setPrincipalAssAuthorities(SetAuthoritiesToPrincipalAssDTO dto);
+    void revokePrincipalAss(Long principalAssId);
+    void restorePrincipalAss(Long principalAssId);
+    PrincipalAss setPrincipalAssAuthorities(SetAuthoritiesToPrincipalAssDTO dto);
+    void updatePrincipalAss(UpdatePrincipalAssDTO dto);
 
     void addRolesToPrincipalAss(RolesAssDTO dto);
     void removeRolesToPrincipalAss(RolesAssDTO dto);

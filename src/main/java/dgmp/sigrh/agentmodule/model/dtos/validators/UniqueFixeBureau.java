@@ -1,6 +1,6 @@
 package dgmp.sigrh.agentmodule.model.dtos.validators;
 
-import dgmp.sigrh.agentmodule.controller.repositories.AgentDAO;
+import dgmp.sigrh.agentmodule.controller.repositories.AgentRepo;
 import dgmp.sigrh.agentmodule.model.dtos.UpdateAgentDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,24 +25,24 @@ public @interface UniqueFixeBureau
     @RequiredArgsConstructor
     class UniqueFixeBureauValidator implements ConstraintValidator<UniqueFixeBureau, String>
     {
-        private final AgentDAO agentDAO;
+        private final AgentRepo agentRepo;
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context)
         {
             if(value==null) return true;
-            return !agentDAO.existsByFixeBureau(value);
+            return !agentRepo.existsByFixeBureau(value);
         }
     }
 
     @Component @RequiredArgsConstructor
     class UniqueFixeBureauValidatorOnUpdate implements ConstraintValidator<UniqueFixeBureau, UpdateAgentDTO>
     {
-        private final AgentDAO agentDAO;
+        private final AgentRepo agentRepo;
         @Override
         public boolean isValid(UpdateAgentDTO dto, ConstraintValidatorContext context)
         {
             if(dto.getFixeBureau()==null) return false;
-            return !agentDAO.existsByFixeBureau(dto.getFixeBureau(), dto.getIdAgent());
+            return !agentRepo.existsByFixeBureau(dto.getFixeBureau(), dto.getIdAgent());
         }
     }
 }

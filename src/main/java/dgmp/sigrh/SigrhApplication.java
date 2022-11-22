@@ -1,5 +1,6 @@
 package dgmp.sigrh;
 
+import dgmp.sigrh.auth2.controller.repositories.UserRepo;
 import dgmp.sigrh.auth2.controller.services.spec.IUserService;
 import dgmp.sigrh.auth2.model.dtos.appuser.CreateActiveUserDTO;
 import dgmp.sigrh.structuremodule.controller.repositories.structure.StrRepo;
@@ -10,10 +11,21 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class SigrhApplication {
-
+public class SigrhApplication
+{
     public static void main(String[] args) {
         SpringApplication.run(SigrhApplication.class, args);
+    }
+
+    //@Bean
+    CommandLineRunner start2(UserRepo userRepo, StrRepo strRepo) {
+        return args ->
+        {
+            //List<Object> usersObject = userRepo.getUsers();
+            //usersObject.stream().peek(u-> Json.prettyPrint(u));
+
+            //List<AppUser> users = usersObject.stream().peek(u-> Json.prettyPrint(u)).map(o->(AppUser)o).peek(u-> Json.prettyPrint(u)).collect(Collectors.toList());
+        };
     }
 
     //@Bean

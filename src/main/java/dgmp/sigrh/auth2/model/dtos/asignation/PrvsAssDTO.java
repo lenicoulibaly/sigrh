@@ -6,14 +6,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class PrvsAssDTO
 {
     protected LocalDate startsAt;
     protected LocalDate endsAt;
-    private List<Long> prvIds;
+    private Set<Long> prvIds = new HashSet<>();
     @ExistingAssId
     private Long principalAssId;
 }

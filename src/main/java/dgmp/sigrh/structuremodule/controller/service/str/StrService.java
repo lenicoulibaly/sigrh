@@ -35,7 +35,9 @@ public class StrService implements IStrService
     private final StrMapper strMapper;
     private final TypeRepo typeRepo;
     private final StrHistoRepo strHistoRepo;
+    private final IHierarchySiglesGenerator hierarchySiglesGenerator;
     private final IHistoService<Structure, StrHisto, StrEventType> strHistoService;
+
     @PersistenceContext
     private EntityManager em;
 
@@ -203,15 +205,13 @@ public class StrService implements IStrService
     @Override
     public String getHierarchySigles(long strId)
     {
-        if(!strRepo.existsById(strId)) return "/";
-        return strRepo.getHierarchySigles(strId).stream().reduce("", (s1, s2)->s1 + "/" + s2).substring(1);
+        return hierarchySiglesGenerator.getHierarchySigles(strId);
     }
 
     @Override
     public String getHistoHierarchySigles(long strId, LocalDateTime dateTime)
     {
-        if(!strRepo.existsById(strId)) return "/";
-        return strHistoRepo.getStrHistoParentSigles(strId, dateTime).stream().reduce("", (s1, s2)->s1 + "/" + s2).substring(1);
+        return hierarchySiglesGenerator.getHistoHierarchySigles(strId, dateTime);
     }
 
     @Override

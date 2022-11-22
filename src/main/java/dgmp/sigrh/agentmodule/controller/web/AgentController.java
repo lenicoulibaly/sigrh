@@ -1,6 +1,6 @@
 package dgmp.sigrh.agentmodule.controller.web;
 
-import dgmp.sigrh.agentmodule.controller.repositories.AgentDAO;
+import dgmp.sigrh.agentmodule.controller.repositories.AgentRepo;
 import dgmp.sigrh.agentmodule.controller.services.IAgentService;
 import dgmp.sigrh.agentmodule.model.dtos.CreateAgentDTO;
 import dgmp.sigrh.auth2.security.services.ISecurityContextManager;
@@ -20,7 +20,7 @@ import javax.validation.Valid;
 public class AgentController
 {
     private final IAgentService agentService;
-    private final AgentDAO agentDAO;
+    private final AgentRepo agentRepo;
     private final ISecurityContextManager scm;
 
     @GetMapping(path = "/")
@@ -32,7 +32,7 @@ public class AgentController
     @GetMapping(path = "/agents/list")
     public String gotoListAgents(Model model)
     {
-        model.addAttribute("agents", agentDAO.findAll());
+        model.addAttribute("agents", agentRepo.findAll());
         return "personnel/personnel";
     }
 

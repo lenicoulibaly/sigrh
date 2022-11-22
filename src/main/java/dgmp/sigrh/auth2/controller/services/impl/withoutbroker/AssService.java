@@ -1,7 +1,7 @@
 package dgmp.sigrh.auth2.controller.services.impl.withoutbroker;
 
 import dgmp.sigrh.auth2.controller.repositories.*;
-import dgmp.sigrh.auth2.controller.services.spec.IAssignationService;
+import dgmp.sigrh.auth2.controller.services.spec.IAssService;
 import dgmp.sigrh.auth2.model.dtos.asignation.*;
 import dgmp.sigrh.auth2.model.entities.*;
 import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
@@ -16,13 +16,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Objects;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AssignationService implements IAssignationService
+public class AssService implements IAssService
 {
     private final AssignationMapper assMapper;
     private final PrvToRoleAssRepo prvToRoleAssRepo;
@@ -37,10 +37,11 @@ public class AssignationService implements IAssignationService
 
 
     @Override @Transactional
-    public PrincipalAss CreatePrincipalAss(CreatePrincipalAssDTO dto)
+    public PrincipalAss createPrincipalAss(CreatePrincipalAssDTO dto)
     {
         EventActorIdentifier eai = scm.getEventActorIdFromSCM();
         PrincipalAss principalAss = assMapper.mapToPrincipalAss(dto);
+        if(!principalAssRepo.userHasAnyPrincipalAss(dto.getUserId())) principalAss.getAss().setAssStatus(1);
         principalAss = principalAssRepo.save(principalAss);
         PrincipalAssHisto histo = assMapper.mapToPrincipalAssHisto(principalAss, AssignationEventTypes.PRINCIPAL_ASSIGNATION_CREATED, eai);
         principalAssHistoRepo.save(histo);
@@ -57,7 +58,8 @@ public class AssignationService implements IAssignationService
             RoleAssHisto roleAssHisto = assMapper.mapToRoleAssHisto(roleAss, AssignationEventTypes.ROLE_ASSIGNED_TO_PRINCIPAL_ASS, eai);
             roleAssHistoRepo.save(roleAssHisto);
         });
-        this.treatPrvsAssignation(dto.getRoleIds(), dto.getPrvIds(), principalAssId, dto.getStartsAt(), dto.getEndsAt(), eai);
+        PrvAssSpliterDTO prvAssSpliterDTO = assMapper.mapToPrvAssSpliterDTO(dto.getPrvIds(), dto.getRoleIds(), principalAssId, dto.getStartsAt(), dto.getEndsAt(), false);
+        this.treatPrvsAssignation(prvAssSpliterDTO, principalAssId, dto.getStartsAt(), dto.getEndsAt(), eai);
         return principalAss;
     }
 
@@ -82,28 +84,82 @@ public class AssignationService implements IAssignationService
         if(principalAss.getAss().getAssStatus() == 1) return;
         principalAss.setAss(new Ass(1, principalAss.getAss().getStartsAt(), principalAss.getAss().getEndsAt()));
         PrincipalAssHisto principalAssHisto = assMapper.mapToPrincipalAssHisto(principalAss, AssignationEventTypes.ASSIGNATION_SET_AS_DEFAULT, eai);
+        scm.refreshSecurityContext();
         principalAssHistoRepo.save(principalAssHisto);
     }
 
-    @Override
-    public void setPrincipalAssAuthorities(SetAuthoritiesToPrincipalAssDTO dto)
+    @Override @Transactional
+    public void revokePrincipalAss(Long principalAssId)
+    {
+        EventActorIdentifier eai = scm.getEventActorIdFromSCM();
+        PrincipalAss principalAss  = principalAssRepo.findById(principalAssId).orElse(null);
+        if(principalAss == null) return;
+        if(principalAss.getAss().getAssStatus() == 3) return;
+        principalAss.getAss().setAssStatus(3);
+        PrincipalAssHisto principalAssHisto = assMapper.mapToPrincipalAssHisto(principalAss, AssignationEventTypes.ASSIGNATION_DEACTIVATED, eai);
+        principalAssHistoRepo.save(principalAssHisto);
+    }
+
+    @Override @Transactional
+    public void restorePrincipalAss(Long principalAssId)
+    {
+        EventActorIdentifier eai = scm.getEventActorIdFromSCM();
+        PrincipalAss principalAss  = principalAssRepo.findById(principalAssId).orElse(null);
+        if(principalAss == null) return;
+        if(principalAss.getAss().getAssStatus() == 1 || principalAss.getAss().getAssStatus() == 2) return;
+        principalAss.getAss().setAssStatus(2);
+        PrincipalAssHisto principalAssHisto = assMapper.mapToPrincipalAssHisto(principalAss, AssignationEventTypes.ASSIGNATION_ACTIVATED, eai);
+        principalAssHistoRepo.save(principalAssHisto);
+    }
+
+    @Override @Transactional
+    public PrincipalAss setPrincipalAssAuthorities(SetAuthoritiesToPrincipalAssDTO dto)
     {
         EventActorIdentifier eai = scm.getEventActorIdFromSCM();
         PrincipalAss principalAss  = principalAssRepo.findById(dto.getPrincipalAssId()).orElse(null);
-        if(principalAss == null) return;
+        if(principalAss == null) return principalAss;
         Long principalAssId = principalAss.getAssId();
-        Set<Long> roleIds = dto.getRoleIds();
+        Set<Long> roleIds = dto.getRoleIds(); Set<Long> prvIds = dto.getPrvIds();
         LocalDate startsAt = dto.getStartsAt(); LocalDate endsAt = dto.getEndsAt();
 
         RoleAssSpliterDTO roleAssSpliterDTO = assMapper.mapToRoleAssSpliterDTO(roleIds, principalAssId, startsAt, endsAt, true);
+        PrvAssSpliterDTO prvAssSpliterDTO = assMapper.mapToPrvAssSpliterDTO(prvIds, roleIds, principalAssId, startsAt, endsAt, true);
+        treatRolesAssignation(roleAssSpliterDTO, principalAssId, startsAt, endsAt, eai);
+
+        this.treatPrvsAssignation(prvAssSpliterDTO, principalAssId, dto.getStartsAt(), dto.getEndsAt(), eai);
+        return principalAss;
+    }
+
+    @Override @Transactional
+    public void updatePrincipalAss(UpdatePrincipalAssDTO dto)
+    {
+        EventActorIdentifier eai = scm.getEventActorIdFromSCM();
+        PrincipalAss principalAss  = principalAssRepo.findById(dto.getAssId()).orElse(null);
+        if(principalAss == null) return;
+
+        Long principalAssId = principalAss.getAssId();
+        Set<Long> roleIds = dto.getRoleIds();
+        Set<Long> prvIds = dto.getPrvIds();
+        LocalDate startsAt = dto.getStartsAt(); LocalDate endsAt = dto.getEndsAt();
+
+        principalAss.setIntitule(dto.getIntitule());
+        principalAss.getAss().setStartsAt(startsAt);
+        principalAss.getAss().setEndsAt(endsAt);
+
+        PrincipalAssHisto histo = assMapper.mapToPrincipalAssHisto(principalAss, AssignationEventTypes.ASSIGNATION_UPDATED, eai);
+        principalAssHistoRepo.save(histo);
+
+        RoleAssSpliterDTO roleAssSpliterDTO = assMapper.mapToRoleAssSpliterDTO(roleIds, principalAssId, startsAt, endsAt, true);
+
+        PrvAssSpliterDTO prvAssSpliterDTO = assMapper.mapToPrvAssSpliterDTO(prvIds, roleIds, principalAssId, startsAt, endsAt, true);
 
         treatRolesAssignation(roleAssSpliterDTO, principalAssId, startsAt, endsAt, eai);
 
-        this.treatPrvsAssignation(dto.getRoleIds(), dto.getPrvIds(), principalAssId, dto.getStartsAt(), dto.getEndsAt(), eai);
+        this.treatPrvsAssignation(prvAssSpliterDTO, principalAssId, dto.getStartsAt(), dto.getEndsAt(), eai);
     }
 
 
-    @Override
+    @Override @Transactional
     public void addRolesToPrincipalAss(RolesAssDTO dto)
     {
         EventActorIdentifier eai = scm.getEventActorIdFromSCM();
@@ -114,7 +170,7 @@ public class AssignationService implements IAssignationService
         this.treatRolesAssignation(roleAssSpliterDTO, principalAss.getAssId(), dto.getStartsAt(), dto.getEndsAt(), eai);
     }
 
-    @Override
+    @Override @Transactional
     public void removeRolesToPrincipalAss(RolesAssDTO dto)
     {
         dto.getRoleIds().forEach(id->
@@ -134,25 +190,45 @@ public class AssignationService implements IAssignationService
         });
     }
 
-    @Override
+    @Override @Transactional
     public void addPrivilegesToPrincipalAss(PrvsAssDTO dto)
     {
         assignPrvToPrincipalAss(dto, 1);
     }
 
-    @Override
+    @Override @Transactional
     public void removePrivilegesToPrincipalAss(PrvsAssDTO dto)
     {
-        assignPrvToPrincipalAss(dto, 2);
+        dto.getPrvIds().forEach(prvId->
+        {
+            PrvAss prvAss = prvAssRepo.findByPrincipalAssAndPrv(dto.getPrincipalAssId(), prvId);
+            int newAssStatus = prvAssRepo.anyPrincipalAssRoleHasPrivilegeId(dto.getPrincipalAssId(), prvId) ? 3 : 2;
+            if(prvAss != null)
+            {
+                if(prvAss.getAss().getAssStatus()==3) return;
+                prvAss.setAss(new Ass(newAssStatus, dto.getStartsAt(), dto.getEndsAt()));
+            }
+            else
+            {
+                prvAss = new PrvAss();
+                prvAss.setAss(new Ass(newAssStatus, dto.getStartsAt(), dto.getEndsAt()));
+                prvAss.setPrincipalAss(new PrincipalAss(dto.getPrincipalAssId()));
+            }
+            AssignationEventTypes eventType = newAssStatus == 3 ? AssignationEventTypes.PRIVILEGE_REVOKED_TO_PRINCIPAL_ASS :
+                    newAssStatus == 2 ? AssignationEventTypes.PRIVILEGE_REMOVED_TO_PRINCIPAL_ASS : AssignationEventTypes.PRIVILEGE_REVOKED_TO_PRINCIPAL_ASS;
+            prvAss = prvAssRepo.save(prvAss);
+            PrvAssHisto histo = assMapper.mapToPrvAssHisto(prvAss, eventType, scm.getEventActorIdFromSCM());
+            prvAssHistoRepo.save(histo);
+        });
     }
 
-    @Override
+    @Override @Transactional
     public void revokePrivilegesToPrincipalAss(PrvsAssDTO dto)
     {
         assignPrvToPrincipalAss(dto, 3);
     }
 
-    @Override
+    @Override @Transactional
     public void restorePrivilegesToPrincipalAss(PrvsAssDTO dto)
     {
         dto.getPrvIds().forEach(id->
@@ -171,7 +247,7 @@ public class AssignationService implements IAssignationService
     @Override @Transactional
     public void setRolePrivileges(PrvsToRoleDTO dto)
     {
-        Long roleId = dto.getRoleId(); Set<Long> prvIds = dto.getPrvIds();
+        Long roleId = dto.getRoleId(); Set<Long> prvIds = dto.getPrvIds() == null ? new HashSet<>(Collections.singletonList(0L)) : dto.getPrvIds().size() == 0 ? new HashSet<>(Collections.singletonList(0L)) : dto.getPrvIds();
         LocalDate startsAt = dto.getStartsAt(); LocalDate endsAt =  dto.getEndsAt();
         Set<Long> prvIdsToBeRemoved = prvToRoleAssRepo.findPrvIdsForRoleNotIn(roleId, prvIds); //
         Set<Long> prvIdsToBeAdded = prvToRoleAssRepo.findPrvIdsNotBelongingToRoleIn(roleId, prvIds);
@@ -190,11 +266,21 @@ public class AssignationService implements IAssignationService
 
         prvIdsToBeAdded.forEach(id->
         {
-            PrvToRoleAss prvToRoleAss = new PrvToRoleAss(null, new Ass(1, startsAt, endsAt) , new AppPrivilege(id), new AppRole(roleId));
-            prvToRoleAss = prvToRoleAssRepo.save(prvToRoleAss);
+            PrvToRoleAss prvToRoleAss = prvToRoleAssRepo.findByRoleAndPrivilege(roleId, id);
+            if(prvToRoleAss == null)
+            {
+                prvToRoleAss = new PrvToRoleAss(null, new Ass(1, startsAt, endsAt), new AppPrivilege(id), new AppRole(roleId));
+                prvToRoleAss = prvToRoleAssRepo.save(prvToRoleAss);
+                PrvToRoleAssHisto histo = assMapper.mapToPrvToRoleAssHisto(prvToRoleAss, AssignationEventTypes.PRIVILEGE_ASSIGNED_TO_PRINCIPAL_ASS, scm.getEventActorIdFromSCM());
+                prvToRoleAssHistoRepo.save(histo);
+            }
+            else if(prvToRoleAss.getAss().getAssStatus() != 1)
+            {
+                    prvToRoleAss.getAss().setAssStatus(1);
+                    PrvToRoleAssHisto histo = assMapper.mapToPrvToRoleAssHisto(prvToRoleAss, AssignationEventTypes.PRIVILEGE_ASSIGNED_TO_PRINCIPAL_ASS, scm.getEventActorIdFromSCM());
+                    prvToRoleAssHistoRepo.save(histo);
+            }
 
-            PrvToRoleAssHisto histo = assMapper.mapToPrvToRoleAssHisto(prvToRoleAss, AssignationEventTypes.PRIVILEGE_ASSIGNED_TO_PRINCIPAL_ASS, scm.getEventActorIdFromSCM());
-            prvToRoleAssHistoRepo.save(histo);
         });
 
         prvIdsToChangeTheDates.forEach(id->
@@ -216,7 +302,7 @@ public class AssignationService implements IAssignationService
         });
     }
 
-    @Override
+    @Override @Transactional
     public void addPrivilegesToRole(PrvsToRoleDTO dto)
     {
         dto.getPrvIds().forEach(id->
@@ -230,6 +316,7 @@ public class AssignationService implements IAssignationService
             {
                 prvToRoleAss = new PrvToRoleAss();
                 prvToRoleAss.setRole(new AppRole(dto.getRoleId()));
+                prvToRoleAss.setPrivilege(new AppPrivilege(id));
             }
             prvToRoleAss.setAss(new Ass(1, dto.getStartsAt(), dto.getEndsAt()));
 
@@ -239,7 +326,7 @@ public class AssignationService implements IAssignationService
         });
     }
 
-    @Override
+    @Override @Transactional
     public void removePrivilegesToRole(PrvsToRoleDTO dto)
     {
         dto.getPrvIds().forEach(id->
@@ -275,10 +362,18 @@ public class AssignationService implements IAssignationService
 
         roleAssSpliterDTO.getRoleIdsToBeAddedAsNew().forEach(id->
         {
-            RoleAss roleAss = new RoleAss();
-            roleAss.setAss(new Ass(1, roleAss.getAss().getStartsAt(), roleAss.getAss().getEndsAt()));
-            roleAss.setRole(new AppRole(id));
-            roleAss.setPrincipalAss(new PrincipalAss(principalAssId));
+            RoleAss roleAss = roleAssRepo.findByPrincipalAssAndRole(principalAssId, id);
+            if(roleAss == null)
+            {
+                roleAss = new RoleAss();
+                roleAss.setAss(new Ass(1, startsAt, endsAt));
+                roleAss.setRole(new AppRole(id));
+                roleAss.setPrincipalAss(new PrincipalAss(principalAssId));
+            }
+            else
+            {
+                roleAss.setAss(new Ass(1, startsAt, endsAt));
+            }
             roleAss = roleAssRepo.save(roleAss);
             RoleAssHisto histo = assMapper.mapToRoleAssHisto(roleAss, AssignationEventTypes.ROLE_ASSIGNED_TO_PRINCIPAL_ASS, eai);
             roleAssHistoRepo.save(histo);
@@ -296,8 +391,8 @@ public class AssignationService implements IAssignationService
         roleAssSpliterDTO.getRoleIdsToActivate().forEach(id->
         {
             RoleAss roleAss = roleAssRepo.findByPrincipalAssAndRole(principalAssId, id);
-            roleAss.setAss(new Ass(1, roleAss.getAss().getStartsAt(), roleAss.getAss().getEndsAt()));
-            roleAss = roleAssRepo.save(roleAss);
+            roleAss.getAss().setAssStatus(1);
+            //roleAss = roleAssRepo.save(roleAss);
             RoleAssHisto histo = assMapper.mapToRoleAssHisto(roleAss, AssignationEventTypes.ASSIGNATION_ACTIVATED, eai);
             roleAssHistoRepo.save(histo);
         });
@@ -306,40 +401,84 @@ public class AssignationService implements IAssignationService
         {
             RoleAss roleAss = roleAssRepo.findByPrincipalAssAndRole(principalAssId, id);
             roleAss.setAss(new Ass(1, startsAt, endsAt));
-            roleAss = roleAssRepo.save(roleAss);
+            //roleAss = roleAssRepo.save(roleAss);
             RoleAssHisto histo = assMapper.mapToRoleAssHisto(roleAss, AssignationEventTypes.ASSIGNATION_ACTIVATED_AND_VALIDITY_PERIOD_CHANGED, eai);
             roleAssHistoRepo.save(histo);
         });
     }
 
-    private void treatPrvsAssignation(Set<Long> roleIds, Set<Long> prvIds, Long principalAssId, LocalDate startsAt, LocalDate endsAt, EventActorIdentifier eai)
+    private void treatPrvsAssignation(PrvAssSpliterDTO prvAssSpliterDTO, Long principalAssId, LocalDate startsAt, LocalDate endsAt, EventActorIdentifier eai)
     {
-        Set<Long> rolesPrvIds = prvToRoleAssRepo.findActivePrvIdsForRoles(roleIds);
-        Set<Long> prvIdsToBeAdded = prvIds.stream().filter(prvId0->rolesPrvIds.stream().noneMatch(prvId1-> Objects.equals(prvId0, prvId1))).collect(Collectors.toSet());
-        Set<Long> prvIdsToBeRevoked = rolesPrvIds.stream().filter(id0-> prvIds.stream().noneMatch(id1->Objects.equals(id0, id1))).collect(Collectors.toSet());
 
-        prvIdsToBeAdded.forEach(id->
+        prvAssSpliterDTO.getPrvIdsToBeRemoved().forEach(id->
         {
-            PrvAss prvAss = new PrvAss();
-            prvAss.setAss(new Ass(1, startsAt, endsAt));
-            prvAss.setPrincipalAss(new PrincipalAss(principalAssId));
-            prvAss.setPrv(new AppPrivilege(id));
+            PrvAss prvAss = prvAssRepo.findByPrincipalAssAndPrv(principalAssId, id);
+            if(prvAss == null)
+            {
+                prvAss = new PrvAss();
+                prvAss.setAss(new Ass(3, startsAt, endsAt));
+                prvAss.setPrincipalAss(new PrincipalAss(principalAssId));
+                prvAss.setPrv(new AppPrivilege(id));
+            }
+            else
+            {
+                prvAss.getAss().setAssStatus(3);
+            }
             prvAss = prvAssRepo.save(prvAss);
-
-            PrvAssHisto prvAssHisto = assMapper.mapToPrvAssHisto(prvAss, AssignationEventTypes.PRIVILEGE_ASSIGNED_TO_PRINCIPAL_ASS, eai);
+            PrvAssHisto prvAssHisto = assMapper.mapToPrvAssHisto(prvAss, AssignationEventTypes.PRIVILEGE_REVOKED_TO_PRINCIPAL_ASS, eai);
             prvAssHistoRepo.save(prvAssHisto);
         });
 
-        prvIdsToBeRevoked.forEach(id->
+        prvAssSpliterDTO.getPrvIdsToBeAddedAsNew().forEach(id->
         {
-            PrvAss prvAss = new PrvAss();
-            prvAss.setAss(new Ass(3, startsAt, endsAt));
-            prvAss.setPrincipalAss(new PrincipalAss(principalAssId));
-            prvAss.setPrv(new AppPrivilege(id));
-            prvAss = prvAssRepo.save(prvAss);
+            PrvAss prvAss = prvAssRepo.findByPrincipalAssAndPrv(principalAssId, id);
+            if(prvAss == null)
+            {
+                prvAss = new PrvAss();
+                prvAss.setAss(new Ass(1, startsAt, endsAt));
+                prvAss.setPrincipalAss(new PrincipalAss(principalAssId));
+                prvAss.setPrv(new AppPrivilege(id));
+                prvAss = prvAssRepo.save(prvAss);
+                PrvAssHisto prvAssHisto = assMapper.mapToPrvAssHisto(prvAss, AssignationEventTypes.PRIVILEGE_ASSIGNED_TO_PRINCIPAL_ASS, eai);
+                prvAssHistoRepo.save(prvAssHisto);
+            }
+            else
+            {
+                prvAss.setAss(new Ass(1, startsAt, endsAt));
+                prvAss = prvAssRepo.save(prvAss);
+                PrvAssHisto prvAssHisto = assMapper.mapToPrvAssHisto(prvAss, AssignationEventTypes.PRIVILEGE_RESTORED_TO_PRINCIPAL_ASS, eai);
+                prvAssHistoRepo.save(prvAssHisto);
+            }
+        });
 
-            PrvAssHisto prvAssHisto = assMapper.mapToPrvAssHisto(prvAss, AssignationEventTypes.PRIVILEGE_REVOKED_TO_PRINCIPAL_ASS, eai);
-            prvAssHistoRepo.save(prvAssHisto);
+
+        //=========================
+
+        prvAssSpliterDTO.getPrvIdsToChangeTheDates().forEach(id->
+        {
+            PrvAss prvAss = prvAssRepo.findByPrincipalAssAndPrv(principalAssId, id);
+            prvAss.setAss(new Ass(prvAss.getAss().getAssStatus(), startsAt, endsAt));
+            prvAss = prvAssRepo.save(prvAss);
+            PrvAssHisto histo = assMapper.mapToPrvAssHisto(prvAss, AssignationEventTypes.VALIDITY_PERIOD_CHANGED, eai);
+            prvAssHistoRepo.save(histo);
+        });
+
+        prvAssSpliterDTO.getPrvIdsToActivate().forEach(id->
+        {
+            PrvAss prvAss = prvAssRepo.findByPrincipalAssAndPrv(principalAssId, id);
+            prvAss.getAss().setAssStatus(1);
+            prvAss = prvAssRepo.save(prvAss);
+            PrvAssHisto histo = assMapper.mapToPrvAssHisto(prvAss, AssignationEventTypes.ASSIGNATION_ACTIVATED, eai);
+            prvAssHistoRepo.save(histo);
+        });
+
+        prvAssSpliterDTO.getPrvIdsToActivateAndChangeTheDates().forEach(id->
+        {
+            PrvAss prvAss = prvAssRepo.findByPrincipalAssAndPrv(principalAssId, id);
+            prvAss.setAss(new Ass(1, startsAt, endsAt));
+            prvAss = prvAssRepo.save(prvAss);
+            PrvAssHisto histo = assMapper.mapToPrvAssHisto(prvAss, AssignationEventTypes.ASSIGNATION_ACTIVATED_AND_VALIDITY_PERIOD_CHANGED, eai);
+            prvAssHistoRepo.save(histo);
         });
     }
 

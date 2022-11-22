@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
@@ -13,7 +14,7 @@ public class RolesAssDTO
 {
     protected LocalDate startsAt;
     protected LocalDate endsAt;
-    private Set<Long> roleIds;
+    private Set<Long> roleIds = new HashSet<>();
     @ExistingAssId
     private Long principalAssId;
 }

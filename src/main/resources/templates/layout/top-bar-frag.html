@@ -100,7 +100,7 @@
         <div class="dropdown-divider"></div>
         <a href="#" class="dropdown-item">
           <i class="fas fa-envelope mr-2"></i> 4 new messages
-          <span class="float-right text-muted text-sm">3 mins</span>
+          <span class="float-right text-sm">3 mins</span>
         </a>
         <div class="dropdown-divider"></div>
         <a href="#" class="dropdown-item">
@@ -108,12 +108,22 @@
           <span class="float-right text-muted text-sm">12 hours</span>
         </a>
         <div class="dropdown-divider"></div>
-        <a href="#" class="dropdown-item">
-          <i class="fas fa-file mr-2"></i> 3 new reports
-          <span class="float-right text-muted text-sm">2 days</span>
-        </a>
+        <span class="dropdown-item">
+          <span>
+            <a th:href="@{/sigrh/assignations/user-ass-list(userId=${@scm.getAuthUserId()})}" class="btn btn-outline-primary btn-sm" title="Changer de fonction">
+              <i class="bi bi-grid-3x3-gap-fill"></i> Changer de fonction
+            </a>
+          </span>
+          <span class="">
+            <a href="/sigrh/logout" class="btn btn-outline-danger btn-sm mr-2" title="Se déconnecter">
+              <i class="bi bi-power"></i> Se déconnecter
+            </a>
+          </span>
+        </span>
         <div class="dropdown-divider"></div>
-        <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+        <span class="dropdown-item dropdown-footer">
+          <a href="#" class="btn btn-outline-success btn-sm">Changer de mot de passe</a>
+        </span>
       </div>
     </li>
     <li class="nav-item">

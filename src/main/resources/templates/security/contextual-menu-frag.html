@@ -7,52 +7,55 @@
             </div>
             <div class="card-body box-profile">
                 <span th:fragment="contextual-menu">
-                    <ul class="list-group list-group-unbordered mb-3" th:if="${str}">
-                        <li class="list-group-item" th:if="${viewMode!='details' && viewMode != 'new' && viewMode != 'trash'}">
-                            <a th:href="@{'/sigrh/structures/str-details?strId='+${str.strId}}" th:title="'Voir le détail de la structure ' +${str.strName}">
-                                <b>Voir le détail</b> <i class="float-right bi bi-eye-fill"></i>
-                            </a>
-                        </li>
-                        <li class="list-group-item" th:if="${viewMode!='update' && viewMode != 'new' && viewMode != 'trash'}">
-                            <a th:href="@{'/sigrh/structures/update-str-form/'+${str.strId}}" th:title="'Modifier la structure ' +${str.strName}">
-                                <b>Modifier</b> <i class="float-right bi bi-pencil-fill"></i>
-                            </a>
-                        </li>
+                    <ul class="list-group list-group-unbordered mb-3" >
 
-                        <li class="list-group-item" th:if="${viewMode != 'new' && viewMode != 'trash' && viewMode != 'change-anchor'}">
-                            <a th:title="'Changer l\'ancrage institutionnel de la structure ' +${str.toString()}" th:href="@{'/sigrh/structures/change-anchor-form?strId='+${str.strId}}">
-                                <b>Changer l'ancrage institutionnel</b> <i class="float-right bi bi-link"></i>
-                            </a>
-                        </li>
+                        <span th:fragment="security-common-menu">
+                            <li class="list-group-item" title="Créer un nouvel utilisateur">
+                                <a href="/sigrh/security/users/new-user-form">
+                                    <b>Nouvel utilisateur</b> <i class="float-right bi bi-person-plus-fill"></i>
+                                </a>
+                            </li>
+                            <li class="list-group-item" title="Voir la liste des utilisateurs">
+                                <a href="/sigrh/users/user-list">
+                                    <b>Liste des utilisateurs</b> <i class="text-bold float-right bi bi-people-fill"></i>
+                                </a>
+                            </li>
 
-                        <li class="list-group-item" th:if="${viewMode!='config' && viewMode != 'new' && viewMode != 'trash'}">
-                            <a th:href="@{/sigrh/structures/add-posts-form(strId=${str.strId})}" th:title="'Créer de nouveaux postes au sein de la structure ' +${str.strName}">
-                                <b>Créer de nouveaux postes</b> <i class="float-right bi bi-gear-fill"></i>
-                            </a>
-                        </li>
-                        <li class="list-group-item" th:if="${viewMode != 'new' && viewMode != 'trash'}" th:title="'Supprimer la structure  ' + ${str.strName}">
-                            <a id="lnk-delete" href="#" data-toggle="modal" data-target="#delete-confirmation-modal">
-                                <b>Supprimer</b> <i class="float-right bi bi-trash-fill"></i>
-                            </a>
-                            <th:block
-                                    th:replace="structures/delete-confirmation-modal-frag::delete-confirmation-modal"></th:block>
-                        </li>
-                        <li class="list-group-item" th:if="${viewMode != 'new'}">
-                            <a th:href="@{/sigrh/structures/new-str-form}" title="Créer une nouvelle structure">
-                                <b>Nouvelle structure</b> <i class="float-right bi bi-plus-circle-fill"></i>
-                            </a>
-                        </li>
-                        <li class="list-group-item">
-                            <a th:href="@{/sigrh/structures/str-list}" title="Voir la liste des structures">
-                                <b>Liste des structures</b> <i class="float-right bi bi-list-ul"></i>
-                            </a>
-                        </li>
-                        <li class="list-group-item">
-                            <a title="Voir la liste des structures supprimées"
-                               th:href="@{/sigrh/structures/deleted-str-list}">
-                                <b>Corbeille</b> <i class="float-right bi bi-trash-fill"></i>
-                            </a>
-                        </li>
+                            <li class="list-group-item" title="Créer un nouveau rôle">
+                                <a href="/sigrh/security/roles/new-role-form">
+                                    <b>Nouveau rôle</b> <i class="float-right bi bi-person-plus-fill"></i>
+                                </a>
+                            </li>
+                            <li class="list-group-item" title="Voir la liste des rôles">
+                                <a href="/sigrh/roles/role-list">
+                                    <b>Liste des rôles</b> <i class="text-bold float-right bi bi-list-ul"></i>
+                                </a>
+                            </li>
+
+                            <li class="list-group-item" title="Créer un nouveau privilège">
+                                <a href="/sigrh/security/privileges/new-prv-form">
+                                    <b>Nouveau privilège</b> <i
+                                        class="text-bold float-right bi bi-clipboard2-plus-fill"></i>
+                                </a>
+                            </li>
+                            <li class="list-group-item" title="Voir la liste des utilisateurs">
+                                <a href="/sigrh/privileges/prv-list">
+                                    <b>Liste des privilèges</b> <i class="text-bold float-right bi bi-list-ul"></i>
+                                </a>
+                            </li>
+
+                            <li class="list-group-item" title="Nouvelle assignation">
+                                <a href="/sigrh/assignations/new-principal-ass-form">
+                                    <b>Nouvelle assignation</b> <i class="text-bold float-right bi  bi-journal-plus"></i>
+                                </a>
+                            </li>
+
+                            <li class="list-group-item" th:title="'Voir la liste des assignations de l\'utilisateur ' + ${user.username}" th:if="${user}">
+                                <a th:href="@{/sigrh/assignations/user-ass-list(userId=${user.userId})}">
+                                    <b>Voir la liste des assignations</b> <i class="text-bold float-right bi  bi-journal-plus"></i>
+                                </a>
+                            </li>
+                        </span>
                     </ul>
                 </span>
             </div>

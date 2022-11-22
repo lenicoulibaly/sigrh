@@ -16,7 +16,7 @@ import java.lang.annotation.*;
 public @interface ConcordantPassword
 {
     String message() default "confirmPassword::Le mot de passe de confirmation doit être identique au mot de passe";
-    Class<?>[] group() default {};
+    Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
     @Component @RequiredArgsConstructor

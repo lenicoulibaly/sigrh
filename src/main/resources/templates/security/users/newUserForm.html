@@ -4,10 +4,10 @@
                 layout:decorate="~{security/security-layout}">
     <head>
 		<th:block layout:fragment="specific-css-links">
-            <!-- Select2
-            <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
-            <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
-            <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}" />-->
+            <!--Select2-->
+           <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+           <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+           <!-- <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}" />-->
         </th:block>
 	</head>
 
@@ -40,18 +40,28 @@
                                                     <div th:if="${globalErrMsg}" th:text="${globalErrMsg}"
                                                          class="alert alert-danger alert-dismissible fade show"/>
                                                 </div>
-                                                <div class="col col-md-6 col-sm-12">
+                                                <div class="col col-md-4 col-sm-12">
                                                     <div class="form-group">
                                                         <label for="email">Email</label> <small
                                                             th:if="${emailErrMsg}" class="text-danger">[[${emailErrMsg}]]</small>
                                                         <input th:classappend="${emailErrMsg} ? 'border-danger' : ''" required th:field="*{email}" type="email" class="form-control" id="email" />
                                                     </div>
                                                 </div>
-                                                <div class="col col-md-6 col-sm-12">
+                                                <div class="col col-md-4 col-sm-12">
                                                     <div class="form-group">
                                                         <label for="tel">Tel</label> <small
                                                             th:if="${telErrMsg}" class="text-danger">[[${telErrMsg}]]</small>
                                                         <input th:classappend="${telErrMsg} ? 'border-danger' : ''" th:field="*{tel}" type="text" class="form-control" id="tel" />
+                                                    </div>
+                                                </div>
+                                                <div class="col col-md-4 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label for="strId">Structure</label> <small
+                                                            th:if="${strIdErrMsg}" class="text-danger">[[${strIdErrMsg}]]</small>
+                                                        <select th:classappend="${strIdErrMsg} ? 'border-danger' : ''" th:field="*{strId}" class="form-control select2bs4" id="strId" >
+                                                            <option value="" >Choisir la structure</option>
+                                                            <option th:each="str:${structures}" th:value="${str.strId}" th:title="${str.strName + '(' + str.hierarchySigles + ')'}">[[${str.strName}]] ([[${str.strSigle}]])</option>
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>

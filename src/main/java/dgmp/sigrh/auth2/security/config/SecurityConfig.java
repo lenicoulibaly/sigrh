@@ -1,6 +1,8 @@
 package dgmp.sigrh.auth2.security.config;
 
 import dgmp.sigrh.auth2.security.filters.ContextFilter;
+import dgmp.sigrh.auth2.security.handlers.AppAuthenticationFailureHandler;
+import dgmp.sigrh.auth2.security.handlers.AppSuccessfullAuthenticationHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration @EnableWebSecurity @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
@@ -17,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig
 {
     private final ContextFilter contextFilter;
+    private final AppSuccessfullAuthenticationHandler appSuccessfullAuthenticationHandler;
     @Bean
     public BCryptPasswordEncoder passwordEncoder()
     {
@@ -32,7 +36,8 @@ public class SecurityConfig
                 .headers().frameOptions().disable()
                 .and()
                 .formLogin().loginPage("/login")
-
+                .failureHandler(authenticationFailureHandler())
+                .successHandler(appSuccessfullAuthenticationHandler)
                 .and()
                 .addFilterAfter(contextFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
@@ -42,6 +47,11 @@ public class SecurityConfig
                 //.anyRequest().authenticated()  /h2console
                 .and()
                 .build();
+    }
+
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new AppAuthenticationFailureHandler();
     }
 
     @Bean

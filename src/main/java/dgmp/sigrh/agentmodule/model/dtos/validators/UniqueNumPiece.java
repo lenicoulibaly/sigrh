@@ -1,6 +1,6 @@
 package dgmp.sigrh.agentmodule.model.dtos.validators;
 
-import dgmp.sigrh.agentmodule.controller.repositories.AgentDAO;
+import dgmp.sigrh.agentmodule.controller.repositories.AgentRepo;
 import dgmp.sigrh.agentmodule.model.dtos.UpdateAgentDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,24 +25,24 @@ public @interface UniqueNumPiece
     @RequiredArgsConstructor
     class UniqueNumPieceValidator implements ConstraintValidator<UniqueNumPiece, String>
     {
-        private final AgentDAO agentDAO;
+        private final AgentRepo agentRepo;
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context)
         {
             if(value==null) return false;
-            return !agentDAO.existsByNumPiece(value);
+            return !agentRepo.existsByNumPiece(value);
         }
     }
 
     @Component @RequiredArgsConstructor
     class UniqueNumPieceValidatorOnUpdate implements ConstraintValidator<UniqueNumPiece, UpdateAgentDTO>
     {
-        private final AgentDAO agentDAO;
+        private final AgentRepo agentRepo;
         @Override
         public boolean isValid(UpdateAgentDTO dto, ConstraintValidatorContext context)
         {
             if(dto.getNumPiece()==null) return false;
-            return !agentDAO.existsByNumPiece(dto.getNumPiece(), dto.getIdAgent());
+            return !agentRepo.existsByNumPiece(dto.getNumPiece(), dto.getIdAgent());
         }
     }
 }

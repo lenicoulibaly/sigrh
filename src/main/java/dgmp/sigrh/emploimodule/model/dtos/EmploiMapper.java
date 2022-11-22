@@ -1,6 +1,6 @@
 package dgmp.sigrh.emploimodule.model.dtos;
 
-import dgmp.sigrh.agentmodule.controller.repositories.AgentDAO;
+import dgmp.sigrh.agentmodule.controller.repositories.AgentRepo;
 import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
 import dgmp.sigrh.emploimodule.controller.repositories.EmploiDAO;
 import dgmp.sigrh.emploimodule.model.entities.Emploi;
@@ -14,10 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class EmploiMapper
 {
     @Autowired protected EmploiDAO emploiDAO;
-    @Autowired protected AgentDAO agentDAO;
+    @Autowired protected AgentRepo agentRepo;
 
-    @Mapping(target = "nbrAgent", expression = "java(agentDAO.countByEmploi(emploi.getIdEmploi()))")
-    @Mapping(target = "proportion", expression = "java(agentDAO.count() == 0 ? 0 : (agentDAO.countByEmploi(emploi.getIdEmploi())/agentDAO.count())*100)")
+    @Mapping(target = "nbrAgent", expression = "java(agentRepo.countByEmploi(emploi.getIdEmploi()))")
+    @Mapping(target = "proportion", expression = "java(agentRepo.count() == 0 ? 0 : (agentRepo.countByEmploi(emploi.getIdEmploi())/agentRepo.count())*100)")
     public abstract ReadEmploiDTO mapToReadEmploiDTO(Emploi emploi);
 
     @Mapping(target = "status", expression = "java(dgmp.sigrh.shared.model.enums.PersistenceStatus.ACTIVE)")

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" 
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+                layout:decorate="~{security/security-layout}">
+    <head>
+		<th:block layout:fragment="specific-css-links">
+        </th:block>
+	</head>
+
+	<body>
+        <div layout:fragment="content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Liste des assignations de [[${username}]]</h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                            <i class="fas fa-minus"></i></button>
+                                    </div>
+                                </div>
+                                <!-- /.card-header -->
+                                <!-- form start -->
+                                <div class="card-body">
+
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h3 class="card-title">
+                                                    [[${assList.getNumberOfElements()}]] items affichés sur [[${assList.getTotalElements()}]]
+                                                </h3>
+
+                                                <div class="card-tools">
+                                                    <ul class="pagination pagination-sm float-right">
+                                                        <li th:title="Début" class="page-item"><a class="page-link" th:href="@{/sigrh/assignations/user-ass-list(pageNum=0, key=${key})}">&laquo;&laquo;</a></li>
+                                                        <li  th:title="Précédant" class="page-item"><a class="page-link" th:href="@{/sigrh/assignations/user-ass-list(pageNum=${currentPage > 0 ? currentPage-1 : 0}, key=${key})}">&laquo;</a></li>
+                                                        <li th:each="page, status:${pages}" class="page-item" th:classappend="${status.index == currentPage ? 'active' : T(java.lang.Math).abs(status.index - currentPage) < 4 ? '' : 'd-none'}"><a class="page-link" th:href="@{/sigrh/assignations/user-ass-list(pageNum=${status.index}, key=${key})}">[[${status.count}]]</a></li>
+                                                        <li th:title="Suivant" class="page-item"><a class="page-link" th:href="@{/sigrh/assignations/user-ass-list(pageNum=${currentPage < pages.length-1 ? currentPage+1 : pages.length-1}, key=${key})}">&raquo;</a></li>
+                                                        <li th:title="Fin" class="page-item"><a class="page-link" th:href="@{/sigrh/assignations/user-ass-list(pageNum= ${pages.length-1}, key=${key})}">&raquo;&raquo;</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!-- /.card-header -->
+                                            <div class="card-body p-0">
+                                                <form class="form-horizontal" th:action="@{/sigrh/assignations/user-ass-list}">
+                                                    <div class="card-body mt-2 m-0 p-0">
+                                                        <div class="form-group row">
+                                                            <input type="hidden" th:value="0" name="pageNum">
+                                                            <input type="hidden" th:value="0" name="navigating">
+                                                            <input type="hidden" th:value="${param.userId[0]}" name="userId">
+
+                                                            <div class="col-md-12 mx-0 ml-3 p-0" style="display: inline">
+                                                                <table class="d-inline">
+                                                                    <tr>
+                                                                        <td >
+                                                                            <a id="lnk-reinitialize" th:href="@{/sigrh/assignations/user-ass-list(pageNum=0, Key='', userId=${param.userId[0]})}" class="btn btn-primary" >Réinitialiser</a>
+                                                                        </td>
+                                                                        <td style="width: 500px;">
+                                                                            <input type="text" style="height: 40px;"  class="form-control p-0 m-0" th:value="${key}" name="key" id="key" placeholder="Rechercher">
+                                                                        </td>
+                                                                        <td>
+                                                                            <button class=" btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                                <a id="lnk-new-principal-ass-form" th:if="${@scm.hasAuthority('CRT-PRP-ASS')}" th:href="@{/sigrh/assignations/new-principal-ass-form(userId=${param.userId[0]})}" class="btn btn-primary float-right mr-4" >Nouvel Assignation</a>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </form>
+
+                                                <hr />
+                                                <table class="table table-sm table-hover">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Intitulé</th>
+                                                        <th>Structure</th>
+                                                        <th>Statut</th>
+                                                        <th>Début</th>
+                                                        <th>Fin</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr th:each="ass: ${assList}" th:classappend="${ass.assStatus == 3 ? 'bg-gray':''}">
+                                                        <td>[[${ass.intitule}]]</td>
+                                                        <td th:title="${ass.hierarchySigles}">
+                                                            [[${ass.strName}]] ([[${ass.strSigle}]])
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge" th:classappend="${ass.assStatus == 1 ? 'badge-success' : ass.assStatus == 3 ? 'bg-gray':''}">
+                                                                [[${ass.status}]]
+                                                            </span>
+                                                        </td>
+                                                        <td> <span >[[${ass.startsAt}]]</span></td>
+                                                        <td >[[${ass.endsAt}]]</span></td>
+                                                        <td>
+
+                                                            <a class="btn btn-sm btn-outline-success mx-1" title="Voir la liste des rôles et privilèges" th:href="@{/sigrh/assignations/auth-list(assId=${ass.assId})}" ><i class="bi bi-eye text-sm"></i></a>
+                                                            <a class="btn btn-sm btn-outline-warning mx-1" title="Modifier l'assignation" th:href="@{/sigrh/assignations/update-principal-ass-form(assId=${ass.assId})}" ><i class="bi bi-pencil text-sm"></i></a>
+                                                            <a class="btn btn-sm btn-outline-warning mx-1" title="Ajouter role(s)" href="#" ><i class="bi bi-person-plus text-sm"></i></a>
+                                                            <a class="btn btn-sm btn-outline-warning mx-1" title="Ajouter privilège(s)" href="#" ><i class="bi bi-journal-plus text-sm"></i></a>
+
+                                                            <a class="btn btn-sm btn-outline-danger mx-1" th:if="${ass.assStatus != 3}" title="Revoquer l'assignation" href="#" data-toggle="modal" th:data-target="${'#revoke-ass-confirmation-modal' + ass.assId}"><i class="bi bi-lock text-sm"></i></a>
+                                                            <a class="btn btn-sm btn-outline-success mx-1" th:if="${ass.assStatus == 3}" title="Restaurer l'assignation" href="#" data-toggle="modal" th:data-target="${'#restore-ass-confirmation-modal' + ass.assId}"><i class="bi bi-unlock text-sm"></i></a>
+
+
+                                                            <a class="btn btn-sm btn-outline-success mx-1" th:if="${ass.assStatus == 2}" :title="Définir en tant qu'assignation courante" href="#" data-toggle="modal" th:data-target="${'#set-as-default-ass-confirmation-modal' + ass.assId}"><i class="bi bi-check-circle text-sm"></i></a>
+
+
+                                                            <div class="modal fade" th:id="${'revoke-ass-confirmation-modal' + ass.assId}">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h4 class="modal-title">Confirmation</h4>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <h3>[[${ass.intitule}]]</h3>
+                                                                            <p>Êtes-vous sures de vouloir revoquer cette assignation de [[${ass.username}]] ?</p>
+                                                                        </div>
+                                                                        <div class="modal-footer justify-content-between">
+                                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                                            <a th:title="'Débloquer ' +${ass.username}" th:href="@{/sigrh/assignations/revoke-ass(assId=${ass.assId}, pageNum = ${currentPage}, key = ${key})}" type="button" class="btn btn-danger">Confirmeation de la revocation</a>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- /.modal-content -->
+                                                                </div>
+                                                                <!-- /.modal-dialog -->
+                                                            </div>
+                                                            <div class="modal fade" th:id="${'restore-ass-confirmation-modal' + ass.assId}">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h4 class="modal-title">Confirmation</h4>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <h3>[[${ass.intitule}]]</h3>
+                                                                            <p>Êtes-vous sures de vouloir restaurer cette assignation de [[${ass.username}]] ?</p>
+                                                                        </div>
+                                                                        <div class="modal-footer justify-content-between">
+                                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                                            <a th:href="@{/sigrh/assignations/restore-ass(assId=${ass.assId}, pageNum = ${currentPage}, key = ${key})}" type="button" class="btn btn-success">Confirmer la restauration</a>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- /.modal-content -->
+                                                                </div>
+                                                                <!-- /.modal-dialog -->
+                                                            </div>
+                                                            <div class="modal fade" th:id="${'set-as-default-ass-confirmation-modal' + ass.assId}">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h4 class="modal-title">Confirmation</h4>
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <h3>[[${ass.intitule}]]</h3>
+                                                                            <p>Êtes-vous sures de vouloir définir cette assignation en tant qu'assignation courante ?</p>
+                                                                        </div>
+                                                                        <div class="modal-footer justify-content-between">
+                                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                                            <a th:href="@{/sigrh/assignations/set-as-default(assId=${ass.assId})}" type="button" class="btn btn-success">Confirmer le blocage du compte</a>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- /.modal-content -->
+                                                                </div>
+                                                                <!-- /.modal-dialog -->
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!-- /.card-body -->
+                                        </div>
+                                        <!-- /.card -->
+
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                        </div>
+                    </div>
+        </div>
+        <div layout:fragment="specific-scripts">
+            <script th:src="@{/dist/js/demo.js}"></script>
+            <script>
+            </script>
+        </div>
+    </body>
+</html>

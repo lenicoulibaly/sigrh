@@ -1,8 +1,10 @@
 package dgmp.sigrh.auth2.controller.services.spec;
 
 import dgmp.sigrh.auth2.model.dtos.appuser.*;
+import dgmp.sigrh.auth2.model.enums.UserStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 public interface IUserService
 {
@@ -23,10 +25,19 @@ public interface IUserService
 
     //@Transactional
     void sendAccountActivationEmail(String username, String email) throws IllegalAccessException;
+    void sendAccountActivationEmail(Long userId) throws IllegalAccessException;
 
-    void resendAccountActivationEmail(String username, String email) throws IllegalAccessException;
+    //void resendAccountActivationEmail(String username, String email) throws IllegalAccessException;
 
     void sendReinitialisePasswordEmail(String username, String email) throws IllegalAccessException;
 
     void clickLink(String token);
+
+    UserStatus getUserStatus(Long userId);
+
+    Page<ReadUserDTO> searchUsers(String key, Long strId, Pageable pageable);
+
+    void blockAccount(Long userId);
+
+    void unBlockAccount(Long userId);
 }

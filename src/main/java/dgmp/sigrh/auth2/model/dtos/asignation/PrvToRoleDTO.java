@@ -15,4 +15,5 @@ public class PrvToRoleDTO
     private Long privilegeId;
     private LocalDateTime startsAt;
     private LocalDateTime endsAt;
+    private boolean permanent;
 }

@@ -1,5 +1,6 @@
 package dgmp.sigrh.auth2.model.entities;
 
+import dgmp.sigrh.structuremodule.model.dtos.str.ReadStrDTO;
 import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
 import lombok.*;
 
@@ -18,6 +19,8 @@ public class PrincipalAss
     private AppUser user;
     @ManyToOne @JoinColumn(name = "structure_id")
     private Structure structure;
+    @Transient
+    private ReadStrDTO strDTO = new ReadStrDTO();
 
     public PrincipalAss(Long assId) {
         this.assId = assId;

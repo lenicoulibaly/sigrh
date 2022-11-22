@@ -1,6 +1,6 @@
 package dgmp.sigrh.auth2.security.services;
 
-import dgmp.sigrh.agentmodule.controller.repositories.AgentDAO;
+import dgmp.sigrh.agentmodule.controller.repositories.AgentRepo;
 import dgmp.sigrh.agentmodule.model.entities.Agent;
 import dgmp.sigrh.auth2.controller.repositories.UserRepo;
 import dgmp.sigrh.auth2.model.entities.AppPrivilege;
@@ -28,7 +28,7 @@ public class SecurityContextManager implements ISecurityContextManager
     private final IAuthoritiesService authService;
     private final UserRepo userRepo;
     private final AppUserDetailsService uds;
-    private final AgentDAO agentDAO;
+    private final AgentRepo agentRepo;
     @Override
     public void refreshSecurityContext(String username)
     {
@@ -49,6 +49,12 @@ public class SecurityContextManager implements ISecurityContextManager
     public Set<String> getAuthorities()
     {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
+    }
+
+    @Override
+    public boolean isAuthenticated()
+    {
+        return SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
     }
 
     @Override
@@ -106,7 +112,7 @@ public class SecurityContextManager implements ISecurityContextManager
         Structure visibility = this.getUserVisibility();
 
         if(user == null) return null;
-        Agent agent = user.getAgentId()==null ? null : agentDAO.findById(user.getAgentId()).orElse(null);
+        Agent agent = user.getAgentId()==null ? null : agentRepo.findById(user.getAgentId()).orElse(null);
         return EventActorIdentifier.builder()
                 .modifierUserId(user.getUserId())
                 .modifierUsername(user.getUsername())

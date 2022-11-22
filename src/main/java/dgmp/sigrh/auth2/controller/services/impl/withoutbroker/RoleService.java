@@ -10,6 +10,7 @@ import dgmp.sigrh.auth2.model.entities.AppRole;
 import dgmp.sigrh.auth2.model.events.types.auth.RoleEventTypes;
 import dgmp.sigrh.auth2.model.histo.RoleHisto;
 import dgmp.sigrh.auth2.security.services.ISecurityContextManager;
+import dgmp.sigrh.shared.utilities.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -34,13 +35,14 @@ public class RoleService implements IRoleService
         AppRole role = roleMapper.mapToRole(dto);
         role = roleRepo.save(role);
         RoleHisto histo = roleMapper.mapToRoleHisto(role, RoleEventTypes.CREATE, scm.getEventActorIdFromSCM());
+        roleHistoRepo.save(histo);
         return roleMapper.mapToReadRoleDTO(role);
     }
 
     @Override
     public Page<ReadRoleDTO> searchRoles(String searchKey, Pageable pageable)
     {
-        Page<AppRole> rolePage = roleRepo.searchRoles(searchKey, pageable);
+        Page<AppRole> rolePage = roleRepo.searchRoles(StringUtils.stripAccentsToUpperCase(searchKey), pageable);
         List<ReadRoleDTO> readRoleDTOS = rolePage.stream().map(roleMapper::mapToReadRoleDTO).collect(Collectors.toList());
         return new PageImpl<>(readRoleDTOS, pageable, rolePage.getTotalElements());
     }

@@ -25,6 +25,7 @@ import dgmp.sigrh.structuremodule.model.events.StrEventType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -309,25 +310,25 @@ public class StrController
         return dto;}).collect(Collectors.toList());
     }
 
-    @GetMapping(path = "/sigrh/structures/loadStrTreeView/{strId}") @ResponseBody
+    @GetMapping(path = "/sigrh/structures/loadStrTreeView/{strId}") @ResponseBody @PreAuthorize("permitAll()")
     public List<StrTreeView> loadStrTreeView(@PathVariable Long strId)
     {
         return this.strService.loadStrTreeView(strId);
     }
 
-    @GetMapping(path = "/sigrh/structures/loadStrTreeView/{strId}/{critere}") @ResponseBody
+    @GetMapping(path = "/sigrh/structures/loadStrTreeView/{strId}/{critere}") @ResponseBody @PreAuthorize("permitAll()")
     public List<StrTreeView> loadStrTreeView(@PathVariable Long strId, @PathVariable String critere)
     {
         return this.strService.loadStrTreeView(strId, critere);
     }
 
-    @GetMapping(path = "/sigrh/structures/countAllChildren/{strId}") @ResponseBody
+    @GetMapping(path = "/sigrh/structures/countAllChildren/{strId}") @ResponseBody @PreAuthorize("permitAll()")
     public long countAllChildren(@PathVariable Long strId)
     {
         return this.strRepo.countAllChildren(strId);
     }
 
-    @GetMapping(path = "/sigrh/structures/getChildrenMaxLevel/{strId}") @ResponseBody
+    @GetMapping(path = "/sigrh/structures/getChildrenMaxLevel/{strId}") @ResponseBody @PreAuthorize("permitAll()")
     public long getChildrenMaxLevel(@PathVariable long strId)
     {
         return this.strRepo.getChildrenMaxLevel(strRepo.getStrCode(strId));

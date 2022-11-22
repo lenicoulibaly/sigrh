@@ -32,10 +32,10 @@ public interface StrRepo extends JpaRepository<Structure, Long>
     //@Query("select s from Structure s where upper(s.strCode) like upper(concat(?1, '/%')) and s.status = 'ACTIVE' order by s.strCode ASC")
     //List<Structure> findAllChildren(String strCode);
 
-    @Query("select s from Structure s where (locate(concat(function('getStrCode', ?1), '/'), s.strCode) = 1 or s.strId = function('getStrCode', ?1)) and s.status = 'ACTIVE' order by s.strCode ASC")
-    List<Structure> findAllChildren(long strId);
+    @Query("select s from Structure s where (locate(concat(function('getStrCode', ?1), '/'), s.strCode) = 1 or s.strId = ?1) and s.status = 'ACTIVE' order by s.strCode ASC")
+    List<Structure> findAllChildren(Long strId);
 
-    @Query("select s from Structure s where (locate(concat(function('getStrCode', ?1), '/'), s.strCode) = 1 or s.strId = function('getStrCode', ?1)) and s.status = 'ACTIVE' order by s.strCode ASC")
+    @Query("select s from Structure s where (locate(concat(function('getStrCode', ?1), '/'), s.strCode) = 1 or s.strId = ?1) and s.status = 'ACTIVE' order by s.strCode ASC")
     Page<Structure> findAllChildren(long strId, Pageable pageable);
 
     @Query("select count(s) from Structure s, Structure s2 where s2.strId = ?1 and (locate(concat(s2.strCode, '/'), s.strCode) = 1 ) and s.status = 'ACTIVE'")
@@ -168,4 +168,7 @@ public interface StrRepo extends JpaRepository<Structure, Long>
 
     @Query("select s.strSigle from Structure s where (locate(concat(s.strCode, '/') , function('getStrCode', ?1)) = 1 or s.strId = ?1) and s.status = 'ACTIVE' order by s.strLevel asc ")
     List<String> getHierarchySigles(Long strId);
+
+    @Procedure(name = "get_hierarchy_sigles", procedureName = "get_hierarchy_sigles")
+    String getHierarchySigle(long strId);
 }

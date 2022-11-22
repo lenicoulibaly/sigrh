@@ -3,6 +3,9 @@ package dgmp.sigrh.auth2.model.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.EnumUtils;
+
+import java.util.List;
 
 @Getter @NoArgsConstructor @AllArgsConstructor
 public enum PrvGroup
@@ -16,4 +19,9 @@ public enum PrvGroup
     NOMINATION("Nomination");
 
     private String group;
+
+    public static List<PrvGroup> getPrvGroups()
+    {
+        return EnumUtils.getEnumList(PrvGroup.class);
+    }
 }

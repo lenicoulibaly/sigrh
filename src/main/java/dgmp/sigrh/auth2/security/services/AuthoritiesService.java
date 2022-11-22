@@ -30,7 +30,7 @@ public class AuthoritiesService implements IAuthoritiesService
     public boolean principalAssHasAuthority(Long assId, String authority)
     {
         if(assId == null || authority == null) return false;
-        return roleAssRepo.principalAssHasRole(assId, authority) || prvAssRepo.principalAssHasPrivilege(assId, authority);
+        return roleAssRepo.principalAssHasRole(assId, authority) || prvAssRepo.principalAssHasPrivilegeCode(assId, authority);
     }
 
     @Override
@@ -44,6 +44,7 @@ public class AuthoritiesService implements IAuthoritiesService
     public Set<String> getPrincipalAssAuthorities(Long assId)
     {
         if(assId == null) return new HashSet<>();
+        if(!principalAssRepo.principalAssHasValidDates(assId)) return new HashSet<>();
         return Stream.concat(roleAssRepo.getPrincipalAssRoles(assId).stream().map(AppRole::getRoleName),
                 prvAssRepo.getPrincipalAssPrivileges(assId).stream().map(AppPrivilege::getPrivilegeCode))
                 .collect(Collectors.toSet());

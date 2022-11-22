@@ -11,6 +11,7 @@ import dgmp.sigrh.auth2.model.histo.PrincipalAssHisto;
 import dgmp.sigrh.auth2.model.histo.PrvAssHisto;
 import dgmp.sigrh.auth2.model.histo.PrvToRoleAssHisto;
 import dgmp.sigrh.auth2.model.histo.RoleAssHisto;
+import dgmp.sigrh.structuremodule.controller.service.str.IHierarchySiglesGenerator;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public abstract class AssignationMapper {
     @Autowired protected PrvRepo prvRepo;
     @Autowired protected PrvToRoleAssRepo prvToRoleAssRepo;
     @Autowired protected  RoleAssRepo roleAssRepo;
+    @Autowired protected PrvAssRepo prvAssRepo;
+    @Autowired protected IHierarchySiglesGenerator hierarchySiglesGenerator;
 
     @Mapping(target = "role", expression = "java(dto.getRoleId() == null ? null : new dgmp.sigrh.auth2.model.entities.AppRole(dto.getRoleId()))")
     @Mapping(target = "privilege", expression = "java(new dgmp.sigrh.auth2.model.entities.AppPrivilege(dto.getPrivilegeId()))")
@@ -56,10 +59,30 @@ public abstract class AssignationMapper {
     @Mapping(target = "ass.assStatus", expression = "java(2)")
     public abstract PrincipalAss mapToPrincipalAss(CreatePrincipalAssDTO dto);
 
+    @Mapping(target = "startsAt", source = "ass.startsAt")
+    @Mapping(target = "endsAt", source = "ass.endsAt")
+    @Mapping(target = "assStatus", source = "ass.assStatus")
+    @Mapping(target = "username", source = "ass.user.username")
+    @Mapping(target = "strName", source = "ass.structure.strName")
+    @Mapping(target = "strSigle", source = "ass.structure.strSigle")
+    @Mapping(target = "hierarchySigles", expression = "java(hierarchySiglesGenerator.getHierarchySigles(ass.getStructure().getStrId()))")
+    public abstract ReadPrincipalAssDTO mapToReadPrincipalAssDTO(PrincipalAss ass);
+
+    @Mapping(target = "principalAssId", source = "assId")
+    public abstract SetAuthoritiesToPrincipalAssDTO mapTo_SetAuthoritiesToPrincipalAssDTO(UpdatePrincipalAssDTO dto);
+
+    @Mapping(target = "userId", source = "user.userId")
+    @Mapping(target = "strId", source = "structure.strId")
+    @Mapping(target = "startsAt", source = "ass.startsAt")
+    @Mapping(target = "endsAt", source = "ass.endsAt")
+    public abstract UpdatePrincipalAssDTO mapToUpdatePrincipalAssDTO(PrincipalAss ass);
+
+
+
     public RoleAssSpliterDTO mapToRoleAssSpliterDTO(Set<Long> roleIds, Long principalAssId, LocalDate startsAt, LocalDate endsAt, boolean removable)
     {
         //On l'a mais non présent dans les id envoyés
-        Set<Long> roleIdsToBeRemoved = removable ? new HashSet<>() :
+        Set<Long> roleIdsToBeRemoved = !removable ? new HashSet<>() :
         roleAssRepo.findActiveRoleIdsBelongingToPrincipalAss(principalAssId).stream().filter(id0->roleIds.stream().noneMatch(id1->id0.equals(id1))).collect(Collectors.toSet()); //
 
         //On ne l'a pas mais présent dans les id envoyés
@@ -75,6 +98,22 @@ public abstract class AssignationMapper {
         Set<Long> roleIdsToActivate = roleAssRepo.findNoneActiveRoleIdsBelongingToPrincipalAss_sameDates(principalAssId , startsAt, endsAt).stream().filter(id0->roleIds.stream().anyMatch(id1->id0.equals(id1))).collect(Collectors.toSet());
 
         return new RoleAssSpliterDTO(roleIdsToBeRemoved, roleIdsToBeAddedAsNew, roleIdsToChangeTheDates, roleIdsToActivateAndChangeTheDates, roleIdsToActivate);
+    }
+
+    public PrvAssSpliterDTO mapToPrvAssSpliterDTO(Set<Long> prvIds, Set<Long> roleIds, Long principalAssId, LocalDate startsAt, LocalDate endsAt, boolean removable)
+    {
+        Set<Long> prvIdsToBeRemoved = !removable ? new HashSet<>() :
+                prvAssRepo.getPrincipalAssPrvIds(principalAssId).stream().filter(prvId->!prvIds.contains(prvId) && (roleIds.stream().anyMatch(roleId->prvToRoleAssRepo.roleHasPrivilege(roleId, prvId)) || prvAssRepo.existsByPrincipalAssAndPrvAndStatus(principalAssId, prvId, 1))).collect(Collectors.toSet()); //
+
+        Set<Long> prvIdsToBeAddedAsNew = prvIds.stream().filter(prvId->!prvAssRepo.existsByPrincipalAssAndPrv(principalAssId, prvId) && roleIds.stream().noneMatch(roleId->prvToRoleAssRepo.roleHasPrivilege(roleId, prvId))).collect(Collectors.toSet());
+
+        Set<Long> prvIdsToChangeTheDates = prvIds.stream().filter(prvId->prvAssRepo.existsActiveByPrincipalAssAndPrv_OtherDates(principalAssId, prvId, startsAt, endsAt) && roleIds.stream().noneMatch(roleId->prvToRoleAssRepo.roleHasPrivilege(roleId, prvId))).collect(Collectors.toSet());
+
+        Set<Long> prvIdsToActivateAndChangeTheDates = prvIds.stream().filter(prvId->prvAssRepo.existsNoneActiveByPrincipalAssAndPrv_OtherDates(principalAssId, prvId, startsAt, endsAt)).collect(Collectors.toSet());
+
+        Set<Long> prvIdsToActivate = prvIds.stream().filter(prvId->prvAssRepo.existsNoneActiveByPrincipalAssAndPrv_SameDates(principalAssId, prvId, startsAt, endsAt)).collect(Collectors.toSet());
+
+        return new PrvAssSpliterDTO(prvIdsToBeRemoved, prvIdsToBeAddedAsNew, prvIdsToChangeTheDates, prvIdsToActivateAndChangeTheDates, prvIdsToActivate);
     }
 
     public RoleAssSpliterDTO mapToRoleAssSpliterDTO(Set<Long> roleIds, Long principalAssId, LocalDate startsAt, LocalDate endsAt)

@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 public @interface ExistingOrNullUserId
 {
     String message() default "Invalid userId";
-    Class<?>[] group() default {};
+    Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
     @Component @RequiredArgsConstructor

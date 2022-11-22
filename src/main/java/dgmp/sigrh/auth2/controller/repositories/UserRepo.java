@@ -30,8 +30,14 @@ public interface UserRepo extends JpaRepository<AppUser, Long>
     @Query("select a from AppUser a order by a.creationDate DESC")
     Page<AppUser> getUsersPage(Pageable pageable);
 
-    @Query("select a from AppUser a where upper(a.username) like upper(concat('%', ?1, '%')) or upper(a.email) like upper(concat('%', ?1, '%')) or upper(a.tel) like upper(concat('%', ?1, '%')) or upper(a.structure.strName) like upper(concat('%', ?1, '%')) or upper(a.structure.strSigle) like upper(concat('%', ?1, '%')) or a.structure.strId = :searchKey order by a.creationDate DESC")
+    @Query("select u from AppUser u left join Structure s on u.structure.strId = s.strId where upper(function('strip_accents', u.username)) like upper(concat('%', ?1, '%')) or upper(function('strip_accents', u.email)) like upper(concat('%', ?1, '%')) or upper(function('strip_accents', u.tel)) like upper(concat('%', ?1, '%')) or upper(function('strip_accents', s.strName)) like upper(concat('%', ?1, '%')) or upper(function('strip_accents', s.strSigle)) like upper(concat('%', ?1, '%')) order by u.creationDate DESC")
     Page<AppUser> searchUsers(String searchKey, Pageable pageable);
+
+    @Query("select u from AppUser u left join Structure s on u.structure.strId = s.strId where (upper(function('strip_accents', u.username)) like upper(concat('%', ?1, '%')) or upper(function('strip_accents', u.email)) like upper(concat('%', ?1, '%')) or upper(function('strip_accents', u.tel)) like upper(concat('%', ?1, '%')) or upper(function('strip_accents', s.strName)) like upper(concat('%', ?1, '%')) or upper(function('strip_accents', s.strSigle)) like upper(concat('%', ?1, '%')) )  and (locate(concat(function('getStrCode', coalesce(?2, s.strId)), '/') , s.strCode) = 1 or coalesce(?2, s.strId) = s.strId ) order by u.creationDate DESC")
+    Page<AppUser> searchUsersUnderStr(String searchKey, Long strId, Pageable pageable);//------->
+
+    @Query("select u from AppUser u left join Structure s on u.structure.strId = s.strId where (locate(concat(function('getStrCode', coalesce(?1, s.strId)), '/') , s.strCode) = 1 or coalesce(?1, s.strId) = s.strId ) order by u.username ASC")
+    List<AppUser> findAllUsersUnderStr(Long strId);
 
     @Query("select a from AppUser a where a.structure.strId = ?1 order by a.creationDate")
     Page<AppUser> findByStructure(Long strId, Pageable pageable);
@@ -48,6 +54,11 @@ public interface UserRepo extends JpaRepository<AppUser, Long>
     @Query("select (count(t) > 0) from AccountToken t where upper(t.user.username) <> upper(?1) and t.token = ?2")
     boolean alreadyExistsByUsernameAndToken(String username, String token);
 
+    @Query("select (count(t) > 0) from AccountToken t where t.user.userId <> ?1 and t.token = ?2")
+    boolean alreadyExistsByUsernameAndToken(Long UserId, String token);
+
+
+
     @Query("select (count(a) > 0) from AppUser a where upper(a.email) = upper(?1)")
     boolean alreadyExistsByEmail(String email);
 
@@ -63,4 +74,8 @@ public interface UserRepo extends JpaRepository<AppUser, Long>
     @Query("update AppUser u set u.defaultAssId = ?2 where u.userId = ?1")
     @Modifying
     void changeDefaultAssId(Long userId, Long assId);
+
+    @Query("select u.username from AppUser u where  u.userId = ?1")
+    String getUsername(Long userId);
+
 }

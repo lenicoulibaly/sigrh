@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface AgentDAO extends JpaRepository<Agent, Long>
+public interface AgentRepo extends JpaRepository<Agent, Long>
 {
     @Query("select (count(a) > 0) from Agent a where upper(a.email) = upper(:email) or upper(a.emailPro) = upper(:email)")
     boolean existsByEmail(@Param("email") String email);
@@ -27,7 +27,11 @@ public interface AgentDAO extends JpaRepository<Agent, Long>
     @Query("select (count(a) > 0) from Agent a where upper(a.emailPro) = upper(:emailPro) and upper(a.agentId) <> upper(:idAgent)")
     boolean existsByEmailPro(@Param("emailPro") String emailPro, @Param("idAgent") Long idAgent);
 
+    @Query("select concat(a.nom, ' ', a.prenom) from Agent a where a.user.userId = ?1")
+    String getFullNameByUserId(Long userId);
 
+    @Query("select a.matricule from Agent a where a.user.userId = ?1")
+    String getMatriculeUserId(Long userId);
 
     @Query("select (count(a) > 0) from Agent a where upper(a.tel) = upper(:tel)")
     boolean existsByTel(@Param("tel") String tel);

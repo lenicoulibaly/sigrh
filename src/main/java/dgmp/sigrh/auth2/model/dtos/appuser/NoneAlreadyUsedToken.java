@@ -18,7 +18,7 @@ import java.lang.annotation.*;
 public @interface NoneAlreadyUsedToken
 {
     String message() default "Le lien a déjà été utilisé";
-    Class<?>[] group() default {};
+    Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
     @Component @RequiredArgsConstructor

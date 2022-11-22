@@ -1,6 +1,6 @@
 package dgmp.sigrh.agentmodule.model.dtos.validators;
 
-import dgmp.sigrh.agentmodule.controller.repositories.AgentDAO;
+import dgmp.sigrh.agentmodule.controller.repositories.AgentRepo;
 import dgmp.sigrh.agentmodule.model.dtos.UpdateAgentDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,24 +25,24 @@ public @interface UniqueMatricule
     @RequiredArgsConstructor
     class UniqueMatriculeValidator implements ConstraintValidator<UniqueMatricule, String>
     {
-        private final AgentDAO agentDAO;
+        private final AgentRepo agentRepo;
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context)
         {
             if(value==null) return false;
-            return !agentDAO.existsByMatricule(value);
+            return !agentRepo.existsByMatricule(value);
         }
     }
 
     @Component @RequiredArgsConstructor
     class UniqueMatriculeValidatorOnUpdate implements ConstraintValidator<UniqueMatricule, UpdateAgentDTO>
     {
-        private final AgentDAO agentDAO;
+        private final AgentRepo agentRepo;
         @Override
         public boolean isValid(UpdateAgentDTO dto, ConstraintValidatorContext context)
         {
             if(dto.getMatricule()==null) return false;
-            return !agentDAO.existsByMatricule(dto.getMatricule(), dto.getIdAgent());
+            return !agentRepo.existsByMatricule(dto.getMatricule(), dto.getIdAgent());
         }
     }
 }

@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public @interface NoneExpiredToken
 {
     String message() default "Le lien a expiré";
-    Class<?>[] group() default {};
+    Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
     @Component @RequiredArgsConstructor

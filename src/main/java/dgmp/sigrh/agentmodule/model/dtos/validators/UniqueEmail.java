@@ -1,6 +1,6 @@
 package dgmp.sigrh.agentmodule.model.dtos.validators;
 
-import dgmp.sigrh.agentmodule.controller.repositories.AgentDAO;
+import dgmp.sigrh.agentmodule.controller.repositories.AgentRepo;
 import dgmp.sigrh.agentmodule.model.dtos.UpdateAgentDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,24 +24,24 @@ public @interface UniqueEmail
     @Component @RequiredArgsConstructor
     class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, String>
     {
-        private final AgentDAO agentDAO;
+        private final AgentRepo agentRepo;
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context)
         {
             if(value==null) return false;
-            return !(agentDAO.existsByEmail(value) || agentDAO.existsByEmailPro(value));
+            return !(agentRepo.existsByEmail(value) || agentRepo.existsByEmailPro(value));
         }
     }
 
     @Component @RequiredArgsConstructor
     class UniqueEmailValidatorOnUpdate implements ConstraintValidator<UniqueEmail, UpdateAgentDTO>
     {
-        private final AgentDAO agentDAO;
+        private final AgentRepo agentRepo;
         @Override
         public boolean isValid(UpdateAgentDTO dto, ConstraintValidatorContext context)
         {
             if(dto.getEmail()==null) return false;
-            return !(agentDAO.existsByEmail(dto.getEmail(), dto.getIdAgent()) || agentDAO.existsByEmailPro(dto.getEmailPro(), dto.getIdAgent()));
+            return !(agentRepo.existsByEmail(dto.getEmail(), dto.getIdAgent()) || agentRepo.existsByEmailPro(dto.getEmailPro(), dto.getIdAgent()));
         }
     }
 }

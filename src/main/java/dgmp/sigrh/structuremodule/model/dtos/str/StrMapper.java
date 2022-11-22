@@ -34,7 +34,8 @@ public abstract class StrMapper
     {
         ReadStrDTO str0 = new ReadStrDTO();
         str0.setStrId(str.getStrId());
-        str0.setHierarchySigles(strRepo.getHierarchySigles(str.getStrId()).stream().reduce("", (s1, s2)->s1 + "/" + s2).substring(1));
+        str0.setStrSigle(str.getStrSigle());
+        str0.setHierarchySigles(strRepo.getHierarchySigle(str.getStrId()));
         str0.setStrName(strRepo.getStrName(str.getStrId()));
         return str0;
     }

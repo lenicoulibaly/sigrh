@@ -2,7 +2,7 @@ package dgmp.sigrh.agentmodule.controller.services;
 
 import dgmp.sigrh.agentmodule.controller.exceptions.AgentAppException;
 import dgmp.sigrh.agentmodule.controller.exceptions.AgentErrorMsg;
-import dgmp.sigrh.agentmodule.controller.repositories.AgentDAO;
+import dgmp.sigrh.agentmodule.controller.repositories.AgentRepo;
 import dgmp.sigrh.agentmodule.model.dtos.AgentMapper;
 import dgmp.sigrh.agentmodule.model.dtos.CreateAgentDTO;
 import dgmp.sigrh.agentmodule.model.dtos.ReadAgentDTO;
@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class AgentService implements IAgentService
 {
-    private final AgentDAO agentRepo;
+    private final AgentRepo agentRepo;
     //private final IBrokerMessageSender<Agent> brokerMessageSender;
     private final AgentMapper agentMapper;
     private final StrRepo strRepo;

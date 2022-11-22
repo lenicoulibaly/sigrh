@@ -109,7 +109,7 @@
 
                                                                             <div class="form-group">
                                                                                 <label>Selection des emplois compatibles</label>
-                                                                                <select class="duallistbox" multiple="multiple" th:field="*{emploisIds}" >
+                                                                                <select class="duallistbox" multiple="multiple" th:field="*{emploisIds}" style="height: 300px;">
                                                                                     <option th:title="${emp.nomEmploi}" th:each="emp:${@emploiDAO.getActiveEmplois()}" th:value="${emp.idEmploi}" >[[${emp.nomEmploi}]]</option>
                                                                                 </select>
                                                                             </div>

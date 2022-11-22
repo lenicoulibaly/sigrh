@@ -9,6 +9,8 @@ import dgmp.sigrh.auth2.controller.validators.Exceptions.AppException;
 import dgmp.sigrh.auth2.model.dtos.appuser.*;
 import dgmp.sigrh.auth2.model.entities.AccountToken;
 import dgmp.sigrh.auth2.model.entities.AppUser;
+import dgmp.sigrh.auth2.model.enums.UserStatus;
+import dgmp.sigrh.auth2.model.enums.UserStatusObject;
 import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
 import dgmp.sigrh.auth2.model.events.types.auth.UserEventTypes;
 import dgmp.sigrh.auth2.model.histo.UserHisto;
@@ -19,24 +21,28 @@ import dgmp.sigrh.notificationmodule.controller.dao.EmailNotificationRepo;
 import dgmp.sigrh.notificationmodule.controller.services.EmailSenderService;
 import dgmp.sigrh.notificationmodule.controller.services.EmailServiceConfig;
 import dgmp.sigrh.notificationmodule.model.entities.EmailNotification;
+import dgmp.sigrh.shared.utilities.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static dgmp.sigrh.auth2.security.SecurityErrorMsg.INVALID_ACTIVATION_TOKEN_ERROR_MSG;
-import static dgmp.sigrh.auth2.security.SecurityErrorMsg.USERNAME_NOT_FOUND_ERROR_MSG;
+import static dgmp.sigrh.auth2.security.SecurityErrorMsg.USER_ID_NOT_FOUND_ERROR_MSG;
 
 @Service
 @RequiredArgsConstructor @Slf4j
@@ -140,9 +146,10 @@ public class UserService implements IUserService
     public ReadUserDTO activateAccount(ActivateAccountDTO dto)
     {
         EventActorIdentifier eventIdentifier = scm.getEventActorIdFromSCM();
-        AppUser user = userRepo.findByUsername(dto.getUsername()).orElseThrow(()->new AppException(USERNAME_NOT_FOUND_ERROR_MSG));
+        AppUser user = userRepo.findById(dto.getUserId()).orElseThrow(()->new AppException(USER_ID_NOT_FOUND_ERROR_MSG));
         user.setActive(true);
         user.setNotBlocked(true);
+        user.setUsername(dto.getUsername());
         user.setLastModificationDate(LocalDateTime.now());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
@@ -155,6 +162,30 @@ public class UserService implements IUserService
 
         ReadUserDTO readUserDTO = userMapper.mapToReadUserDTO(user);
         return readUserDTO;
+    }
+
+    @Override @Transactional
+    public void blockAccount(Long userId)
+    {
+        EventActorIdentifier eventIdentifier = scm.getEventActorIdFromSCM();
+        AppUser user = userRepo.findById(userId).orElse(null);
+        if(user == null) return;
+        if(!user.isNotBlocked()) return;
+        user.setNotBlocked(false);
+        UserHisto userHisto = userMapper.mapToUserHisto(user, UserEventTypes.BLOCK_ACCOUNT, eventIdentifier);
+        userHistoRepo.save(userHisto);
+    }
+
+    @Override @Transactional
+    public void unBlockAccount(Long userId)
+    {
+        EventActorIdentifier eventIdentifier = scm.getEventActorIdFromSCM();
+        AppUser user = userRepo.findById(userId).orElse(null);
+        if(user == null) return;
+        if(user.isNotBlocked()) return;
+        user.setNotBlocked(true);
+        UserHisto userHisto = userMapper.mapToUserHisto(user, UserEventTypes.UN_BLOCK_ACCOUNT, eventIdentifier);
+        userHistoRepo.save(userHisto);
     }
 
     @Override
@@ -188,7 +219,8 @@ public class UserService implements IUserService
 
 
     @Override //@Transactional
-    public void sendAccountActivationEmail(String email, String username) throws IllegalAccessException {
+    public void sendAccountActivationEmail(String email, String username) throws IllegalAccessException
+    {
         AppUser loadedUser = this.userRepo.findByUsername(username).orElseThrow(()->new UsernameNotFoundException(SecurityErrorMsg.USERNAME_NOT_FOUND_ERROR_MSG));
         if(!loadedUser.getEmail().equals(email)) {throw new AppException(SecurityErrorMsg.INVALID_USERNAME_OR_EMAIL_ERROR_MSG);}
         if(loadedUser.isActive() && loadedUser.isNotBlocked()) {throw new AppException(SecurityErrorMsg.ALREADY_ACTIVATED_ACCOUNT_ERROR_MSG);}
@@ -196,22 +228,24 @@ public class UserService implements IUserService
 
         EventActorIdentifier eventIdentifier = scm.getEventActorIdFromSCM();
         EmailNotification emailNotification = new EmailNotification(loadedUser, SecurityConstants.ACCOUNT_ACTIVATION_REQUEST_OBJECT, accountToken.getToken(), eventIdentifier.getModifierUserId());
-        emailSenderService.sendAccountActivationEmail(email, username, emailServiceConfig.getActivateAccountLink());
+        emailSenderService.sendAccountActivationEmail(email, username, emailServiceConfig.getActivateAccountLink() + "?token=" + accountToken.getToken());
         emailNotification.setSent(true);
         emailRepo.save(emailNotification);
     }
 
-    @Override //@Transactional
-    public void resendAccountActivationEmail(String email, String username) throws IllegalAccessException {
-        AppUser loadedUser = this.userRepo.findByUsername(username).orElseThrow(()->new UsernameNotFoundException(SecurityErrorMsg.USERNAME_NOT_FOUND_ERROR_MSG));
-        if(!loadedUser.getEmail().equals(email)) {throw new AppException(SecurityErrorMsg.INVALID_USERNAME_OR_EMAIL_ERROR_MSG);}
+    @Override @Transactional
+    public void sendAccountActivationEmail(Long userId) throws IllegalAccessException
+    {
+        AppUser loadedUser = this.userRepo.findById(userId).orElseThrow(()->new UsernameNotFoundException(USER_ID_NOT_FOUND_ERROR_MSG));
+        //if(!loadedUser.getEmail().equals(email)) {throw new AppException(SecurityErrorMsg.INVALID_USERNAME_OR_EMAIL_ERROR_MSG);}
         if(loadedUser.isActive() && loadedUser.isNotBlocked()) {throw new AppException(SecurityErrorMsg.ALREADY_ACTIVATED_ACCOUNT_ERROR_MSG);}
         AccountToken accountToken = accountTokenService.createAccountToken(loadedUser);
 
         EventActorIdentifier eventIdentifier = scm.getEventActorIdFromSCM();
         EmailNotification emailNotification = new EmailNotification(loadedUser, SecurityConstants.ACCOUNT_ACTIVATION_REQUEST_OBJECT, accountToken.getToken(), eventIdentifier.getModifierUserId());
-        emailSenderService.sendAccountActivationEmail(email, username, emailServiceConfig.getActivateAccountLink());
+        emailSenderService.sendAccountActivationEmail(loadedUser.getEmail(), loadedUser.getUsername(), emailServiceConfig.getActivateAccountLink() + "?token=" + accountToken.getToken());
         emailNotification.setSent(true);
+        accountToken.setEmailSent(true);
         emailRepo.save(emailNotification);
     }
 
@@ -238,5 +272,32 @@ public class UserService implements IUserService
             notification.setSeen(true);
             notification.setSent(true);
         }
+    }
+
+    @Override
+    public UserStatus getUserStatus(Long userId)
+    {
+        AppUser user = userRepo.findById(userId).orElse(null);
+        if(user == null) return  UserStatus.UN_KNOWN;
+        if(user.isActive() && user.isNotBlocked()) return UserStatus.ACTIVE;
+        if(user.isActive() && !user.isNotBlocked()) return UserStatus.BLOCKED;
+        if(!user.isActive() && user.isNotBlocked() && tokenRepo.hasValidActivationToken(userId)) return UserStatus.STANDING_FOR_ACCOUNT_ACTIVATION;
+        if(!user.isActive() && user.isNotBlocked()  && tokenRepo.lastActivationTokenHasExpired(userId)) return UserStatus.STANDING_FOR_ACCOUNT_ACTIVATION_LINK;
+        return  UserStatus.UN_KNOWN;
+    }
+
+    @Override
+    public Page<ReadUserDTO> searchUsers(String key, Long strId, Pageable pageable)
+    {
+        Page<AppUser>  users = strId == null ? new PageImpl<>(new ArrayList<>()): this.userRepo.searchUsersUnderStr(StringUtils.stripAccentsToUpperCase(key), strId, pageable);
+        return new PageImpl<>(users.stream().map(userMapper::mapToReadUserDTO).peek(u->u.setStatus(this.getUserStatus(u.getUserId()))).collect(Collectors.toList()), pageable, users.getTotalElements());
+    }
+
+
+
+    @Bean("userStatus")
+    public UserStatusObject userStatus()
+    {
+        return new UserStatusObject();
     }
 }

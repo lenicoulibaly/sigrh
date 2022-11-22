@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 public @interface ValidToken
 {
     String message() default "Lien invalide";
-    Class<?>[] group() default {};
+    Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
     @Component @RequiredArgsConstructor

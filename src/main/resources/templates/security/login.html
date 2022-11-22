@@ -26,7 +26,8 @@
       <!-- /.login-logo -->
       <div class="card">
         <div class="card-body login-card-body">
-          <p class="login-box-msg">Connectez-vous pour accéder au système</p>
+          <p th:if="${errMsg == null}" class="login-box-msg">Connectez-vous pour accéder au système</p>
+          <p th:if="${errMsg}" class="login-box-msg text-danger" th:text="${errMsg}"></p>
 
           <form th:action="@{/login}" method="post">
             <div class="input-group mb-3">

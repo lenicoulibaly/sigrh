@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" 
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{security/security-layout}">
+    <head>
+		<th:block layout:fragment="specific-css-links">
+
+            <!-- Select2 -->
+            <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+        </th:block>
+	</head>
+
+	<body>
+        <div layout:fragment="content">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <!-- Profile Image -->
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Menu contextuel</h3>
+                                </div>
+                                <div class="card-body box-profile">
+                                    <th:block th:replace="security/contextual-menu-frag::contextual-menu"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card card-primary">
+                                            <div class="card-header">
+                                                <h3 class="card-title" th:if="${user}">Création d'une nouvelle assignation pour l'utilisateur [[${user.username}]]</h3>
+                                                <h3 class="card-title" th:if="!${user}">Création d'une nouvelle assignation</h3>
+
+                                                <div class="card-tools">
+                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                                </div>
+                                            </div>
+                                            <!-- /.card-header -->
+                                            <div class="card-body">
+                                                <div class="row">
+                                                        <table class="table table-responsive">
+                                                            <tr>
+                                                                <td>
+                                                                    <form id="reload-prv-to-role-ass-form" po th:action="@{/sigrh/assignations/prv-to-role-ass-form}">
+                                                                        <div class="row">
+                                                                            <div class="col col-6">
+                                                                                <label>Sélectionez un rôle</label>
+                                                                                <select id="selected-user" type="text" name="roleId"
+                                                                                        class="form-control  select2bs4" onchange="function reloadPrvToRoleAssForm() {
+                                                                                $('#reload-prv-to-role-ass-form').submit()} reloadPrvToRoleAssForm()">
+                                                                                    <option value="">Choisir le rôle</option>
+                                                                                    <option th:selected="${r.roleId == role.roleId}" th:each="r:${@roleRepo.findAll()}" th:value="${r.roleId}">
+                                                                                        [[${r.roleName}]]
+                                                                                    </option>
+                                                                                </select>
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </form>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <form method="post" th:action="@{/sigrh/assignations/add-prvs-to-role}" th:object="${dto}">
+                                                                        <input type="hidden" th:field="*{roleId}" />
+
+                                                                        <div class="row">
+                                                                            <div class="col col-12">
+                                                                                <div th:if="${globalErrMsg}" th:text="${globalErrMsg}"
+                                                                                     class="alert alert-danger alert-dismissible fade show"/>
+                                                                            </div>
+
+                                                                            <div class="col col-md-2">
+                                                                                <div class="form-group">
+                                                                                    <label class="d-block">Permanent ?</label>
+
+                                                                                    <label class="switch">
+                                                                                        <input type="checkbox" checked id="permanent" >
+                                                                                        <span class="slider"></span>
+                                                                                    </label>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-5">
+                                                                                <div class="form-group">
+                                                                                    <label for="startsAt">Date de début</label> <small th:if="${startsAtErrMsg}" class="text-danger">[[${startsAtErrMsg}]]</small>
+                                                                                    <input disabled type="date" th:classappend="${startsAtErrMsg} ? 'border-danger' : ''" required th:field="*{startsAt}" class="form-control" id="startsAt"/>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-5">
+                                                                                <div class="form-group">
+                                                                                    <label for="endsAt">Date de fin</label> <small th:if="${endsAtErrMsg}" class="text-danger">[[${endsAtErrMsg}]]</small>
+                                                                                    <input disabled type="date" th:classappend="${endsAtErrMsg} ? 'border-danger' : ''" required th:field="*{endsAt}" class="form-control" id="endsAt"/>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-12">
+                                                                                <div class="form-group">
+                                                                                    <label>Selection des privilèges</label>
+                                                                                    <select multiple="multiple" name="prvIds" th:value="${dto.prvIds}" style="height: 300px; width: 100%" id="prvIds">
+                                                                                        <option th:classappend="${prv.selected ? 'bg-green-pal' : ''}" th:selected="${prv.selected}" th:title="${prv.privilegeName}" th:each="prv:${prvs}" th:value="${prv.privilegeId}" >[[${prv.privilegeName}]]</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- /.form-group -->
+                                                                        <button type="button" data-toggle="modal" data-target="#new-principal-ass-confirmation-modal" class="float-right btn btn-primary">Enregistrer</button>
+                                                                        <th:block th:replace="security/assignations/new-principal-ass-confirmation-modal-frag::new-principal-ass-confirmation-modal"/>
+                                                                    </form>
+                                                                </td>
+                                                            </tr>
+
+                                                        </table>
+                                                    <!-- /.col -->
+                                                </div>
+                                                <!-- /.row -->
+                                            </div>
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                    </div>
+        </div>
+        <div layout:fragment="specific-scripts">
+            <script th:src="@{/dist/js/demo.js}"></script>
+
+            <!-- Select2 -->
+            <script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
+            <script th:src="@{/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js}"></script>
+            <script th:src="@{/plugins/bootstrap-switch/js/bootstrap-switch.min.js}"></script>
+            <script>
+                $(function () {
+                    //Initialize Select2 Elements
+                    $('.select2').select2();
+
+                    //Initialize Select2 Elements
+                    $('.select2bs4').select2({theme: 'bootstrap4'});
+
+                    //Bootstrap Duallistbox
+                    $('.duallistbox').bootstrapDualListbox()
+
+                    //SWITCH
+                    $("input[data-bootstrap-switch]").each(function(){
+                        $(this).bootstrapSwitch('state', $(this).prop('checked'));
+                    });
+                });
+            </script>
+            <script>
+                //alert("init");
+                prvIdsDlb = $('#prvIds').bootstrapDualListbox();
+
+                $('#permanent').change(e=>
+                {
+                    if($("#permanent").is(":checked"))
+                    {
+                        $("#startsAt").prop("disabled", true);
+                        $("#endsAt").prop("disabled", true);
+                    }
+                    else
+                    {
+                        $("#startsAt").prop("disabled", false);
+                        $("#endsAt").prop("disabled", false);
+                    }
+                });
+            </script>
+        </div>
+    </body>
+</html>

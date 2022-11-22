@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@CoherentDates
 public class CreatePrincipalAssDTO
 {
     @ExistingUserId

@@ -19,7 +19,7 @@ import java.lang.annotation.*;
 public @interface UniqueUsername
 {
     String message() default "Login déjà attribué";
-    Class<?>[] group() default {};
+    Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
     @Component @RequiredArgsConstructor
@@ -50,7 +50,7 @@ public @interface UniqueUsername
         @Override
         public boolean isValid(ActivateAccountDTO dto, ConstraintValidatorContext context)
         {
-            return userRepo.alreadyExistsByUsernameAndToken(dto.getUsername(), dto.getActivationToken());
+            return !userRepo.alreadyExistsByUsernameAndToken(dto.getUserId(), dto.getActivationToken());
         }
     }
 }

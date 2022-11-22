@@ -16,8 +16,8 @@ import java.lang.annotation.*;
 @Documented
 public @interface UniqueEmail
 {
-    String message() default "email:Adresse mail déjà attribuée";
-    Class<?>[] group() default {};
+    String message() default "email::Adresse mail déjà attribuée";
+    Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
     @Component @RequiredArgsConstructor

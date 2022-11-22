@@ -16,8 +16,8 @@ import java.lang.annotation.*;
 @Documented
 public @interface UniqueTel
 {
-    String message() default "tel:N° téléphone déjà attribué";
-    Class<?>[] group() default {};
+    String message() default "tel::N° téléphone déjà attribué";
+    Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
     @Component @RequiredArgsConstructor

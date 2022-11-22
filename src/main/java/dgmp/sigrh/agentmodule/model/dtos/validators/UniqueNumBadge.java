@@ -1,6 +1,6 @@
 package dgmp.sigrh.agentmodule.model.dtos.validators;
 
-import dgmp.sigrh.agentmodule.controller.repositories.AgentDAO;
+import dgmp.sigrh.agentmodule.controller.repositories.AgentRepo;
 import dgmp.sigrh.agentmodule.model.dtos.UpdateAgentDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,24 +25,24 @@ public @interface UniqueNumBadge
     @RequiredArgsConstructor
     class UniqueNumBadgeValidator implements ConstraintValidator<UniqueNumBadge, String>
     {
-        private final AgentDAO agentDAO;
+        private final AgentRepo agentRepo;
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context)
         {
             if(value==null) return false;
-            return !agentDAO.existsByNumBadge(value);
+            return !agentRepo.existsByNumBadge(value);
         }
     }
 
     @Component @RequiredArgsConstructor
     class UniqueNumBadgeValidatorOnUpdate implements ConstraintValidator<UniqueNumBadge, UpdateAgentDTO>
     {
-        private final AgentDAO agentDAO;
+        private final AgentRepo agentRepo;
         @Override
         public boolean isValid(UpdateAgentDTO dto, ConstraintValidatorContext context)
         {
             if(dto.getNumBadge()==null) return false;
-            return !agentDAO.existsByNumBadge(dto.getNumBadge(), dto.getIdAgent());
+            return !agentRepo.existsByNumBadge(dto.getNumBadge(), dto.getIdAgent());
         }
     }
 }
