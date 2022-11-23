@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 @NoOtherInstanceWithSameHead(message = "headId::Cette structure est déjà chapeau d'une autre instance")
 @NoOtherInstanceWithSameRH(message = "rhId::Cette structure est déjà en charge des ressources humaines d'une autre instance")
 @ExistingInstanceId
+@CoherentHeadAndRh
 public class UpdateInstanceDTO
 {
     @NotNull(message = "L'instance à modifier ne peut être nul")

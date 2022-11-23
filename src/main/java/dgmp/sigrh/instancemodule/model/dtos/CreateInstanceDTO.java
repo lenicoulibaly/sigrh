@@ -10,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@CoherentHeadAndRh
 public class CreateInstanceDTO
 {
     @NotNull(message = "Le nom de l'instance ne peut être nul")
