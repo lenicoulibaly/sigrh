@@ -1,6 +1,7 @@
 package dgmp.sigrh.structuremodule.model.entities.structure;
 
 import dgmp.sigrh.agentmodule.model.entities.Agent;
+import dgmp.sigrh.instancemodule.model.entities.Instance;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
 import dgmp.sigrh.structuremodule.model.entities.post.Post;
 import dgmp.sigrh.structuremodule.model.entities.post.PostGroup;
@@ -37,6 +38,8 @@ public class Structure
 
     @ManyToOne
     private Post strRespoPost;
+    @ManyToOne @JoinColumn(name = "instance_id")
+    private Instance instance;
     @Transient
     private List<Structure> strChildren;
     @Transient
