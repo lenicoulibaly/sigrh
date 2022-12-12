@@ -8,283 +8,347 @@
 	</head>
 
 	<body>
+        <div th:if="${prAss}">
+            <th:block layout:fragment="breadcrumb">
+                <div class="pl-3">
+                    <span class="text-md-left text-bold">Utilisateur : </span> <span class="text-lg text-primary">[[${user.username}]]</span><br/>
+                    <span class="text-md-left text-bold">Assignation : </span> <a
+                        th:title="'Modifier les habilitations de cette assignation'"
+                        th:href="@{/sigrh/assignations/update-principal-ass-form(assId=${assId})}"
+                        class="text-lg text-primary">[[${prAsss.intitule}]] </a><br/>
+                    <span class="text-md-left text-bold">Structure : </span> <span class="text-lg text-primary">[[${prAsss.structure.strName}]] ([[${prAsss.strDTO.hierarchySigles}]])</span><br/>
+                </div>
+            </th:block>
 
-        <th:block layout:fragment="breadcrumb">
-            <div class="pl-3">
-                <span class="text-md-left text-bold">Utilisateur : </span> <span class="text-lg text-primary">[[${user.username}]]</span><br/>
-                <span class="text-md-left text-bold">Assignation : </span> <a th:title="'Modifier les habilitations de cette assignation'" th:href="@{/sigrh/assignations/update-principal-ass-form(assId=${assId})}" class="text-lg text-primary">[[${prAsss.intitule}]] </a><br/>
-                <span class="text-md-left text-bold">Structure : </span> <span class="text-lg text-primary">[[${prAsss.structure.strName}]] ([[${prAsss.strDTO.hierarchySigles}]])</span><br/>
-            </div>
-        </th:block>
-
-        <div layout:fragment="content">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <!-- Profile Image -->
-                            <div class="card card-primary">
-                                <div class="card-header">
-                                    <h3 class="card-title">Menu contextuel</h3>
-                                </div>
-                                <div class="card-body box-profile">
-                                    <th:block th:replace="security/contextual-menu-frag::contextual-menu"/>
-                                </div>
+            <div layout:fragment="content">
+                <div class="row">
+                    <div class="col-md-3">
+                        <!-- Profile Image -->
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Menu contextuel</h3>
+                            </div>
+                            <div class="card-body box-profile">
+                                <th:block th:replace="security/contextual-menu-frag::contextual-menu"/>
                             </div>
                         </div>
-                        <div class="col-md-9">
-                            <div class="card card-primary">
-                                <div class="card-header">
-                                    <h3 class="card-title">Liste des rôles</h3>
-                                    <div class="card-tools">
-                                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-                                            <i class="fas fa-minus"></i></button>
-                                    </div>
-                                </div>
-                                <!-- /.card-header -->
-                                <!-- form start -->
-                                <div class="card-body">
-
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h3 class="card-title">
-                                                    [[${roleAssPage.getNumberOfElements()}]] items affichés sur [[${roleAssPage.getTotalElements()}]]
-                                                </h3>
-
-                                                <div class="card-tools">
-                                                    <ul class="pagination pagination-sm float-right">
-                                                        <li th:title="Début" class="page-item"><a class="page-link" th:href="@{/sigrh/assignations/auth-list/roles(assId = ${assId}, rolePageNum=0, roleKey=${roleKey})}">&laquo;&laquo;</a></li>
-                                                        <li  th:title="Précédant" class="page-item"><a class="page-link" th:href="@{/sigrh/assignations/auth-list/roles(assId = ${assId}, rolePageNum=${roleCurrentPage > 0 ? roleCurrentPage-1 : 0}, roleKey=${roleKey})}">&laquo;</a></li>
-                                                        <li th:each="page, status:${rolePages}" class="page-item" th:classappend="${status.index == roleCurrentPage ? 'active' : T(java.lang.Math).abs(status.index - roleCurrentPage) < 4 ? '' : 'd-none'}"><a class="page-link" th:href="@{/sigrh/assignations/auth-list/roles(assId = ${assId}, rolePageNum=${status.index}, roleKey=${roleKey})}">[[${status.count}]]</a></li>
-                                                        <li th:title="Suivant" class="page-item"><a class="page-link" th:href="@{/sigrh/assignations/auth-list/roles(assId = ${assId}, rolePageNum=${roleCurrentPage < rolePages.length-1 ? roleCurrentPage+1 : rolePages.length-1}, roleKey=${roleKey})}">&raquo;</a></li>
-                                                        <li th:title="Fin" class="page-item"><a class="page-link" th:href="@{/sigrh/assignations/auth-list/roles(assId = ${assId}, rolePageNum= ${rolePages.length-1}, roleKey=${roleKey})}">&raquo;&raquo;</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <!-- /.card-header -->
-                                            <div class="card-body p-0">
-                                                <form class="form-horizontal" th:action="@{/sigrh/assignations/auth-list}">
-                                                    <div class="card-body mt-2 m-0 p-0">
-                                                        <div class="form-group row">
-                                                            <input type="hidden" th:value="0" name="rolePageNum">
-                                                            <input type="hidden" th:value="0" name="navigating">
-                                                            <input type="hidden" th:value="${param.assId[0]}" name="assId">
-
-                                                            <div class="col-md-12 mx-0 ml-3 p-0" style="display: inline">
-                                                                <table class="d-inline">
-                                                                    <tr>
-                                                                        <td >
-                                                                            <a id="lnk-reinitialize" th:href="@{/sigrh/assignations/auth-list(assId = ${assId}, rolePageNum=0, RoleKey='')}" class="btn btn-primary" >Réinitialiser</a>
-                                                                        </td>
-                                                                        <td style="width: 500px;">
-                                                                            <input type="text" style="height: 40px;"  class="form-control p-0 m-0" th:value="${roleKey}" name="roleKey" id="roleKey" placeholder="Rechercher">
-                                                                        </td>
-                                                                        <td>
-                                                                            <button class=" btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                                <a id="lnk-new-principal-ass-form" th:href="@{/sigrh/assignations/new-principal-ass-form(userId=${user.userId})}" class="btn btn-primary float-right mr-4" >Nouvel Assignation</a>
-                                                            </div>
-
-                                                        </div>
-                                                    </div>
-                                                </form>
-
-                                                <hr />
-                                                <table class="table table-sm table-hover">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Role</th>
-                                                        <th>Début</th>
-                                                        <th>Fin</th>
-                                                        <th>Actions</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <tr th:each="rAss: ${roleAssPage.content}">
-                                                        <td>[[${rAss.role.roleName}]]</td>
-                                                        <td> <span >[[${rAss.ass.startsAt}]]</span></td>
-                                                        <td >[[${rAss.ass.endsAt}]]</td>
-                                                        <td>
-                                                            <a class="btn btn-sm btn-outline-danger mx-1" title="Retirer de la liste des rôles" href="#" data-toggle="modal" th:data-target="${'#remove-role-confirmation-modal' + rAss.assId}"><i class="bi bi-trash text-sm"></i></a>
-                                                            <a class="btn btn-sm btn-outline-success mx-1" title="Voir/modifier la liste des privilèges" th:href="@{/sigrh/assignations/prv-to-role-ass-form(roleId = ${rAss.role.roleId})}" ><i class="bi bi-eye text-sm"></i></a>
-
-
-
-                                                            <div class="modal fade" th:id="${'remove-role-confirmation-modal' + rAss.role.roleId}">
-                                                                <div class="modal-dialog">
-                                                                    <div class="modal-content">
-                                                                        <form method="post" th:action="@{/sigrh/assignations/remove-role-to-principal-ass}">
-                                                                            <input name="assId" th:value="${prAsss.assId}">
-                                                                            <input name="roleId" th:value="${rAss.role.roleId}">
-                                                                            <input name="roleKey" th:value="${roleKey}">
-                                                                            <div class="modal-header">
-                                                                                <h4 class="modal-title">
-                                                                                    Confirmation</h4>
-                                                                                <button type="button" class="close"
-                                                                                        data-dismiss="modal"
-                                                                                        aria-label="Close">
-                                                                                    <span aria-hidden="true">&times;</span>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div class="modal-body">
-                                                                                <h3>[[${prAsss.intitule}]]</h3>
-                                                                                <p>Êtes-vous sures de vouloir retirer ce
-                                                                                    rôle de la liste des rôles de
-                                                                                    l'assignation <br/>
-                                                                                <h3>[[${prAsss.intitule}]]</h3> ?</p>
-                                                                            </div>
-                                                                            <div class="modal-footer justify-content-between">
-                                                                                <button type="button"
-                                                                                        class="btn btn-default"
-                                                                                        data-dismiss="modal">Close
-                                                                                </button>
-                                                                                <button th:title="Retirer le rôle" type="submit" class="btn btn-danger">Confirmer</button>
-                                                                            </div>
-                                                                        </form>
-                                                                    </div>
-                                                                    <!-- /.modal-content -->
-                                                                </div>
-                                                                <!-- /.modal-dialog -->
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <!-- /.card-body -->
-                                        </div>
-                                        <!-- /.card -->
-
-                                </div>
-                                <!-- /.card-body -->
-                            </div>
-
-                            <div class="card card-primary">
-                                <div class="card-header">
-                                    <h3 class="card-title">Liste des privilèges</h3>
-                                    <div class="card-tools">
-                                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-                                            <i class="fas fa-minus"></i></button>
-                                    </div>
-                                </div>
-                                <!-- /.card-header -->
-                                <!-- form start -->
-                                <div class="card-body">
-
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h3 class="card-title">
-                                                [[${prvPage.getNumberOfElements()}]] items affichés sur [[${prvPage.getTotalElements()}]]
-                                            </h3>
-
-                                            <div class="card-tools">
-                                                <ul class="pagination pagination-sm float-right">
-                                                    <li th:title="Début" class="page-item"><a class="page-link" th:href="@{/sigrh/assignations/auth-list(assId = ${assId}, prvPageNum=0, prvKey=${roleKey})}">&laquo;&laquo;</a></li>
-                                                    <li  th:title="Précédant" class="page-item"><a class="page-link" th:href="@{/sigrh/assignations/auth-list(assId = ${assId}, prvPageNum=${prvCurrentPage > 0 ? prvCurrentPage-1 : 0}, prvKey=${prvKey})}">&laquo;</a></li>
-                                                    <li th:each="page, status:${prvPages}" class="page-item" th:classappend="${status.index == prvCurrentPage ? 'active' : T(java.lang.Math).abs(status.index - prvCurrentPage) < 4 ? '' : 'd-none'}"><a class="page-link" th:href="@{/sigrh/assignations/auth-list(assId = ${assId}, prvPageNum=${status.index}, prvKey=${prvKey})}">[[${status.count}]]</a></li>
-                                                    <li th:title="Suivant" class="page-item"><a class="page-link" th:href="@{/sigrh/assignations/auth-list(assId = ${assId}, prvPageNum=${prvCurrentPage < prvPages.length-1 ? prvCurrentPage+1 : prvPages.length-1}, prvKey=${prvKey})}">&raquo;</a></li>
-                                                    <li th:title="Fin" class="page-item"><a class="page-link" th:href="@{/sigrh/assignations/auth-list(assId = ${assId}, prvPageNum= ${prvPages.length-1}, prvKey=${prvKey})}">&raquo;&raquo;</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <!-- /.card-header -->
-                                        <div class="card-body p-0">
-                                            <form class="form-horizontal" th:action="@{/sigrh/assignations/auth-list}">
-                                                <div class="card-body mt-2 m-0 p-0">
-                                                    <div class="form-group row">
-                                                        <input type="hidden" th:value="0" name="prvPageNum">
-                                                        <input type="hidden" th:value="0" name="navigating">
-                                                        <input type="hidden" th:value="${param.assId[0]}" name="assId">
-
-                                                        <div class="col-md-12 mx-0 ml-3 p-0" style="display: inline">
-                                                            <table class="d-inline">
-                                                                <tr>
-                                                                    <td >
-                                                                        <a th:href="@{/sigrh/assignations/auth-list(assId = ${assId}, prvPageNum=0, prvKey='')}" class="btn btn-primary" >Réinitialiser</a>
-                                                                    </td>
-                                                                    <td style="width: 500px;">
-                                                                        <input type="text" style="height: 40px;"  class="form-control p-0 m-0" th:value="${prvKey}" name="prvKey" id="prvKey" placeholder="Rechercher">
-                                                                    </td>
-                                                                    <td>
-                                                                        <button class=" btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                            <a id="prv-lnk-new-principal-ass-form" th:href="@{/sigrh/assignations/new-principal-ass-form(userId=${user.userId})}" class="btn btn-primary float-right mr-4" >Nouvel Assignation</a>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </form>
-
-                                            <hr />
-                                            <table class="table table-sm table-hover">
-                                                <thead>
-                                                <tr>
-                                                    <th>Privilège</th>
-                                                    <th>Code</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr th:each="prv: ${prvPage.content}">
-                                                    <td>[[${prv.privilegeName}]]</td>
-                                                    <td> <span >[[${prv.privilegeCode}]]</span></td>
-                                                    <td>
-                                                        <a class="btn btn-sm btn-outline-danger mx-1" title="Retirer de la liste des privilèges" href="#" data-toggle="modal" th:data-target="${'#remove-prv-confirmation-modal' + prv.privilegeId}"><i class="bi bi-trash text-sm"></i></a>
-
-                                                        <div class="modal fade" th:id="${'remove-prv-confirmation-modal' + prv.privilegeId}">
-                                                            <div class="modal-dialog">
-                                                                <form method="post" th:action="@{/sigrh/assignations/remove-prv-to-principal-ass}">
-                                                                    <input name="assId" th:value="${prAsss.assId}">
-                                                                    <input name="prvId" th:value="${prv.privilegeId}">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h4 class="modal-title">Confirmation</h4>
-                                                                            <button type="button" class="close"
-                                                                                    data-dismiss="modal"
-                                                                                    aria-label="Close">
-                                                                                <span aria-hidden="true">&times;</span>
-                                                                            </button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <p>Êtes-vous sures de vouloir retirer le
-                                                                                privilège <span
-                                                                                        class="text-primary text-bold">[[${prv.privilegeName}]]</span>
-                                                                                de la liste des privilèges de
-                                                                                l'assignation <br/>
-                                                                            <h3>[[${prAsss.intitule}]]</h3> ?</p>
-                                                                        </div>
-                                                                        <div class="modal-footer justify-content-between">
-                                                                            <button type="button"
-                                                                                    class="btn btn-default"
-                                                                                    data-dismiss="modal">Close
-                                                                            </button>
-                                                                            <button th:title="Retirer le privilège"
-                                                                               type="submit" class="btn btn-danger">Confirmer</button>
-                                                                        </div>
-                                                                </form>
-                                                                </div>
-                                                                <!-- /.modal-content -->
-                                                            </div>
-                                                            <!-- /.modal-dialog -->
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <!-- /.card-body -->
-                                    </div>
-                                    <!-- /.card -->
-
-                                </div>
-                                <!-- /.card-body -->
-                            </div>
-                        </div>
-
-
                     </div>
+                    <div class="col-md-9">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Liste des rôles</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"
+                                            data-toggle="tooltip" title="Collapse">
+                                        <i class="fas fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                            <div class="card-body">
+
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">
+                                            [[${roleAssPage.getNumberOfElements()}]] items affichés sur
+                                            [[${roleAssPage.getTotalElements()}]]
+                                        </h3>
+
+                                        <div class="card-tools">
+                                            <ul class="pagination pagination-sm float-right">
+                                                <li th:title="Début" class="page-item"><a class="page-link"
+                                                                                          th:href="@{/sigrh/assignations/auth-list/roles(assId = ${assId}, rolePageNum=0, roleKey=${roleKey})}">&laquo;&laquo;</a>
+                                                </li>
+                                                <li th:title="Précédant" class="page-item"><a class="page-link"
+                                                                                              th:href="@{/sigrh/assignations/auth-list/roles(assId = ${assId}, rolePageNum=${roleCurrentPage > 0 ? roleCurrentPage-1 : 0}, roleKey=${roleKey})}">&laquo;</a>
+                                                </li>
+                                                <li th:each="page, status:${rolePages}" class="page-item"
+                                                    th:classappend="${status.index == roleCurrentPage ? 'active' : T(java.lang.Math).abs(status.index - roleCurrentPage) < 4 ? '' : 'd-none'}">
+                                                    <a class="page-link"
+                                                       th:href="@{/sigrh/assignations/auth-list/roles(assId = ${assId}, rolePageNum=${status.index}, roleKey=${roleKey})}">[[${status.count}]]</a>
+                                                </li>
+                                                <li th:title="Suivant" class="page-item"><a class="page-link"
+                                                                                            th:href="@{/sigrh/assignations/auth-list/roles(assId = ${assId}, rolePageNum=${roleCurrentPage < rolePages.length-1 ? roleCurrentPage+1 : rolePages.length-1}, roleKey=${roleKey})}">&raquo;</a>
+                                                </li>
+                                                <li th:title="Fin" class="page-item"><a class="page-link"
+                                                                                        th:href="@{/sigrh/assignations/auth-list/roles(assId = ${assId}, rolePageNum= ${rolePages.length-1}, roleKey=${roleKey})}">&raquo;&raquo;</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- /.card-header -->
+                                    <div class="card-body p-0">
+                                        <form class="form-horizontal" th:action="@{/sigrh/assignations/auth-list}">
+                                            <div class="card-body mt-2 m-0 p-0">
+                                                <div class="form-group row">
+                                                    <input type="hidden" th:value="0" name="rolePageNum">
+                                                    <input type="hidden" th:value="0" name="navigating">
+                                                    <input type="hidden" th:value="${param.assId[0]}" name="assId">
+
+                                                    <div class="col-md-12 mx-0 ml-3 p-0" style="display: inline">
+                                                        <table class="d-inline">
+                                                            <tr>
+                                                                <td>
+                                                                    <a id="lnk-reinitialize"
+                                                                       th:href="@{/sigrh/assignations/auth-list(assId = ${assId}, rolePageNum=0, RoleKey='')}"
+                                                                       class="btn btn-primary">Réinitialiser</a>
+                                                                </td>
+                                                                <td style="width: 500px;">
+                                                                    <input type="text" style="height: 40px;"
+                                                                           class="form-control p-0 m-0"
+                                                                           th:value="${roleKey}" name="roleKey" id="roleKey"
+                                                                           placeholder="Rechercher">
+                                                                </td>
+                                                                <td>
+                                                                    <button class=" btn btn-primary" type="submit"><i
+                                                                            class="fas fa-search"></i></button>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                        <a id="lnk-new-principal-ass-form"
+                                                           th:href="@{/sigrh/assignations/new-principal-ass-form(userId=${user.userId})}"
+                                                           class="btn btn-primary float-right mr-4">Nouvel Assignation</a>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                        <hr/>
+                                        <table class="table table-sm table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th>Role</th>
+                                                <th>Début</th>
+                                                <th>Fin</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="rAss: ${roleAssPage.content}">
+                                                <td>[[${rAss.role.roleName}]]</td>
+                                                <td><span>[[${rAss.ass.startsAt}]]</span></td>
+                                                <td>[[${rAss.ass.endsAt}]]</td>
+                                                <td>
+                                                    <a class="btn btn-sm btn-outline-danger mx-1"
+                                                       title="Retirer de la liste des rôles" href="#" data-toggle="modal"
+                                                       th:data-target="${'#remove-role-confirmation-modal' + rAss.assId}"><i
+                                                            class="bi bi-trash text-sm"></i></a>
+                                                    <a class="btn btn-sm btn-outline-success mx-1"
+                                                       title="Voir/modifier la liste des privilèges"
+                                                       th:href="@{/sigrh/assignations/prv-to-role-ass-form(roleId = ${rAss.role.roleId})}"><i
+                                                            class="bi bi-eye text-sm"></i></a>
+
+
+                                                    <div class="modal fade"
+                                                         th:id="${'remove-role-confirmation-modal' + rAss.role.roleId}">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <form method="post"
+                                                                      th:action="@{/sigrh/assignations/remove-role-to-principal-ass}">
+                                                                    <input name="assId" th:value="${prAsss.assId}">
+                                                                    <input name="roleId" th:value="${rAss.role.roleId}">
+                                                                    <input name="roleKey" th:value="${roleKey}">
+                                                                    <div class="modal-header">
+                                                                        <h4 class="modal-title">
+                                                                            Confirmation</h4>
+                                                                        <button type="button" class="close"
+                                                                                data-dismiss="modal"
+                                                                                aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <h3>[[${prAsss.intitule}]]</h3>
+                                                                        <p>Êtes-vous sures de vouloir retirer ce
+                                                                            rôle de la liste des rôles de
+                                                                            l'assignation <br/>
+                                                                        <h3>[[${prAsss.intitule}]]</h3> ?</p>
+                                                                    </div>
+                                                                    <div class="modal-footer justify-content-between">
+                                                                        <button type="button"
+                                                                                class="btn btn-default"
+                                                                                data-dismiss="modal">Close
+                                                                        </button>
+                                                                        <button th:title="Retirer le rôle" type="submit"
+                                                                                class="btn btn-danger">Confirmer
+                                                                        </button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                            <!-- /.modal-content -->
+                                                        </div>
+                                                        <!-- /.modal-dialog -->
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /.card-body -->
+                                </div>
+                                <!-- /.card -->
+
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Liste des privilèges</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"
+                                            data-toggle="tooltip" title="Collapse">
+                                        <i class="fas fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                            <div class="card-body">
+
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">
+                                            [[${prvPage.getNumberOfElements()}]] items affichés sur
+                                            [[${prvPage.getTotalElements()}]]
+                                        </h3>
+
+                                        <div class="card-tools">
+                                            <ul class="pagination pagination-sm float-right">
+                                                <li th:title="Début" class="page-item"><a class="page-link"
+                                                                                          th:href="@{/sigrh/assignations/auth-list(assId = ${assId}, prvPageNum=0, prvKey=${roleKey})}">&laquo;&laquo;</a>
+                                                </li>
+                                                <li th:title="Précédant" class="page-item"><a class="page-link"
+                                                                                              th:href="@{/sigrh/assignations/auth-list(assId = ${assId}, prvPageNum=${prvCurrentPage > 0 ? prvCurrentPage-1 : 0}, prvKey=${prvKey})}">&laquo;</a>
+                                                </li>
+                                                <li th:each="page, status:${prvPages}" class="page-item"
+                                                    th:classappend="${status.index == prvCurrentPage ? 'active' : T(java.lang.Math).abs(status.index - prvCurrentPage) < 4 ? '' : 'd-none'}">
+                                                    <a class="page-link"
+                                                       th:href="@{/sigrh/assignations/auth-list(assId = ${assId}, prvPageNum=${status.index}, prvKey=${prvKey})}">[[${status.count}]]</a>
+                                                </li>
+                                                <li th:title="Suivant" class="page-item"><a class="page-link"
+                                                                                            th:href="@{/sigrh/assignations/auth-list(assId = ${assId}, prvPageNum=${prvCurrentPage < prvPages.length-1 ? prvCurrentPage+1 : prvPages.length-1}, prvKey=${prvKey})}">&raquo;</a>
+                                                </li>
+                                                <li th:title="Fin" class="page-item"><a class="page-link"
+                                                                                        th:href="@{/sigrh/assignations/auth-list(assId = ${assId}, prvPageNum= ${prvPages.length-1}, prvKey=${prvKey})}">&raquo;&raquo;</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- /.card-header -->
+                                    <div class="card-body p-0">
+                                        <form class="form-horizontal" th:action="@{/sigrh/assignations/auth-list}">
+                                            <div class="card-body mt-2 m-0 p-0">
+                                                <div class="form-group row">
+                                                    <input type="hidden" th:value="0" name="prvPageNum">
+                                                    <input type="hidden" th:value="0" name="navigating">
+                                                    <input type="hidden" th:value="${param.assId[0]}" name="assId">
+
+                                                    <div class="col-md-12 mx-0 ml-3 p-0" style="display: inline">
+                                                        <table class="d-inline">
+                                                            <tr>
+                                                                <td>
+                                                                    <a th:href="@{/sigrh/assignations/auth-list(assId = ${assId}, prvPageNum=0, prvKey='')}"
+                                                                       class="btn btn-primary">Réinitialiser</a>
+                                                                </td>
+                                                                <td style="width: 500px;">
+                                                                    <input type="text" style="height: 40px;"
+                                                                           class="form-control p-0 m-0" th:value="${prvKey}"
+                                                                           name="prvKey" id="prvKey"
+                                                                           placeholder="Rechercher">
+                                                                </td>
+                                                                <td>
+                                                                    <button class=" btn btn-primary" type="submit"><i
+                                                                            class="fas fa-search"></i></button>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                        <a id="prv-lnk-new-principal-ass-form"
+                                                           th:href="@{/sigrh/assignations/new-principal-ass-form(userId=${user.userId})}"
+                                                           class="btn btn-primary float-right mr-4">Nouvel Assignation</a>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                        <hr/>
+                                        <table class="table table-sm table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th>Privilège</th>
+                                                <th>Code</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="prv: ${prvPage.content}">
+                                                <td>[[${prv.privilegeName}]]</td>
+                                                <td><span>[[${prv.privilegeCode}]]</span></td>
+                                                <td>
+                                                    <a class="btn btn-sm btn-outline-danger mx-1"
+                                                       title="Retirer de la liste des privilèges" href="#"
+                                                       data-toggle="modal"
+                                                       th:data-target="${'#remove-prv-confirmation-modal' + prv.privilegeId}"><i
+                                                            class="bi bi-trash text-sm"></i></a>
+
+                                                    <div class="modal fade"
+                                                         th:id="${'remove-prv-confirmation-modal' + prv.privilegeId}">
+                                                        <div class="modal-dialog">
+                                                            <form method="post"
+                                                                  th:action="@{/sigrh/assignations/remove-prv-to-principal-ass}">
+                                                                <input name="assId" th:value="${prAsss.assId}">
+                                                                <input name="prvId" th:value="${prv.privilegeId}">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h4 class="modal-title">Confirmation</h4>
+                                                                        <button type="button" class="close"
+                                                                                data-dismiss="modal"
+                                                                                aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <p>Êtes-vous sures de vouloir retirer le
+                                                                            privilège <span
+                                                                                    class="text-primary text-bold">[[${prv.privilegeName}]]</span>
+                                                                            de la liste des privilèges de
+                                                                            l'assignation <br/>
+                                                                        <h3>[[${prAsss.intitule}]]</h3> ?</p>
+                                                                    </div>
+                                                                    <div class="modal-footer justify-content-between">
+                                                                        <button type="button"
+                                                                                class="btn btn-default"
+                                                                                data-dismiss="modal">Close
+                                                                        </button>
+                                                                        <button th:title="Retirer le privilège"
+                                                                                type="submit" class="btn btn-danger">
+                                                                            Confirmer
+                                                                        </button>
+                                                                    </div>
+                                                            </form>
+                                                        </div>
+                                                        <!-- /.modal-content -->
+                                                    </div>
+                                                    <!-- /.modal-dialog -->
+                                    </div>
+                                    </td>
+                                    </tr>
+                                    </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+
+
+            </div>
+            </div>
         </div>
         <div layout:fragment="specific-scripts">
             <script th:src="@{/dist/js/demo.js}"></script>
