@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = {UniqueNumPiece.UniqueNumPieceValidator.class, UniqueNumPiece.UniqueNumPieceValidatorOnUpdate.class})
 public @interface UniqueNumPiece
 {
-    String message() default "numPiece:Ce numéro de pièce est déjà attribué";
+    String message() default "Ce numéro de pièce est déjà attribué";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
@@ -42,7 +42,7 @@ public @interface UniqueNumPiece
         public boolean isValid(UpdateAgentDTO dto, ConstraintValidatorContext context)
         {
             if(dto.getNumPiece()==null) return false;
-            return !agentRepo.existsByNumPiece(dto.getNumPiece(), dto.getIdAgent());
+            return !agentRepo.existsByNumPiece(dto.getNumPiece(), dto.getAgentId());
         }
     }
 }

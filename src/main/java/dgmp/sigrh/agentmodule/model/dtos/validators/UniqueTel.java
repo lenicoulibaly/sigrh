@@ -2,6 +2,7 @@ package dgmp.sigrh.agentmodule.model.dtos.validators;
 
 import dgmp.sigrh.agentmodule.controller.repositories.AgentRepo;
 import dgmp.sigrh.agentmodule.model.dtos.UpdateAgentDTO;
+import dgmp.sigrh.auth2.controller.repositories.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = {UniqueTel.UniqueTelValidator.class, UniqueTel.UniqueTelValidatorOnUpdate.class})
 public @interface UniqueTel
 {
-    String message() default "tel:Ce numéro de téléphone est déjà attribué";
+    String message() default "Ce numéro de téléphone est déjà attribué";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
@@ -26,11 +27,12 @@ public @interface UniqueTel
     class UniqueTelValidator implements ConstraintValidator<UniqueTel, String>
     {
         private final AgentRepo agentRepo;
+        private final UserRepo userRepo;
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context)
         {
-            if(value==null) return false;
-            return !agentRepo.existsByTel(value);
+            if(value==null) return true;
+            return !(agentRepo.existsByTel(value) || userRepo.alreadyExistsByTel(value));
         }
     }
 
@@ -38,11 +40,12 @@ public @interface UniqueTel
     class UniqueTelValidatorOnUpdate implements ConstraintValidator<UniqueTel, UpdateAgentDTO>
     {
         private final AgentRepo agentRepo;
+        private final UserRepo userRepo;
         @Override
         public boolean isValid(UpdateAgentDTO dto, ConstraintValidatorContext context)
         {
-            if(dto.getTel()==null) return false;
-            return !agentRepo.existsByTel(dto.getTel(), dto.getIdAgent());
+            if(dto.getTel()==null) return true;
+            return !(agentRepo.existsByTel(dto.getTel(), dto.getAgentId()) || userRepo.alreadyExistsByTelAndAgtId(dto.getTel(), dto.getAgentId()));
         }
     }
 }

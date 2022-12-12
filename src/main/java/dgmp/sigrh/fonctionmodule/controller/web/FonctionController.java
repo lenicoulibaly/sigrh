@@ -1,6 +1,6 @@
 package dgmp.sigrh.fonctionmodule.controller.web;
 
-import dgmp.sigrh.fonctionmodule.controller.repositories.FonctionDAO;
+import dgmp.sigrh.fonctionmodule.controller.repositories.FonctionRepo;
 import dgmp.sigrh.fonctionmodule.controller.service.IFonctionService;
 import dgmp.sigrh.fonctionmodule.model.dtos.CreateFonctionDTO;
 import dgmp.sigrh.fonctionmodule.model.dtos.ReadFonctionDTO;
@@ -26,7 +26,7 @@ import java.util.List;
 public class FonctionController
 {
     private final IFonctionService fonctionService;
-    private final FonctionDAO fonctionDAO;
+    private final FonctionRepo fonctionRepo;
 
     @PostMapping(path = "/sigrh/administration/fonctions/create")
     public String createFonction(Model model, RedirectAttributes ra, @Valid CreateFonctionDTO dto, BindingResult bindingResult)
@@ -104,7 +104,7 @@ public class FonctionController
     @GetMapping(path = "/sigrh/administration/fonctions/fonction-details")
     public String gotoFonctionDetails(Model model, @RequestParam(defaultValue = "0") long idFonction)
     {
-        model.addAttribute("fonction", fonctionDAO.findById(idFonction).orElse(null));
+        model.addAttribute("fonction", fonctionRepo.findById(idFonction).orElse(null));
         model.addAttribute("modificationList", fonctionService.getModificationHisto(idFonction));
         model.addAttribute("viewMode", "details");
         return "administration/fonctions/fonctionDetails";
@@ -121,7 +121,7 @@ public class FonctionController
     @GetMapping(path = "/sigrh/administration/fonctions/update-fonction-form")
     public String gotoUpdateFonctionForm(Model model, @RequestParam(defaultValue = "0") long idFonction)
     {
-        model.addAttribute("fonction", fonctionDAO.existsById(idFonction) ? fonctionDAO.findById(idFonction).get(): new UpdateFonctionDTO());
+        model.addAttribute("fonction", fonctionRepo.existsById(idFonction) ? fonctionRepo.findById(idFonction).get(): new UpdateFonctionDTO());
         model.addAttribute("viewMode", "update");
         return "administration/fonctions/updateFonctionForm";
     }

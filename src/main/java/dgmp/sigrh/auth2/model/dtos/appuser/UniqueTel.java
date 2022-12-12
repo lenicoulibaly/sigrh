@@ -16,7 +16,7 @@ import java.lang.annotation.*;
 @Documented
 public @interface UniqueTel
 {
-    String message() default "tel::N° téléphone déjà attribué";
+    String message() default "N° téléphone déjà attribué";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
@@ -25,7 +25,9 @@ public @interface UniqueTel
     {
         private final UserRepo userRepo;
         @Override
-        public boolean isValid(String value, ConstraintValidatorContext context) {
+        public boolean isValid(String value, ConstraintValidatorContext context)
+        {
+            if(value == null) return true;
             return !userRepo.alreadyExistsByTel(value);
         }
     }

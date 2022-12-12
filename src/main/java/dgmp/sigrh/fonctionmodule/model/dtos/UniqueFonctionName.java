@@ -1,6 +1,6 @@
 package dgmp.sigrh.fonctionmodule.model.dtos;
 
-import dgmp.sigrh.fonctionmodule.controller.repositories.FonctionDAO;
+import dgmp.sigrh.fonctionmodule.controller.repositories.FonctionRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -21,22 +21,22 @@ public @interface UniqueFonctionName
     Class<? extends Payload>[] payload() default {};
 
     @Component @RequiredArgsConstructor
-    public class UniqueFonctionNameValidator implements ConstraintValidator<UniqueFonctionName, String>
+    class UniqueFonctionNameValidator implements ConstraintValidator<UniqueFonctionName, String>
     {
-        private final FonctionDAO fonctionDAO;
+        private final FonctionRepo fonctionRepo;
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context) {
-            return !fonctionDAO.existsByNomFonction(value);
+            return !fonctionRepo.existsByNomFonction(value);
         }
     }
 
     @Component @RequiredArgsConstructor
-    public class UniqueFonctionNameValidatorOnUpdate implements ConstraintValidator<UniqueFonctionName, UpdateFonctionDTO>
+    class UniqueFonctionNameValidatorOnUpdate implements ConstraintValidator<UniqueFonctionName, UpdateFonctionDTO>
     {
-        private final FonctionDAO fonctionDAO;
+        private final FonctionRepo fonctionRepo;
         @Override
         public boolean isValid(UpdateFonctionDTO dto, ConstraintValidatorContext context) {
-            return !fonctionDAO.existsByNomFonction(dto.getIdFonction(), dto.getNomFonction());
+            return !fonctionRepo.existsByNomFonction(dto.getIdFonction(), dto.getNomFonction());
         }
     }
 }

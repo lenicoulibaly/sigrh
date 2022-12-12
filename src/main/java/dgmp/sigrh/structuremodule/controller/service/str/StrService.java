@@ -1,8 +1,10 @@
 package dgmp.sigrh.structuremodule.controller.service.str;
 
 import dgmp.sigrh.brokermodule.services.IHistoService;
+import dgmp.sigrh.instancemodule.model.entities.Instance;
 import dgmp.sigrh.shared.controller.exception.AppException;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
+import dgmp.sigrh.shared.utilities.StringUtils;
 import dgmp.sigrh.structuremodule.controller.repositories.structure.StrHistoRepo;
 import dgmp.sigrh.structuremodule.controller.repositories.structure.StrRepo;
 import dgmp.sigrh.structuremodule.model.dtos.str.*;
@@ -51,7 +53,9 @@ public class StrService implements IStrService
     @Override @Transactional
     public ReadStrDTO createStr(CreateStrDTO dto)
     {
+        Long instanceId = dto.getParentId() == null ? null : strRepo.getStrInstanceId(dto.getParentId());
         Structure str = strMapper.mapToStructure(dto);
+        str.setInstance(instanceId == null ? null : new Instance(instanceId));
         if(str.getStrParent() != null)
         {
             if(str.getStrParent().getStrId()==null) str.setStrParent(null);
@@ -170,7 +174,7 @@ public class StrService implements IStrService
         strTreeView.setHref("/sigrh/structures/str-details?tab=str-tree&strId="+str.getStrId());
         List<StrTreeView> childrenNodes = strRepo.getStrChildrenIds(strId).stream().filter(id->this.strHasAnyChildMatching(id, key)).flatMap(childId->this.loadStrTreeView(childId, key).stream()).collect(Collectors.toList());
         strTreeView.setNodes(childrenNodes);
-        return Arrays.asList(strTreeView);
+        return Collections.singletonList(strTreeView);
     }
 
     @Override
@@ -185,7 +189,7 @@ public class StrService implements IStrService
         strTreeView.setHref("/sigrh/structures/str-details?tab=str-tree&strId="+str.getStrId());
         List<StrTreeView> childrenNodes = strRepo.getStrChildrenIds(strId).stream().flatMap(childId->this.loadStrTreeView(childId).stream()).collect(Collectors.toList());
         strTreeView.setNodes(childrenNodes);
-        return Arrays.asList(strTreeView);
+        return Collections.singletonList(strTreeView);
     }
 
     @Override
@@ -260,15 +264,11 @@ public class StrService implements IStrService
                 return new PageImpl<>(new ArrayList<>(), PageRequest.of(pageNum, pageSize), 0);
         }
         Page<Structure> strPage = parentId == null ?
-                strRepo.searchStr(key, ACTIVE, PageRequest.of(pageNum, pageSize)) :
-                strRepo.searchStr(parentId, key.trim(), ACTIVE, PageRequest.of(pageNum, pageSize));
+                new PageImpl<>(new ArrayList<>(), PageRequest.of(pageNum, pageSize), 0) :
+                strRepo.searchStr(parentId, key==null ? "" : StringUtils.stripAccentsToUpperCase(key.trim()), ACTIVE, PageRequest.of(pageNum, pageSize));
 
         List<ReadStrDTO> strDTOS = strPage.stream().map(strMapper::mapToReadStrDTO).collect(Collectors.toList());
-        long nbStr =
-                parentId == null && (key==null || "".equals(key)) ? strRepo.countAllStr(ACTIVE) :
-                parentId == null ? strRepo.countStr(key, ACTIVE) :
-                key==null || "".equals(key) ? strRepo.countAllChildren(parentId, ACTIVE) : strRepo.countStr(parentId, key);
 
-        return new PageImpl<>(strDTOS, PageRequest.of(pageNum, pageSize), nbStr);
+        return new PageImpl<>(strDTOS, PageRequest.of(pageNum, pageSize), strPage.getTotalElements());
     }
 }

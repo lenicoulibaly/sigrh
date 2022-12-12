@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor @AllArgsConstructor @Builder @Data
 public class ReadAgentDTO
 {
-    private Long idAgent;
+    private Long agentId                  ;
     private String nom;
     private String prenom;
     private String civilite;
@@ -37,6 +37,9 @@ public class ReadAgentDTO
     private ReadPostDTO readPostDTO;
     private ReadEmploiDTO readEmploiDTO;
     private ReadGradeDTO readGradeDTO;
+    private String fonction;
+    private String emploi;
+    private String grade;
     private String titre;
     private String situationPresence;
     private LocalDate datePriseService1;
@@ -50,4 +53,8 @@ public class ReadAgentDTO
     private ReadUserDTO readUserDTO;
     private String nomPhoto;
     private MultipartFile photoFile;
+
+    private String strName;
+    private String strSigle;
+    private String hierarchySigles;
 }

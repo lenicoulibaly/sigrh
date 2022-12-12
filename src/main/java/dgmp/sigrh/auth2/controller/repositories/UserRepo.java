@@ -71,6 +71,9 @@ public interface UserRepo extends JpaRepository<AppUser, Long>
     @Query("select (count(a) > 0) from AppUser a where upper(a.tel) = upper(?1) and a.userId <> ?2")
     boolean alreadyExistsByTel(String tel, Long userId);
 
+    @Query("select (count(u) > 0) from AppUser u where upper(u.tel) = upper(?1) and u.agentId <> ?2")
+    boolean alreadyExistsByTelAndAgtId(String tel, Long agentId);
+
     @Query("update AppUser u set u.defaultAssId = ?2 where u.userId = ?1")
     @Modifying
     void changeDefaultAssId(Long userId, Long assId);

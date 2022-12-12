@@ -23,4 +23,9 @@ public class StringUtils
 		if(string==null) return null;
 		return stripAccents(string).toLowerCase();
 	}
+
+	public static String blankToNull(String str)
+	{
+		return str == null ? null : str.trim().equals("") ? null : str;
+	}
 }

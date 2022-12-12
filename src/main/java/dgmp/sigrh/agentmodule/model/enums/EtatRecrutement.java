@@ -27,6 +27,11 @@ public enum EtatRecrutement
     {
         return EnumUtils.getEnumList(EtatRecrutement.class).stream().filter(e->e.present == present).collect(Collectors.toList());
     }
+
+    public static List<EtatRecrutement> getAll()
+    {
+        return EnumUtils.getEnumList(EtatRecrutement.class);
+    }
     @Override
     public String toString() {
         return name;

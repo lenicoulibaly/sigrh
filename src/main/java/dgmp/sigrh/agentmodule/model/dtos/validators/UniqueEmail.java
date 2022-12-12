@@ -2,6 +2,7 @@ package dgmp.sigrh.agentmodule.model.dtos.validators;
 
 import dgmp.sigrh.agentmodule.controller.repositories.AgentRepo;
 import dgmp.sigrh.agentmodule.model.dtos.UpdateAgentDTO;
+import dgmp.sigrh.auth2.controller.repositories.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = {UniqueEmail.UniqueEmailValidator.class, UniqueEmail.UniqueEmailValidatorOnUpdate.class})
 public @interface UniqueEmail
 {
-    String message() default "email:Cette adresse mail est déjà attribuée";
+    String message() default "Cette adresse mail est déjà attribuée";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
@@ -25,23 +26,29 @@ public @interface UniqueEmail
     class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, String>
     {
         private final AgentRepo agentRepo;
+        private final UserRepo userRepo;
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context)
         {
-            if(value==null) return false;
-            return !(agentRepo.existsByEmail(value) || agentRepo.existsByEmailPro(value));
+            if(value==null) return true;
+            if(value.trim().equals("")) return true;
+            return !(agentRepo.existsByEmail(value) || agentRepo.existsByEmailPro(value) || userRepo.alreadyExistsByEmail(value));
         }
     }
 
     @Component @RequiredArgsConstructor
     class UniqueEmailValidatorOnUpdate implements ConstraintValidator<UniqueEmail, UpdateAgentDTO>
     {
-        private final AgentRepo agentRepo;
+        private final AgentRepo agentRepo; private final UserRepo userRepo;
         @Override
         public boolean isValid(UpdateAgentDTO dto, ConstraintValidatorContext context)
         {
-            if(dto.getEmail()==null) return false;
-            return !(agentRepo.existsByEmail(dto.getEmail(), dto.getIdAgent()) || agentRepo.existsByEmailPro(dto.getEmailPro(), dto.getIdAgent()));
+            if(dto.getEmail()==null) return true;
+            if(dto.getEmail().trim().equals("")) return true;
+            return !(agentRepo.existsByEmail(dto.getEmail(), dto.getAgentId()) ||
+                    agentRepo.existsByEmailPro(dto.getEmailPro(), dto.getAgentId()) ||
+                    userRepo.alreadyExistsByEmail(dto.getEmail(), agentRepo.getUserId(dto.getAgentId())) ||
+                    userRepo.alreadyExistsByEmail(dto.getEmailPro(), agentRepo.getUserId(dto.getAgentId())));
         }
     }
 }

@@ -10,10 +10,12 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface GradeDAO extends JpaRepository<Grade, Long>
+public interface GradeRepo extends JpaRepository<Grade, Long>
 {
     @Query("select g from Grade g where g.status = 'ACTIVE'")
-    List<Grade> findActiveStatus();
+    List<Grade> getActiveGrades();
+    @Query("select g.idGrade from Grade g where g.status = 'ACTIVE'")
+    List<Long> getActiveGradesIds();
 
     @Query("select g from Grade g where g.categorie = ?1 and g.status = 'ACTIVE'")
     List<Grade> findByCategorieAndStatus(String categorie);
@@ -45,6 +47,7 @@ public interface GradeDAO extends JpaRepository<Grade, Long>
 
     @Query("select (count(g) > 0) from Grade g where g.idGrade <> ?1 and g.rang = ?2 and g.categorie = ?3")
     boolean existsByRankAndCategory(Long idGrade, int rang, Categorie categorie);
+
 
 
 }

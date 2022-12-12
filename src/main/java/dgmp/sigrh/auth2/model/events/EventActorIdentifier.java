@@ -17,8 +17,8 @@ public class EventActorIdentifier
     private Long modifierAssId;
     private Long modifierStrId;
     private String modifierStrName;
-    private Long agentId;
-    private String nom;
-    private String prenom;
-    private String matricule;
+    private Long modifierAgentId;
+    private String modifierNom;
+    private String modifierPrenom;
+    private String modifierMatricule;
 }

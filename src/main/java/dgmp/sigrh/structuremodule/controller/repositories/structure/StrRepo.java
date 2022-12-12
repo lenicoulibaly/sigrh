@@ -2,6 +2,7 @@ package dgmp.sigrh.structuremodule.controller.repositories.structure;
 
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
 import dgmp.sigrh.structuremodule.model.dtos.str.ChangeAnchorDTO;
+import dgmp.sigrh.structuremodule.model.dtos.str.ReadStrDTO;
 import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -81,14 +82,20 @@ public interface StrRepo extends JpaRepository<Structure, Long>
     @Query("select s from Structure s where s.strCode like concat(?1, '/%') and (coalesce(upper(s.strName), '') like upper(concat('%', ?2, '%')) or coalesce(upper(s.strSigle), '') like upper(concat('%', ?2, '%')) or coalesce(upper(s.strTel), '') like upper(concat('%', ?2, '%')) or coalesce(upper(s.strAddress), '') like upper(concat('%', ?2, '%')) or coalesce(upper(s.situationGeo), '') like upper(concat('%', ?2, '%')) or upper(s.strType.name) like upper(concat('%', ?2, '%'))) and s.status = ?2 order by s.strName")
     Page<Structure> searchStr(String strCode, String key, Pageable pageable);
 
-    @Query("select s from Structure s where (locate(function('getStrCode', ?1), concat(s.strCode, '/')) = 1 or s.strId = ?1) and (coalesce(upper(s.strName), ?2) like upper(concat('%', ?2, '%')) or coalesce(upper(s.strSigle), '') like upper(concat('%', ?2, '%')) or coalesce(upper(s.strTel), '') like upper(concat('%', ?2, '%')) or coalesce(upper(s.strAddress), '') like upper(concat('%', ?2, '%')) or coalesce(upper(s.situationGeo), '') like upper(concat('%', ?2, '%')) or upper(s.strType.name) like upper(concat('%', ?2, '%'))) and s.status = 'ACTIVE' order by s.strName")
+    @Query("select s from Structure s where (locate(function('getStrCode', ?1), concat(s.strCode, '/')) = 1 or s.strId = ?1) and (coalesce(upper(function('strip_accents', s.strName) ), '') like upper(concat('%', ?2, '%')) or coalesce(upper(function('strip_accents',s.strSigle)), '') like upper(concat('%', ?2, '%')) or coalesce(upper(function('strip_accents',s.strTel)), '') like upper(concat('%', ?2, '%')) or coalesce(upper(function('strip_accents', s.strAddress)), '') like upper(concat('%', ?2, '%')) or coalesce(upper(function('strip_accents', s.situationGeo)), '') like upper(concat('%', ?2, '%')) or upper(function('strip_accents',s.strType.name)) like upper(concat('%', ?2, '%'))) and s.status = 'ACTIVE' order by s.strName")
     Page<Structure> searchStr(Long strId, String key, Pageable pageable);
 
     @Query("select count(s) from Structure s, Structure s2 where locate(concat(s.strCode, '/'), s2.strCode) = 1 and s2.strId = ?1 and (coalesce(upper(s.strName), ?2) like upper(concat('%', ?2, '%')) or coalesce(upper(s.strSigle), '') like upper(concat('%', ?2, '%')) or coalesce(upper(s.strTel), '') like upper(concat('%', ?2, '%')) or coalesce(upper(s.strAddress), '') like upper(concat('%', ?2, '%')) or coalesce(upper(s.situationGeo), '') like upper(concat('%', ?2, '%')) or upper(s.strType.name) like upper(concat('%', ?2, '%'))) and s.status = 'ACTIVE'")
     long countStr(Long strId, String key);
 
-    @Query("select s from Structure s where (locate(function('getStrCode', ?1), concat(s.strCode, '/')) = 1 or s.strId = ?1) and (coalesce(upper(s.strName), '') like upper(concat('%', ?2, '%')) or coalesce(upper(s.strSigle), '') like upper(concat('%', ?2, '%')) or coalesce(upper(s.strTel), '') like upper(concat('%', ?2, '%')) or coalesce(upper(s.strAddress), '') like upper(concat('%', ?2, '%')) or coalesce(upper(s.situationGeo), '') like upper(concat('%', ?2, '%')) or upper(s.strType.name) like upper(concat('%', ?2, '%'))) and s.status = ?3 order by s.strName")
+    @Query("select s from Structure s where (locate(function('getStrCode', ?1), concat(s.strCode, '/')) = 1 or s.strId = ?1) and (coalesce(upper(function('strip_accents', s.strName) ), '') like upper(concat('%', ?2, '%')) or coalesce(upper(function('strip_accents',s.strSigle)), '') like upper(concat('%', ?2, '%')) or coalesce(upper(function('strip_accents',s.strTel)), '') like upper(concat('%', ?2, '%')) or coalesce(upper(function('strip_accents', s.strAddress)), '') like upper(concat('%', ?2, '%')) or coalesce(upper(function('strip_accents', s.situationGeo)), '') like upper(concat('%', ?2, '%')) or upper(function('strip_accents',s.strType.name)) like upper(concat('%', ?2, '%'))) and s.status = ?3 order by s.strName")
     Page<Structure> searchStr(Long strId, String key, PersistenceStatus status, Pageable pageable);
+
+    @Query("select new dgmp.sigrh.structuremodule.model.dtos.str.ReadStrDTO(s.strId, s.strName, s.strSigle, function('get_hierarchy_sigles',s.strId)) from Structure s where (locate(function('getStrCode', ?1), concat(s.strCode, '/')) = 1 or s.strId = ?1) and (coalesce(upper(function('strip_accents', s.strName) ), '') like upper(concat('%', ?2, '%')) or coalesce(upper(function('strip_accents',s.strSigle)), '') like upper(concat('%', ?2, '%')) or coalesce(upper(function('strip_accents',s.strTel)), '') like upper(concat('%', ?2, '%')) or coalesce(upper(function('strip_accents', s.strAddress)), '') like upper(concat('%', ?2, '%')) or coalesce(upper(function('strip_accents', s.situationGeo)), '') like upper(concat('%', ?2, '%')) or upper(function('strip_accents',s.strType.name)) like upper(concat('%', ?2, '%'))) and s.status = ?3 order by s.strName")
+    Page<ReadStrDTO> searchReadStrDTO(Long strId, String key, PersistenceStatus status, Pageable pageable);
+
+    @Query("select new dgmp.sigrh.structuremodule.model.dtos.str.ReadStrDTO(s.strId, s.strName, s.strSigle, function('get_hierarchy_sigles',s.strId)) from Structure s where (locate(function('getStrCode', ?1), concat(s.strCode, '/')) = 1 or s.strId = ?1) and (coalesce(upper(function('strip_accents', s.strName) ), '') like upper(concat('%', ?2, '%')) or coalesce(upper(function('strip_accents',s.strSigle)), '') like upper(concat('%', ?2, '%')) or coalesce(upper(function('strip_accents',s.strTel)), '') like upper(concat('%', ?2, '%')) or coalesce(upper(function('strip_accents', s.strAddress)), '') like upper(concat('%', ?2, '%')) or coalesce(upper(function('strip_accents', s.situationGeo)), '') like upper(concat('%', ?2, '%')) or upper(function('strip_accents',s.strType.name)) like upper(concat('%', ?2, '%'))) and s.status = ?3 order by s.strName")
+    List<ReadStrDTO> searchReadStrDTO(Long strId, String key, PersistenceStatus status);
 
     @Query("select count(s) from Structure s, Structure s2 where locate(concat(s.strCode, '/'), s2.strCode) = 1 and s2.strId = ?1 and (coalesce(upper(s.strName), '') like upper(concat('%', ?2, '%')) or coalesce(upper(s.strSigle), '') like upper(concat('%', ?2, '%')) or coalesce(upper(s.strTel), '') like upper(concat('%', ?2, '%')) or coalesce(upper(s.strAddress), '') like upper(concat('%', ?2, '%')) or coalesce(upper(s.situationGeo), '') like upper(concat('%', ?2, '%')) or upper(s.strType.name) like upper(concat('%', ?2, '%'))) and s.status = ?3")
     long countStr(Long strId, String key, PersistenceStatus status);
@@ -171,4 +178,7 @@ public interface StrRepo extends JpaRepository<Structure, Long>
 
     @Procedure(name = "get_hierarchy_sigles", procedureName = "get_hierarchy_sigles")
     String getHierarchySigle(long strId);
+
+    @Query("select s.instance.instanceId from Structure s where s.strId = ?1")
+    Long getStrInstanceId(Long strId);
 }

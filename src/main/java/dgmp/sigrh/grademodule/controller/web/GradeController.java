@@ -1,7 +1,7 @@
 package dgmp.sigrh.grademodule.controller.web;
 
 import dgmp.sigrh.brokermodule.services.IHistoService;
-import dgmp.sigrh.grademodule.controller.repositories.GradeDAO;
+import dgmp.sigrh.grademodule.controller.repositories.GradeRepo;
 import dgmp.sigrh.grademodule.controller.service.IGradeService;
 import dgmp.sigrh.grademodule.model.dtos.CreateGradeDTO;
 import dgmp.sigrh.grademodule.model.dtos.GrageMapper;
@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 public class GradeController
 {
     private final IGradeService gradeService;
-    private final GradeDAO gradeDAO;
+    private final GradeRepo gradeRepo;
     private final GrageMapper gradeMapper;
     private final IHistoService<Grade, GradeHisto, GradeEventType> grageHistoService;
 
@@ -51,7 +51,7 @@ public class GradeController
     @RequestParam(defaultValue = "#{T(java.time.LocalDateTime).now().minusYears(2)}") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX") LocalDateTime after,
     @RequestParam(defaultValue = "#{T(java.time.LocalDateTime).now().plusDays(1)}") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX") LocalDateTime befor)
     {
-        Grade grade = gradeDAO.findById(idGrade).orElse(null);
+        Grade grade = gradeRepo.findById(idGrade).orElse(null);
         model.addAttribute("grade", grade == null ? new ReadGradeDTO() : gradeMapper.mapToReadGradeDTO(grade));
         model.addAttribute("modificationList", grageHistoService.getHistoPageBetweenPeriod(idGrade, after, befor, pageNum, pageSize));
         model.addAttribute("viewMode", "details");
@@ -84,7 +84,7 @@ public class GradeController
     @GetMapping(path = "/sigrh/administration/grades/update-grade-form")
     public String gotoUpdateGradeForm(Model model, @RequestParam(defaultValue = "0") long idGrade)
     {
-        Grade loadedGrade = gradeDAO.findById(idGrade).orElse(null);
+        Grade loadedGrade = gradeRepo.findById(idGrade).orElse(null);
         UpdateGradeDTO gradeDTO = loadedGrade == null ? new UpdateGradeDTO() : new UpdateGradeDTO(loadedGrade.getIdGrade(), loadedGrade.getRang(), loadedGrade.getCategorie().name());
         model.addAttribute("grade", gradeDTO);
         model.addAttribute("viewMode", "update");

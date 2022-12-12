@@ -1,6 +1,6 @@
 package dgmp.sigrh.emploimodule.model.dtos;
 
-import dgmp.sigrh.emploimodule.controller.repositories.EmploiDAO;
+import dgmp.sigrh.emploimodule.controller.repositories.EmploiRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,12 +24,12 @@ public @interface UniqueEmploiName
     @RequiredArgsConstructor
     class UniqueEmploiNameValidator implements ConstraintValidator<UniqueEmploiName, String>
     {
-        private final EmploiDAO emploiDAO;
+        private final EmploiRepo emploiRepo;
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context)
         {
             if(value==null) return false;
-            return !emploiDAO.existsByNomEmploi(value);
+            return !emploiRepo.existsByNomEmploi(value);
         }
     }
 
@@ -37,11 +37,11 @@ public @interface UniqueEmploiName
     @RequiredArgsConstructor
     class UniqueEmploiNameValidatorOnUpdate implements ConstraintValidator<UniqueEmploiName, UpdateEmploiDTO>
     {
-        private final EmploiDAO emploiDAO;
+        private final EmploiRepo emploiRepo;
         @Override
         public boolean isValid(UpdateEmploiDTO dto, ConstraintValidatorContext context)
         {
-            return !emploiDAO.existsByNomEmploi(dto.getIdEmploi(), dto.getNomEmploi());
+            return !emploiRepo.existsByNomEmploi(dto.getIdEmploi(), dto.getNomEmploi());
         }
     }
 }

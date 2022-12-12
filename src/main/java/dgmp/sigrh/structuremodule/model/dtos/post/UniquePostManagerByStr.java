@@ -1,6 +1,6 @@
 package dgmp.sigrh.structuremodule.model.dtos.post;
 
-import dgmp.sigrh.fonctionmodule.controller.repositories.FonctionDAO;
+import dgmp.sigrh.fonctionmodule.controller.repositories.FonctionRepo;
 import dgmp.sigrh.structuremodule.controller.repositories.post.PostRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ public @interface UniquePostManagerByStr
     class UniquePostManagerByStrValidator implements ConstraintValidator<UniquePostManagerByStr, CreatePostDTO>
     {
         private final PostRepo postRepo;
-        private final FonctionDAO fonctionRepo;
+        private final FonctionRepo fonctionRepo;
         @Override
         public boolean isValid(CreatePostDTO dto, ConstraintValidatorContext context)
         {

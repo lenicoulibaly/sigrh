@@ -31,6 +31,14 @@ public class ReadStrDTO
     private List<Structure> hierarchy;
     private String hierarchySigles;
 
+    public ReadStrDTO(Long strId, String strName, String strSigle, String hierarchySigles)
+    {
+        this.strId = strId;
+        this.strName = strName;
+        this.strSigle = strSigle;
+        this.hierarchySigles = hierarchySigles;
+    }
+
     @Override
     public String toString()
     {

@@ -1,6 +1,6 @@
 package dgmp.sigrh.agentmodule.model.dtos.validators;
 
-import dgmp.sigrh.agentmodule.model.dtos.CreateAgentDTO;
+import dgmp.sigrh.agentmodule.model.dtos.RegisterAgentDTO;
 
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
@@ -18,10 +18,10 @@ public @interface PriseServiceDate
     Class<?>[] groups() default {};
     Class<? extends Payload> [] payload() default {};
 
-    class PriseServiceDateValidator implements ConstraintValidator<PriseServiceDate, CreateAgentDTO.PriseService>
+    class PriseServiceDateValidator implements ConstraintValidator<PriseServiceDate, RegisterAgentDTO.PriseService>
     {
         @Override
-        public boolean isValid(CreateAgentDTO.PriseService priseService, ConstraintValidatorContext context) {
+        public boolean isValid(RegisterAgentDTO.PriseService priseService, ConstraintValidatorContext context) {
             if(priseService == null) return true;
             if(priseService.getDatePriseServiceDGMP() == null || priseService.getDatePriseService1() == null) return true;
             return priseService.getDatePriseService1().isBefore(priseService.getDatePriseServiceDGMP()) || priseService.getDatePriseService1().isEqual(priseService.getDatePriseServiceDGMP()) ;

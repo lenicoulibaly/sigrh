@@ -15,7 +15,7 @@ public class CreateInstanceDTO
 {
     @NotNull(message = "Le nom de l'instance ne peut être nul")
     @NotBlank(message = "Le nom de l'instance ne peut être nul")
-    private String name;
+    private String instanceName;
     @ExistingStrId @NotNull(message = "Le chapeau de l'instance ne peut être nul")
     @NoOtherInstanceWithSameHead
     private Long headId;

@@ -1,8 +1,8 @@
 package dgmp.sigrh.emploimodule.controller.service;
 
 import dgmp.sigrh.brokermodule.services.IHistoService;
-import dgmp.sigrh.emploimodule.controller.repositories.EmploiDAO;
 import dgmp.sigrh.emploimodule.controller.repositories.EmploiHistoDAO;
+import dgmp.sigrh.emploimodule.controller.repositories.EmploiRepo;
 import dgmp.sigrh.emploimodule.model.dtos.CreateEmploiDTO;
 import dgmp.sigrh.emploimodule.model.dtos.EmploiMapper;
 import dgmp.sigrh.emploimodule.model.dtos.ReadEmploiDTO;
@@ -26,13 +26,13 @@ import java.util.stream.Collectors;
 public class EmploiServiceFlash implements IEmploiService
 {
     private final EmploiMapper emploiMapper;
-    private final EmploiDAO emploiDAO;
+    private final EmploiRepo emploiRepo;
     private final EmploiHistoDAO emploiHistoDAO;
     private final IHistoService<Emploi, EmploiHisto, EmploiEventType> emploiHistoService;
     @Override
     public List<ReadEmploiDTO> getAllEmplois()
     {
-        return emploiDAO.findAll().stream().map(emploiMapper::mapToReadEmploiDTO).collect(Collectors.toList());
+        return emploiRepo.findAll().stream().map(emploiMapper::mapToReadEmploiDTO).collect(Collectors.toList());
     }
 
     @Override
@@ -43,7 +43,7 @@ public class EmploiServiceFlash implements IEmploiService
     @Override @Transactional
     public ReadEmploiDTO createEmploi(CreateEmploiDTO dto)
     {
-        Emploi emploi = emploiDAO.save(emploiMapper.mapToEmploi(dto));
+        Emploi emploi = emploiRepo.save(emploiMapper.mapToEmploi(dto));
         emploiHistoService.storeEntity(emploi, EmploiEventType.CREATE_EMPLOI);
         return emploiMapper.mapToReadEmploiDTO(emploi);
     }
@@ -52,16 +52,19 @@ public class EmploiServiceFlash implements IEmploiService
     @Transactional
     public ReadEmploiDTO updateEmploi(UpdateEmploiDTO dto)
     {
-        Emploi emploi = emploiDAO.findById(dto.getIdEmploi()).get();
-        emploi.setNomEmploi(dto.getNomEmploi().trim().toUpperCase());
-        emploiHistoService.storeEntity(emploi, EmploiEventType.UPDATE_EMPLOI);
+        Emploi emploi = emploiRepo.findById(dto.getIdEmploi()).orElse(null);
+        if(emploi != null)
+        {
+            emploi.setNomEmploi(dto.getNomEmploi().trim().toUpperCase());
+            emploiHistoService.storeEntity(emploi, EmploiEventType.UPDATE_EMPLOI);
+        }
         return emploiMapper.mapToReadEmploiDTO(emploi);
     }
 
     @Override @Transactional
     public void deleteEmploi(Long idEmploi)
     {
-        Emploi emploi = emploiDAO.findById(idEmploi).orElse(null);
+        Emploi emploi = emploiRepo.findById(idEmploi).orElse(null);
         if (emploi==null) return ;
         emploi.setStatus(PersistenceStatus.DELETED);
         emploiHistoService.storeEntity(emploi, EmploiEventType.DELETE_EMPLOI);
@@ -70,7 +73,7 @@ public class EmploiServiceFlash implements IEmploiService
     @Override @Transactional
     public void restoreEmploi(Long idEmploi)
     {
-        Emploi emploi = emploiDAO.findById(idEmploi).orElse(null);
+        Emploi emploi = emploiRepo.findById(idEmploi).orElse(null);
         if(emploi == null) return;
         if(emploi.getStatus() == PersistenceStatus.ACTIVE) return;
         emploi.setStatus(PersistenceStatus.ACTIVE);
@@ -80,15 +83,15 @@ public class EmploiServiceFlash implements IEmploiService
     @Override
     public Page<ReadEmploiDTO> searchPageOfEmplois(String searchKey, int pageNum, int pageSize)
     {
-        Page<Emploi> emploiPage = emploiDAO.searchPageEmploi(searchKey, PageRequest.of(pageNum, pageSize));
-        return new PageImpl<>(emploiPage.stream().map(emploiMapper::mapToReadEmploiDTO).collect(Collectors.toList()), PageRequest.of(pageNum, pageSize), emploiDAO.countActiveBySearchKey(searchKey));
+        Page<Emploi> emploiPage = emploiRepo.searchPageEmploi(searchKey, PageRequest.of(pageNum, pageSize));
+        return new PageImpl<>(emploiPage.stream().map(emploiMapper::mapToReadEmploiDTO).collect(Collectors.toList()), PageRequest.of(pageNum, pageSize), emploiRepo.countActiveBySearchKey(searchKey));
     }
 
     @Override
     public Page<ReadEmploiDTO> searchPageOfDeletedEmplois(String searchKey, int pageNum, int pageSize)
     {
-        Page<Emploi> emploisPage = emploiDAO.searchDeletedPageEmploi(searchKey, PageRequest.of(pageNum, pageSize));
-        return new PageImpl<>(emploisPage.stream().map(emploiMapper::mapToReadEmploiDTO).collect(Collectors.toList()), PageRequest.of(pageNum, pageSize), emploiDAO.countDeletedBySearchKey(searchKey));
+        Page<Emploi> emploisPage = emploiRepo.searchDeletedPageEmploi(searchKey, PageRequest.of(pageNum, pageSize));
+        return new PageImpl<>(emploisPage.stream().map(emploiMapper::mapToReadEmploiDTO).collect(Collectors.toList()), PageRequest.of(pageNum, pageSize), emploiRepo.countDeletedBySearchKey(searchKey));
     }
 
     @Override

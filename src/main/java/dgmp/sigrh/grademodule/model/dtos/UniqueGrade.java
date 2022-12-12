@@ -1,6 +1,6 @@
 package dgmp.sigrh.grademodule.model.dtos;
 
-import dgmp.sigrh.grademodule.controller.repositories.GradeDAO;
+import dgmp.sigrh.grademodule.controller.repositories.GradeRepo;
 import dgmp.sigrh.grademodule.model.enums.Categorie;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.EnumUtils;
@@ -26,12 +26,12 @@ public @interface UniqueGrade
     @RequiredArgsConstructor
     class UniqueGradeValidator implements ConstraintValidator<UniqueGrade, CreateGradeDTO>
     {
-        private final GradeDAO gradeDAO;
+        private final GradeRepo gradeRepo;
         @Override
         public boolean isValid(CreateGradeDTO dto, ConstraintValidatorContext context)
         {
             if(dto==null) return false;
-            return !gradeDAO.existsByRankAndCategory(dto.getRang(), EnumUtils.getEnum(Categorie.class, dto.getCategorie()));
+            return !gradeRepo.existsByRankAndCategory(dto.getRang(), EnumUtils.getEnum(Categorie.class, dto.getCategorie()));
         }
     }
 
@@ -39,12 +39,12 @@ public @interface UniqueGrade
     @RequiredArgsConstructor
     class UniqueGradeValidatorOnUpdate implements ConstraintValidator<UniqueGrade, UpdateGradeDTO>
     {
-        private final GradeDAO gradeDAO;
+        private final GradeRepo gradeRepo;
         @Override
         public boolean isValid(UpdateGradeDTO dto, ConstraintValidatorContext context)
         {
             if(dto==null) return false;
-            return !gradeDAO.existsByRankAndCategory(dto.getIdGrade(), dto.getRang(), EnumUtils.getEnum(Categorie.class, dto.getCategorie()));
+            return !gradeRepo.existsByRankAndCategory(dto.getIdGrade(), dto.getRang(), EnumUtils.getEnum(Categorie.class, dto.getCategorie()));
         }
     }
 }

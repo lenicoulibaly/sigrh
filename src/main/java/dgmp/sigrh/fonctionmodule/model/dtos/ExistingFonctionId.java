@@ -1,6 +1,6 @@
 package dgmp.sigrh.fonctionmodule.model.dtos;
 
-import dgmp.sigrh.fonctionmodule.controller.repositories.FonctionDAO;
+import dgmp.sigrh.fonctionmodule.controller.repositories.FonctionRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -21,12 +21,12 @@ public @interface ExistingFonctionId
     Class<? extends Payload>[] payload() default {};
 
     @Component @RequiredArgsConstructor
-    public class ExistingFonctionIdValidator implements ConstraintValidator<ExistingFonctionId, Long>
+    class ExistingFonctionIdValidator implements ConstraintValidator<ExistingFonctionId, Long>
     {
-        private final FonctionDAO fonctionDAO;
+        private final FonctionRepo fonctionRepo;
         @Override
         public boolean isValid(Long value, ConstraintValidatorContext context) {
-            return fonctionDAO.existsById(value);
+            return fonctionRepo.existsById(value);
         }
     }
 }

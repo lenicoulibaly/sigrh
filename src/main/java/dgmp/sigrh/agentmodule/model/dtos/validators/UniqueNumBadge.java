@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = {UniqueNumBadge.UniqueNumBadgeValidator.class, UniqueNumBadge.UniqueNumBadgeValidatorOnUpdate.class})
 public @interface UniqueNumBadge
 {
-    String message() default "numBadge:Ce numéro de badge est déjà attribué";
+    String message() default "Ce numéro de badge est déjà attribué";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
@@ -29,7 +29,8 @@ public @interface UniqueNumBadge
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context)
         {
-            if(value==null) return false;
+            if(value==null) return true;
+            if(value.trim().equals("")) return true;
             return !agentRepo.existsByNumBadge(value);
         }
     }
@@ -42,7 +43,7 @@ public @interface UniqueNumBadge
         public boolean isValid(UpdateAgentDTO dto, ConstraintValidatorContext context)
         {
             if(dto.getNumBadge()==null) return false;
-            return !agentRepo.existsByNumBadge(dto.getNumBadge(), dto.getIdAgent());
+            return !agentRepo.existsByNumBadge(dto.getNumBadge(), dto.getAgentId());
         }
     }
 }

@@ -1,7 +1,7 @@
 package dgmp.sigrh.structuremodule.controller.service.post;
 
 import dgmp.sigrh.brokermodule.services.IHistoService;
-import dgmp.sigrh.emploimodule.controller.repositories.EmploiDAO;
+import dgmp.sigrh.emploimodule.controller.repositories.EmploiRepo;
 import dgmp.sigrh.shared.controller.exception.AppException;
 import dgmp.sigrh.shared.model.enums.PersistenceStatus;
 import dgmp.sigrh.shared.utilities.StringUtils;
@@ -36,7 +36,7 @@ public class PostService implements IPostService
     private final PostRepo postRepo;
     private final StrRepo strRepo;
     private final PostGroupRepo pgRepo;
-    private final EmploiDAO empRepo;
+    private final EmploiRepo empRepo;
     private final PostMapper postMapper;
     private final IStrService strService;
     private final PostParamRepo postParamRepo;

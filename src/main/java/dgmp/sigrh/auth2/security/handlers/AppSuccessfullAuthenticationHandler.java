@@ -4,14 +4,14 @@ import dgmp.sigrh.auth2.security.services.ISecurityContextManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Component @RequiredArgsConstructor
+//@Component
+@RequiredArgsConstructor
 public class AppSuccessfullAuthenticationHandler extends SimpleUrlAuthenticationSuccessHandler
 {
     private final ISecurityContextManager scm;

@@ -1,7 +1,7 @@
 package dgmp.sigrh.structuremodule.model.dtos.post;
 
 import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
-import dgmp.sigrh.emploimodule.controller.repositories.EmploiDAO;
+import dgmp.sigrh.emploimodule.controller.repositories.EmploiRepo;
 import dgmp.sigrh.fonctionmodule.model.entities.Fonction;
 import dgmp.sigrh.structuremodule.controller.repositories.post.PostGroupRepo;
 import dgmp.sigrh.structuremodule.controller.repositories.post.PostParamRepo;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public abstract class PostMapper
 {
-    @Autowired protected EmploiDAO empRepo;
+    @Autowired protected EmploiRepo empRepo;
     @Autowired protected PostParamRepo ppRepo;
     @Autowired protected PostRepo postRepo;
     @Autowired private PostGroupRepo pgRepo;
@@ -64,7 +64,6 @@ public abstract class PostMapper
 
     public SetPostParamsDTO mapTSetPostParamsDTO(Long postGroupId, Set<Long> empIds)
     {
-        java.util.UUID.randomUUID().toString();
         Set<Long> oldEmpIds = ppRepo.getEmploiIdsByPost(postGroupId);
         Set<Long> removableEmpIds = oldEmpIds.stream().filter(id0->empIds.stream().noneMatch(id1->id0.longValue() == id1.longValue())).collect(Collectors.toSet());
         Set<Long> newEmpIdsToBeAdded = empIds.stream().filter(id0->oldEmpIds.stream().noneMatch(id1->id0.longValue() == id1.longValue())).collect(Collectors.toSet());

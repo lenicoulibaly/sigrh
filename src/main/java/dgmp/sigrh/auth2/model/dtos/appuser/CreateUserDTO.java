@@ -1,5 +1,6 @@
 package dgmp.sigrh.auth2.model.dtos.appuser;
 
+import dgmp.sigrh.agentmodule.model.dtos.ExistingOrNullAgtId;
 import dgmp.sigrh.structuremodule.model.dtos.str.ExistingOrNullStrId;
 import lombok.*;
 
@@ -12,4 +13,7 @@ public class CreateUserDTO
     private String tel;
     @ExistingOrNullStrId
     private Long strId;
+
+    @ExistingOrNullAgtId
+    private Long agentId;
 }

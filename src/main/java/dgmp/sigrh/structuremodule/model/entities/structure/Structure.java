@@ -65,4 +65,6 @@ public class Structure
         return this.strName + " ("+this.strSigle + ")";
     }
 
+
+
 }

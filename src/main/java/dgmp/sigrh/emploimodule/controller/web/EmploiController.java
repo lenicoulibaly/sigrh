@@ -1,7 +1,7 @@
 package dgmp.sigrh.emploimodule.controller.web;
 
 import dgmp.sigrh.brokermodule.services.IHistoService;
-import dgmp.sigrh.emploimodule.controller.repositories.EmploiDAO;
+import dgmp.sigrh.emploimodule.controller.repositories.EmploiRepo;
 import dgmp.sigrh.emploimodule.controller.service.IEmploiService;
 import dgmp.sigrh.emploimodule.model.dtos.CreateEmploiDTO;
 import dgmp.sigrh.emploimodule.model.dtos.EmploiMapper;
@@ -30,7 +30,7 @@ import java.time.LocalDateTime;
 public class EmploiController
 {
     private final IEmploiService emploiService;
-    private final EmploiDAO emploiDAO;
+    private final EmploiRepo emploiRepo;
     private final EmploiMapper emploiMapper;
     private final IHistoService<Emploi, EmploiHisto, EmploiEventType> emploiHistoService;
 
@@ -107,7 +107,7 @@ public class EmploiController
                                     @RequestParam(defaultValue = "#{T(java.time.LocalDateTime).now().minusYears(2)}") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX") LocalDateTime after,
                                     @RequestParam(defaultValue = "#{T(java.time.LocalDateTime).now().plusDays(1)}") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX") LocalDateTime befor)
     {
-        Emploi emploi =emploiDAO.findById(idEmploi).orElse(null);
+        Emploi emploi = emploiRepo.findById(idEmploi).orElse(null);
         model.addAttribute("emploi", emploi == null ? new ReadEmploiDTO() : emploiMapper.mapToReadEmploiDTO(emploi));
         model.addAttribute("modificationList", emploiHistoService.getHistoPageBetweenPeriod(idEmploi, after, befor, pageNum, pageSize));
         model.addAttribute("viewMode", "details");
@@ -125,7 +125,7 @@ public class EmploiController
     @GetMapping(path = "/sigrh/administration/emplois/update-emploi-form")
     public String gotoUpdateEmploiForm(Model model, @RequestParam(defaultValue = "0") long idEmploi)
     {
-        Emploi loadedEmploi = emploiDAO.findById(idEmploi).orElse(null);
+        Emploi loadedEmploi = emploiRepo.findById(idEmploi).orElse(null);
         UpdateEmploiDTO  emploiDTO = loadedEmploi == null ? new UpdateEmploiDTO() : new UpdateEmploiDTO(loadedEmploi.getIdEmploi(), loadedEmploi.getNomEmploi());
         model.addAttribute("emploi", emploiDTO);
         model.addAttribute("viewMode", "update");

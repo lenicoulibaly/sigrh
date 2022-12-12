@@ -10,8 +10,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface GrageMapper {
 
-    @Mapping(target = "categorie", expression = "java(grade.getCategorie().name())")
-    @Mapping(target = "status", expression = "java(grade.getStatus().name)")
+    @Mapping(target = "categorie", expression = "java(grade.getCategorie() == null ? null : grade.getCategorie().name())")
+    @Mapping(target = "status", expression = "java(grade.getStatus() == null ? null : grade.getStatus().name)")
     ReadGradeDTO mapToReadGradeDTO(Grade grade);
 
     @Mapping(target = "categorie", expression = "java(org.apache.commons.lang3.EnumUtils.getEnum(dgmp.sigrh.grademodule.model.enums.Categorie.class, dto.getCategorie()))")

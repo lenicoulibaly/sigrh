@@ -25,9 +25,9 @@ public interface EMailNotificationMapper
     @Mapping(target = "eai.modifierUsername", source = "eai.modifierUsername")
     @Mapping(target = "eai.modifierAssId", source = "eai.modifierAssId")
     @Mapping(target = "eai.modifierStrId", source = "eai.modifierStrId")
-    @Mapping(target = "eai.agentId", source = "eai.agentId")
-    @Mapping(target = "eai.nom", source = "eai.nom")
-    @Mapping(target = "eai.prenom", source = "eai.prenom")
-    @Mapping(target = "eai.matricule", source = "eai.matricule")
+    @Mapping(target = "eai.modifierAgentId", source = "eai.modifierAgentId")
+    @Mapping(target = "eai.modifierNom", source = "eai.modifierNom")
+    @Mapping(target = "eai.modifierPrenom", source = "eai.modifierPrenom")
+    @Mapping(target = "eai.modifierMatricule", source = "eai.modifierMatricule")
     EmailNotificationHisto mapToEmailNotificationHisto(Structure str, EmailEventTypes eventType, EventActorIdentifier eai, String actionId, String mainActionName);
 }

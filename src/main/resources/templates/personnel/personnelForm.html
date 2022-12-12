@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org" 
                 xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-                layout:decorate="~{layout/layout}">
+                layout:decorate="~{personnel/agent-layout}">
     <head>
 		<th:block layout:fragment="specific-css-links">
             <!-- Select2 -->
@@ -157,6 +157,17 @@
                             <!-- /.card-header -->
                             <!-- form start -->
                             <div class="card-body">
+                                <div class="row">
+                                    <div class="col col-md-8 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="strId">Structure chapeau</label> <small th:if="${strIdErrMsg}" class="text-danger">[[${strIdErrMsg}]]</small>
+                                            <select th:classappend="${strIdErrMsg} ? 'border-danger' : ''" th:field="*{strId}" class="form-control select2bs4" id="strId" >
+                                                <option value="" >Choisir la structure</option>
+                                                <option th:each="str:${structures}" th:value="${str.strId}" th:title="${str.strName + '(' + str.hierarchySigles + ')'}">[[${str.strName}]] ([[${str.strSigle}]])</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">

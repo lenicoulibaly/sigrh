@@ -15,6 +15,7 @@ public class Fonction
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idFonction;
 	private String nomFonction;
+	private String codeFonction;
 	private boolean fonctionDeNomination;
 	private boolean fonctionTopManager;
 	private int rang;

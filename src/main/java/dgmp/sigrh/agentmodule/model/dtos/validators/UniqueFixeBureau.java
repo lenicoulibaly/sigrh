@@ -30,6 +30,7 @@ public @interface UniqueFixeBureau
         public boolean isValid(String value, ConstraintValidatorContext context)
         {
             if(value==null) return true;
+            if(value.trim().equals("")) return true;
             return !agentRepo.existsByFixeBureau(value);
         }
     }
@@ -42,7 +43,7 @@ public @interface UniqueFixeBureau
         public boolean isValid(UpdateAgentDTO dto, ConstraintValidatorContext context)
         {
             if(dto.getFixeBureau()==null) return false;
-            return !agentRepo.existsByFixeBureau(dto.getFixeBureau(), dto.getIdAgent());
+            return !agentRepo.existsByFixeBureau(dto.getFixeBureau(), dto.getAgentId());
         }
     }
 }

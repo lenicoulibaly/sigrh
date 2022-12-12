@@ -36,7 +36,7 @@ public abstract class StrMapper
         str0.setStrId(str.getStrId());
         str0.setStrSigle(str.getStrSigle());
         str0.setHierarchySigles(strRepo.getHierarchySigle(str.getStrId()));
-        str0.setStrName(strRepo.getStrName(str.getStrId()));
+        str0.setStrName(str.getStrName());
         return str0;
     }
 
@@ -82,16 +82,6 @@ public abstract class StrMapper
     //====================================
 
     public abstract StrHisto mapToStrHisto(Structure str, StrEventType eventType, EventActorIdentifier eai);
-    @Mapping(target = "eai.actionId", source = "actionId")
-    @Mapping(target = "eai.mainActionName", source = "mainActionName")
-    @Mapping(target = "eai.modificationDate", source = "eai.modificationDate")
-    @Mapping(target = "eai.modifierUserId", source = "eai.modifierUserId")
-    @Mapping(target = "eai.modifierUsername", source = "eai.modifierUsername")
-    @Mapping(target = "eai.modifierAssId", source = "eai.modifierAssId")
-    @Mapping(target = "eai.modifierStrId", source = "eai.modifierStrId")
-    @Mapping(target = "eai.agentId", source = "eai.agentId")
-    @Mapping(target = "eai.nom", source = "eai.nom")
-    @Mapping(target = "eai.prenom", source = "eai.prenom")
-    @Mapping(target = "eai.matricule", source = "eai.matricule")
+
     public abstract StrHisto mapToStrHisto(Structure str, StrEventType eventType, EventActorIdentifier eai, String actionId, String mainActionName);
 }

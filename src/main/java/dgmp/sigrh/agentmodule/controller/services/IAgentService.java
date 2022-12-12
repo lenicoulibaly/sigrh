@@ -1,7 +1,8 @@
 package dgmp.sigrh.agentmodule.controller.services;
 
-import dgmp.sigrh.agentmodule.model.dtos.CreateAgentDTO;
+import dgmp.sigrh.agentmodule.model.dtos.CreateNewAgentDTO;
 import dgmp.sigrh.agentmodule.model.dtos.ReadAgentDTO;
+import dgmp.sigrh.agentmodule.model.dtos.RegisterAgentDTO;
 import dgmp.sigrh.agentmodule.model.dtos.UpdateAgentDTO;
 import dgmp.sigrh.agentmodule.model.enums.EtatRecrutement;
 import org.springframework.data.domain.Page;
@@ -11,7 +12,8 @@ import java.util.List;
 
 public interface IAgentService
 {
-    ReadAgentDTO createAgent(CreateAgentDTO dto);
+    ReadAgentDTO createAgent(CreateNewAgentDTO dto) throws IllegalAccessException;
+    ReadAgentDTO registerAgent(RegisterAgentDTO dto) throws IllegalAccessException;
     ReadAgentDTO updateAgent(UpdateAgentDTO dto);
 
     Page<ReadAgentDTO> getAllAgentsPage(long strId);
@@ -37,4 +39,11 @@ public interface IAgentService
     Page<ReadAgentDTO> searchActiveAgentsPage(long strId, String searchKey, Pageable pageable); // Déduction faite des retraités, décédés et partis
     Page<ReadAgentDTO> searchPresentAgentsPage(long strId, String searchKey); // Déduction faite de tous les absents y compris les non actifs
     Page<ReadAgentDTO> searchAgentByStrAndEtat(long strId, List<EtatRecrutement> states, String searchKey, Pageable pageable);
+
+    Page<ReadAgentDTO> searchAgents(Long visibilityId, String key, Pageable of);
+
+    Page<ReadAgentDTO> searchAgentsMultiCriteres(Long visibilityId, String key, List<String> states,
+                                                 List<String> civilities, List<String> typeAgents,
+                                                 List<Long> fonctionsIds, List<Long> gradesIds,
+                                                 List<Long> emploisIds, Pageable pageable);
 }

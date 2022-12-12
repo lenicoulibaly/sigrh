@@ -1,7 +1,7 @@
 package dgmp.sigrh.agentmodule.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dgmp.sigrh.agentmodule.model.dtos.CreateAgentDTO;
+import dgmp.sigrh.agentmodule.model.dtos.RegisterAgentDTO;
 import dgmp.sigrh.agentmodule.model.enums.*;
 import dgmp.sigrh.auth2.model.entities.AppUser;
 import dgmp.sigrh.emploimodule.model.entities.Emploi;
@@ -21,19 +21,19 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Date;
 
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class Agent
 {
-	@Id @GeneratedValue(strategy = GenerationType.TABLE, generator = "id_generator")
+	@Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "agt_id_gen")
+	@SequenceGenerator(name="agt_id_gen", sequenceName = "agt_id_seq", allocationSize=1)
 	private Long agentId;
 	@Column(length = 50)
 	private String nom;
 	@Column(length = 50)
 	private String prenom;
-	@Column(length = 5) @Enumerated(EnumType.STRING)
+	@Column(length = 30) @Enumerated(EnumType.STRING)
 	private Civility civilite;
 	
 	@Column(length = 100, unique = true)
@@ -63,10 +63,6 @@ public class Agent
 	private String matricule;
 	@Enumerated(EnumType.STRING)
 	private SituationMatrimoniale situationMatrimoniale;
-	private long idUserCreateur;
-	private long idUserDerniereModif;
-	private Date dateCreation;
-	private Date dateDerniereModif;
 	
 	@OneToOne @JoinColumn(name = "ID_POST")
 	@JsonIgnore
@@ -111,39 +107,9 @@ public class Agent
 	{
 		return Period.between(dateNaissance, LocalDate.now()).getYears();
 	}
-	
-	public int getAgeRetraite()
-	{
-		if(this.getGrade().getNomGrade().startsWith("A"))
-		{
-			if(this.getGrade().getNomGrade().compareTo("A4")>=0)
-			{
-				return 65;
-			}
-			else
-			{
-				return 60;
-			}
-		}
-		else
-		{
-			return 60;
-		}
-	}
-	
-	public String getTempsTravailRestant()
-	{
-		Period remainingTime = Period.between(LocalDate.now(), dateNaissance.plusYears(getAgeRetraite()));
-		long remainingYears = remainingTime.getYears();
-		long remainingMonths = remainingTime.getMonths();
-		long remainingDays = remainingTime.getDays();
-		return String.format("%d an(s), %d moi(s), %d jour(s)", remainingYears, remainingMonths, remainingDays ) ;
-	}
-	
-	public LocalDate getDateDepartRetraite()
-	{
-		return dateNaissance.plusYears(getAgeRetraite());
-	}
+
+
+
 	@Override
 	public String toString()
 	{
@@ -151,7 +117,7 @@ public class Agent
 	}
 
 
-	public static Agent getAgent(CreateAgentDTO dto)
+	public static Agent getAgent(RegisterAgentDTO dto)
 	{
 		Agent agent = new Agent();
 		if(dto == null) return  null;

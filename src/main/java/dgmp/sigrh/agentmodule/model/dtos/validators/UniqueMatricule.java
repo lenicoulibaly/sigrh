@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = {UniqueMatricule.UniqueMatriculeValidator.class, UniqueMatricule.UniqueMatriculeValidatorOnUpdate.class})
 public @interface UniqueMatricule
 {
-    String message() default "matricule:Ce numéro matricule est déjà attribué";
+    String message() default "Ce N° matricule est déjà attribué";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
@@ -29,7 +29,7 @@ public @interface UniqueMatricule
         @Override
         public boolean isValid(String value, ConstraintValidatorContext context)
         {
-            if(value==null) return false;
+            if(value==null) return true;
             return !agentRepo.existsByMatricule(value);
         }
     }
@@ -41,8 +41,8 @@ public @interface UniqueMatricule
         @Override
         public boolean isValid(UpdateAgentDTO dto, ConstraintValidatorContext context)
         {
-            if(dto.getMatricule()==null) return false;
-            return !agentRepo.existsByMatricule(dto.getMatricule(), dto.getIdAgent());
+            if(dto.getMatricule()==null) return true;
+            return !agentRepo.existsByMatricule(dto.getMatricule(), dto.getAgentId());
         }
     }
 }

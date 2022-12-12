@@ -1,7 +1,7 @@
 package dgmp.sigrh.grademodule.controller.service;
 
 import dgmp.sigrh.brokermodule.services.IHistoService;
-import dgmp.sigrh.grademodule.controller.repositories.GradeDAO;
+import dgmp.sigrh.grademodule.controller.repositories.GradeRepo;
 import dgmp.sigrh.grademodule.model.dtos.CreateGradeDTO;
 import dgmp.sigrh.grademodule.model.dtos.GrageMapper;
 import dgmp.sigrh.grademodule.model.dtos.ReadGradeDTO;
@@ -26,25 +26,25 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GradeService implements IGradeService
 {
-    private final GradeDAO gradeDAO;
+    private final GradeRepo gradeRepo;
     private final IHistoService<Grade, GradeHisto, GradeEventType> gradeHistoService;
     private final GrageMapper grageMapper;
     @Override
     public List<ReadGradeDTO> getAllGrades() {
-        return gradeDAO.findActiveStatus().stream().map(grageMapper::mapToReadGradeDTO).collect(Collectors.toList());
+        return gradeRepo.getActiveGrades().stream().map(grageMapper::mapToReadGradeDTO).collect(Collectors.toList());
     }
 
     @Override
     public ReadGradeDTO getGradesById(Long grdId)
     {
-        Grade grade = gradeDAO.findById(grdId).orElse(null);
+        Grade grade = gradeRepo.findById(grdId).orElse(null);
         return grade == null ? null : grageMapper.mapToReadGradeDTO(grade);
     }
 
     @Override
     public List<ReadGradeDTO> getGradesByCategoryName(String catName)
     {
-        return gradeDAO.findByCategorieAndStatus(catName).stream().map(grageMapper::mapToReadGradeDTO).collect(Collectors.toList());
+        return gradeRepo.findByCategorieAndStatus(catName).stream().map(grageMapper::mapToReadGradeDTO).collect(Collectors.toList());
     }
 
     //========================================================================================
@@ -52,23 +52,23 @@ public class GradeService implements IGradeService
     @Override
     public Page<ReadGradeDTO> searchPageOfGrades(String key, int pageNum, int pageSize)
     {
-        Page<Grade> grades = gradeDAO.searchPageOfGrades(key, PageRequest.of(pageNum, pageSize));
+        Page<Grade> grades = gradeRepo.searchPageOfGrades(key, PageRequest.of(pageNum, pageSize));
         List<ReadGradeDTO> gradeDTOS = grades.stream().map(grageMapper::mapToReadGradeDTO).collect(Collectors.toList());
-        return new PageImpl<>(gradeDTOS, PageRequest.of(pageNum, pageSize), gradeDAO.countByGradeNameKey(key));
+        return new PageImpl<>(gradeDTOS, PageRequest.of(pageNum, pageSize), gradeRepo.countByGradeNameKey(key));
     }
 
     @Override
     public Page<ReadGradeDTO> searchPageOfDeletedGrades(String key, int pageNum, int pageSize)
     {
-        Page<Grade> grades = gradeDAO.searchPageOfDeletedGrades(key, PageRequest.of(pageNum, pageSize));
+        Page<Grade> grades = gradeRepo.searchPageOfDeletedGrades(key, PageRequest.of(pageNum, pageSize));
         List<ReadGradeDTO> gradeDTOS = grades.stream().map(grageMapper::mapToReadGradeDTO).collect(Collectors.toList());
-        return new PageImpl<>(gradeDTOS, PageRequest.of(pageNum, pageSize), gradeDAO.countDeletedGrades());
+        return new PageImpl<>(gradeDTOS, PageRequest.of(pageNum, pageSize), gradeRepo.countDeletedGrades());
     }
 
     @Override @Transactional
     public ReadGradeDTO createGrade(CreateGradeDTO dto)
     {
-        Grade grade = gradeDAO.save(grageMapper.mapToGrade(dto));
+        Grade grade = gradeRepo.save(grageMapper.mapToGrade(dto));
         gradeHistoService.storeEntity(grade, GradeEventType.CREATE_GRADE);
         return grageMapper.mapToReadGradeDTO(grade);
     }
@@ -76,7 +76,7 @@ public class GradeService implements IGradeService
     @Override @Transactional
     public ReadGradeDTO updateGrade(UpdateGradeDTO dto)
     {
-        Grade grade = gradeDAO.findById(dto.getIdGrade()).orElse(null);
+        Grade grade = gradeRepo.findById(dto.getIdGrade()).orElse(null);
         if(grade==null) return null;
         grade.setNomGrade(dto.getCategorie() + dto.getRang());
         grade.setCategorie(EnumUtils.getEnum(Categorie.class, dto.getCategorie()));
@@ -88,7 +88,7 @@ public class GradeService implements IGradeService
     @Override @Transactional
     public void deleteGrade(Long idGrade)
     {
-        Grade grade = gradeDAO.findById(idGrade).orElse(null);
+        Grade grade = gradeRepo.findById(idGrade).orElse(null);
         if(grade==null) return ;
         if(grade.getStatus() == PersistenceStatus.DELETED) return;
         grade.setStatus(PersistenceStatus.DELETED);
@@ -98,7 +98,7 @@ public class GradeService implements IGradeService
     @Override @Transactional
     public void restoreGrade(Long idGrade)
     {
-        Grade grade = gradeDAO.findById(idGrade).orElse(null);
+        Grade grade = gradeRepo.findById(idGrade).orElse(null);
         if(grade==null) return ;
         if(grade.getStatus() == PersistenceStatus.ACTIVE) return;
         grade.setStatus(PersistenceStatus.ACTIVE);

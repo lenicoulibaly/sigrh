@@ -116,14 +116,14 @@ public class SecurityContextManager implements ISecurityContextManager
         return EventActorIdentifier.builder()
                 .modifierUserId(user.getUserId())
                 .modifierUsername(user.getUsername())
-                .agentId(user.getAgentId())
+                .modifierAgentId(user.getAgentId())
                 .modifierStrId(this.getVisibilityId())
                 .modifierStrName(visibility == null ? null : visibility.getStrName())
                 .modificationDate(LocalDateTime.now())
                 .modifierAssId(principalAss == null ? null : principalAss.getAssId())
-                .nom(agent == null ? null : agent.getNom())
-                .prenom(agent == null ? null : agent.getPrenom())
-                .matricule(agent == null ? null : agent.getMatricule())
+                .modifierNom(agent == null ? null : agent.getNom())
+                .modifierPrenom(agent == null ? null : agent.getPrenom())
+                .modifierMatricule(agent == null ? null : agent.getMatricule())
                 .build();
     }
 

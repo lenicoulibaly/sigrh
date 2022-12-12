@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Set;
 
-public interface EmploiDAO extends JpaRepository<Emploi, Long>
+public interface EmploiRepo extends JpaRepository<Emploi, Long>
 {
     boolean existsByNomEmploi(String value);
 
@@ -23,6 +23,9 @@ public interface EmploiDAO extends JpaRepository<Emploi, Long>
 
     @Query("select e from Emploi e where e.status = 'ACTIVE'")
     List<Emploi> getActiveEmplois();
+
+    @Query("select e.idEmploi from Emploi e where e.status = 'ACTIVE'")
+    List<Long> getActiveEmploisIds();
 
     @Query("select e from Emploi e where e.idEmploi in (select pp.emploiId from PostParam pp where pp.postGroupId = ?1 and pp.status = 'ACTIVE')")
     Set<Emploi> getEmploisCompatiblesByPostGroup(Long postGroupId);
@@ -45,4 +48,6 @@ public interface EmploiDAO extends JpaRepository<Emploi, Long>
 
     @Query("select count(e) from Emploi e where upper(e.nomEmploi) like upper(concat('%', ?1, '%')) and e.status='DELETED'")
     long countDeletedBySearchKey(String searchKey);
+
+
 }

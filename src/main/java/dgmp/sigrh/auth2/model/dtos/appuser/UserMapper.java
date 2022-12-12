@@ -1,6 +1,8 @@
 package dgmp.sigrh.auth2.model.dtos.appuser;
 
 import dgmp.sigrh.agentmodule.controller.repositories.AgentRepo;
+import dgmp.sigrh.agentmodule.model.dtos.CreateNewAgentDTO;
+import dgmp.sigrh.agentmodule.model.dtos.RegisterAgentDTO;
 import dgmp.sigrh.auth2.model.entities.AppUser;
 import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
 import dgmp.sigrh.auth2.model.events.types.auth.UserEventTypes;
@@ -33,13 +35,20 @@ public abstract class UserMapper
     @Mapping(target="structure", expression="java(dto.getStrId()==null ? null : new dgmp.sigrh.structuremodule.model.entities.structure.Structure(dto.getStrId()))")
     public abstract AppUser mapToUser(CreateActiveUserDTO dto);
 
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "tel", source = "tel")
+    public abstract CreateUserDTO mapToCreateUserDTO(CreateNewAgentDTO dto);
+
+    @Mapping(target = "email", expression = "java(dto.getEmailPro() == null ? dto.getEmail() : dto.getEmailPro().trim().equals(\"\") ? dto.getEmail() : dto.getEmailPro().trim())")
+    public abstract CreateUserDTO mapToCreateUserDTO(RegisterAgentDTO dto);
+
     public abstract UserHisto mapToUserHisto(AppUser user, UserEventTypes eventType, EventActorIdentifier eai);
 
     @Mapping(target = "strId", source = "structure.strId")
     @Mapping(target = "strName", source = "structure.strName")
     @Mapping(target = "strSigle", source = "structure.strSigle")
     @Mapping(target = "strParentId", source = "structure.strParent.strId")
-    @Mapping(target = "strHierarchySigle", expression = "java(strRepo.getHierarchySigle(user.getStructure().getStrId()))")
+    @Mapping(target = "strHierarchySigle", expression = "java(user.getStructure() == null ? \"\" : strRepo.getHierarchySigle(user.getStructure().getStrId()))")
     @Mapping(target = "nom", expression = "java(agentRepo.getFullNameByUserId(user.getUserId()))")
     @Mapping(target = "matricule", expression = "java(agentRepo.getMatriculeUserId(user.getUserId()))")
     public abstract ReadUserDTO mapToReadUserDTO(AppUser user);

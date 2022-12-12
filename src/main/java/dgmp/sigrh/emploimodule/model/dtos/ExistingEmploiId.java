@@ -1,6 +1,6 @@
 package dgmp.sigrh.emploimodule.model.dtos;
 
-import dgmp.sigrh.emploimodule.controller.repositories.EmploiDAO;
+import dgmp.sigrh.emploimodule.controller.repositories.EmploiRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,12 +24,12 @@ public @interface ExistingEmploiId
     @RequiredArgsConstructor
     class ExistingEmploiIdValidator implements ConstraintValidator<ExistingEmploiId, Long>
     {
-        private final EmploiDAO emploiDAO;
+        private final EmploiRepo emploiRepo;
         @Override
         public boolean isValid(Long value, ConstraintValidatorContext context)
         {
             if(value==null) return false;
-            return emploiDAO.existsById(value);
+            return emploiRepo.existsById(value);
         }
     }
 }

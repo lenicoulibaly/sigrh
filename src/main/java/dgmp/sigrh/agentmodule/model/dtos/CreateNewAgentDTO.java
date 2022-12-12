@@ -3,7 +3,6 @@ package dgmp.sigrh.agentmodule.model.dtos;
 import dgmp.sigrh.agentmodule.model.dtos.validators.*;
 import dgmp.sigrh.emploimodule.model.dtos.ExistingEmploiId;
 import dgmp.sigrh.grademodule.model.dtos.ExistingGradeId;
-import dgmp.sigrh.structuremodule.model.dtos.str.ExistingStrId;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,7 +15,7 @@ import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 
 @NoArgsConstructor @AllArgsConstructor @Builder @Data //@Entity
-public class CreateAgentDTO
+public class CreateNewAgentDTO
 {
     @Pattern(regexp = "(^\\w{2,30}\\d{0,4}\\s+)*")
     @Length(min = 2, max = 100)
@@ -47,12 +46,6 @@ public class CreateAgentDTO
     private String nomPere;
     private String nomMere;
 
-    @UniqueEmail
-    private String emailPro;
-    @UniqueFixeBureau
-    private String fixeBureau;
-    @UniqueNumBadge
-    private String numBadge;
     @UniqueMatricule
     private String matricule;
     @ExistingEmploiId
@@ -68,8 +61,6 @@ public class CreateAgentDTO
     private String etatRecrutement;
     private boolean attenteAffectation;
     private MultipartFile photoFile;
-    @ExistingStrId
-    private Long strId;
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor
     public class PriseService

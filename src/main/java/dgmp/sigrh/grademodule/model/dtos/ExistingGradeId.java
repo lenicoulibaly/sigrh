@@ -1,6 +1,6 @@
 package dgmp.sigrh.grademodule.model.dtos;
 
-import dgmp.sigrh.grademodule.controller.repositories.GradeDAO;
+import dgmp.sigrh.grademodule.controller.repositories.GradeRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,12 +24,12 @@ public @interface ExistingGradeId
     @RequiredArgsConstructor
     class ExistingGradeIdValidator implements ConstraintValidator<ExistingGradeId, Long>
     {
-        private final GradeDAO gradeDAO;
+        private final GradeRepo gradeRepo;
         @Override
         public boolean isValid(Long value, ConstraintValidatorContext context)
         {
             if(value==null) return false;
-            return gradeDAO.existsById(value);
+            return gradeRepo.existsById(value);
         }
     }
 }

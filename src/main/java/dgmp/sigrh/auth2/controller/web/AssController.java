@@ -9,7 +9,6 @@ import dgmp.sigrh.auth2.model.dtos.appuser.UserMapper;
 import dgmp.sigrh.auth2.model.dtos.asignation.*;
 import dgmp.sigrh.auth2.model.entities.*;
 import dgmp.sigrh.auth2.security.services.ISecurityContextManager;
-import dgmp.sigrh.shared.model.enums.PersistenceStatus;
 import dgmp.sigrh.shared.utilities.StringUtils;
 import dgmp.sigrh.structuremodule.controller.repositories.structure.StrRepo;
 import dgmp.sigrh.structuremodule.controller.service.str.IStrService;
@@ -55,7 +54,7 @@ public class AssController
     public String gotoNewPrincipalAssForm(Model model, @RequestParam(required = false) Long userId)
     {
         Long visibilityId = scm.getVisibilityId();
-        List<Structure>  structures= visibilityId == null ? strRepo.findByStatus(PersistenceStatus.ACTIVE) : strRepo.findAllChildren(visibilityId);
+        List<Structure>  structures= visibilityId == null ? new ArrayList<>() : strRepo.findAllChildren(visibilityId);
         List< ReadStrDTO > strDtos = structures.stream().map(strMapper::mapToReadStrDTO).peek(str->str.setHierarchySigles(strService.getHierarchySigles(str.getStrId()))).collect(Collectors.toList());
 
         List<AppUser>  users= visibilityId == null ? userRepo.findAll() : userRepo.findAllUsersUnderStr(visibilityId);
@@ -242,6 +241,7 @@ public class AssController
                                @RequestParam(defaultValue = "0") int prvPageNum, @RequestParam(defaultValue = "5") int prvPageSize, @RequestParam(defaultValue = "") String prvKey)
     {
         PrincipalAss prAsss = paRepo.findById(assId).orElse(null);
+        if(prAsss == null) return "security/assignations/authList.html";
         prAsss.getStrDTO().setHierarchySigles(strRepo.getHierarchySigle(prAsss.getStructure().getStrId()));
 
         Page<RoleAss> roleAssPage = roleAssRepo.searchActiveByPrincipalAss(assId, StringUtils.stripAccentsToUpperCase(roleKey), PageRequest.of(rolePageNum, rolePageSize));

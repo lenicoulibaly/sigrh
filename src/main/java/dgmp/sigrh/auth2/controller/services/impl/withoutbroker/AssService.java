@@ -2,14 +2,13 @@ package dgmp.sigrh.auth2.controller.services.impl.withoutbroker;
 
 import dgmp.sigrh.auth2.controller.repositories.*;
 import dgmp.sigrh.auth2.controller.services.spec.IAssService;
+import dgmp.sigrh.auth2.model.dtos.appuser.UserMapper;
 import dgmp.sigrh.auth2.model.dtos.asignation.*;
 import dgmp.sigrh.auth2.model.entities.*;
 import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
 import dgmp.sigrh.auth2.model.events.types.auth.AssignationEventTypes;
-import dgmp.sigrh.auth2.model.histo.PrincipalAssHisto;
-import dgmp.sigrh.auth2.model.histo.PrvAssHisto;
-import dgmp.sigrh.auth2.model.histo.PrvToRoleAssHisto;
-import dgmp.sigrh.auth2.model.histo.RoleAssHisto;
+import dgmp.sigrh.auth2.model.events.types.auth.UserEventTypes;
+import dgmp.sigrh.auth2.model.histo.*;
 import dgmp.sigrh.auth2.security.services.ISecurityContextManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,6 +32,9 @@ public class AssService implements IAssService
     private final PrincipalAssHistoRepo principalAssHistoRepo;
     private final RoleAssRepo roleAssRepo;
     private final RoleAssHistoRepo roleAssHistoRepo;
+    private final UserRepo userRepo;
+    private final UserHistoRepo userHistoRepo;
+    private final UserMapper userMapper;
     private final ISecurityContextManager scm;
 
 
@@ -86,6 +88,12 @@ public class AssService implements IAssService
         PrincipalAssHisto principalAssHisto = assMapper.mapToPrincipalAssHisto(principalAss, AssignationEventTypes.ASSIGNATION_SET_AS_DEFAULT, eai);
         scm.refreshSecurityContext();
         principalAssHistoRepo.save(principalAssHisto);
+
+        AppUser user = principalAss.getUser();
+        principalAss.getUser().setDefaultAssId(principalAssId);
+        user = userRepo.save(user);
+        UserHisto userHisto = userMapper.mapToUserHisto(user, UserEventTypes.CHANGE_DEFAULT_ASSIGNATION_ID, eai);
+        userHistoRepo.save(userHisto);
     }
 
     @Override @Transactional

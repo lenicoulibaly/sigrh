@@ -92,7 +92,7 @@ public class StrController
             dto.setHierarchy(strService.getParents(s.getStrId()));
             return dto;
         }).collect(Collectors.toList());
-        dtos.forEach(s-> s.setStrName(s.getStrName() + "(" + s.getHierarchy().stream().map(s0->s0.getStrSigle()).reduce("", (sg1, sg2)->sg1 + "/" + sg2).substring(1) +")"));
+        dtos.forEach(s-> s.setStrName(s.getStrName() + "(" + s.getHierarchy().stream().map(Structure::getStrSigle).reduce("", (sg1, sg2)->sg1 + "/" + sg2).substring(1) +")"));
         CreatePostDTO dto = new CreatePostDTO();
         dto.setStrId(strId);
         model.addAttribute("dto", dto);
@@ -332,5 +332,11 @@ public class StrController
     public long getChildrenMaxLevel(@PathVariable long strId)
     {
         return this.strRepo.getChildrenMaxLevel(strRepo.getStrCode(strId));
+    }
+
+    @GetMapping(path = "/sigrh/structures/getAllChildren/{strId}") @ResponseBody @PreAuthorize("permitAll()")
+    public List<ReadStrDTO> getChildren(@PathVariable long strId)
+    {
+        return this.strRepo.findAllChildren(strId).stream().map(strMapper::mapToReadSimpleReadStrDto).collect(Collectors.toList());
     }
 }

@@ -14,9 +14,14 @@ public class Instance
 {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long instanceId;
-    private String name;
+    private String instanceName;
     @OneToOne @JoinColumn(name = "head_id")
     private Structure head;
     @OneToOne @JoinColumn(name = "rh_id")
     private Structure rh;
+
+    public Instance(Long instanceId)
+    {
+        this.instanceId = instanceId;
+    }
 }
