@@ -3,3 +3,8 @@
     background-color: #DBFFC8;
     color: black;
 }
+
+.vertical-middle
+{
+    vertical-align: middle; display: table-cell;
+}

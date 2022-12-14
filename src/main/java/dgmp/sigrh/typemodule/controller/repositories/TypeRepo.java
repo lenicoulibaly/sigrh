@@ -42,8 +42,11 @@ public interface TypeRepo extends JpaRepository<Type, Long>
     @Query("select t from Type t where t.status = ?1")
     Page<Type> searchPageOfTypes(PersistenceStatus status, Pageable pageable);
 
-    @Query("select new dgmp.sigrh.typemodule.model.dtos.ReadTypeDTO(t) from Type t where upper(t.typeGroup) = upper(?1)")
+    @Query("select new dgmp.sigrh.typemodule.model.dtos.ReadTypeDTO(t) from Type t where upper(t.typeGroup) = upper(?1) and t.status = 'ACTIVE'")
     List<ReadTypeDTO> findByTypeGroup(String typeGroup);
+
+    @Query("select t.typeId from Type t where upper(t.typeGroup) = upper(?1) and t.status = 'ACTIVE'")
+    List<Long> getTypeIdsByTypeGroup(String typeGroup);
 
     @Query("select new dgmp.sigrh.typemodule.model.dtos.ReadTypeDTO(t) from Type t order by t.typeGroup, t.uniqueCode, t.typeId")
     List<ReadTypeDTO> findAllTypes();
@@ -85,4 +88,14 @@ public interface TypeRepo extends JpaRepository<Type, Long>
 
     @Query("select t.uniqueCode from Type t where t.typeId = ?1")
     String getUniqueCode(Long typeId);
+
+    @Query("select (count(t)>0) from Type t where t.typeGroup = ?1 and t.typeId = ?2 and t.status = 'ACTIVE'")
+    boolean typeGroupHasChild(String typeGroup, Long typeId);
+
+    @Query("select (count(t)>0) from Type t where t.typeGroup = ?1 and t.uniqueCode = ?2 and t.status = 'ACTIVE'")
+    boolean typeGroupHasChild(String typeGroup, String uniqueCode);
+
+    Type findByUniqueCode(String uniqueCode);
+    @Query("select t.typeId from Type t where t.uniqueCode = ?1")
+    Long findTypeIdByUniqueCode(String uniqueCode);
 }

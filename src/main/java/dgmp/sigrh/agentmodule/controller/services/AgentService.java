@@ -10,6 +10,10 @@ import dgmp.sigrh.agentmodule.model.enums.Civility;
 import dgmp.sigrh.agentmodule.model.enums.EtatRecrutement;
 import dgmp.sigrh.agentmodule.model.enums.TypeAgent;
 import dgmp.sigrh.agentmodule.model.histo.AgentHisto;
+import dgmp.sigrh.archivemodule.controller.service.IArchiveService;
+import dgmp.sigrh.archivemodule.model.dtos.ArchiveMapper;
+import dgmp.sigrh.archivemodule.model.dtos.CreateArchiveDTO;
+import dgmp.sigrh.archivemodule.model.entities.Archive;
 import dgmp.sigrh.auth2.controller.services.spec.IUserService;
 import dgmp.sigrh.auth2.model.dtos.appuser.CreateUserDTO;
 import dgmp.sigrh.auth2.model.dtos.appuser.ReadUserDTO;
@@ -49,6 +53,8 @@ public class AgentService implements IAgentService
     private final FonctionRepo fonctionRepo;
     private final EmploiRepo empRepo;
     private final GradeRepo gradeRepo;
+    private final IArchiveService archiveService;
+    private final ArchiveMapper archiveMapper;
 
     @Override
     public ReadAgentDTO createAgent(CreateNewAgentDTO dto) throws IllegalAccessException {
@@ -66,6 +72,20 @@ public class AgentService implements IAgentService
         Agent agent = agentMapper.mapToAgent(dto);
         agent.setFonction(fonctionRepo.getFonctionAgt());
         agent = agentRepo.save(agent);
+
+        if(dto.getPhotoFile() != null)
+        {
+            if(dto.getPhotoFile().getOriginalFilename() != null)
+            {
+                if(!dto.getPhotoFile().getOriginalFilename().equals(""))
+                {
+                    CreateArchiveDTO archiveDTO = archiveMapper.mapToPhotoArchiveDTO(dto, agent.getAgentId());
+                    Archive archive = archiveService.createArchive(archiveDTO);
+                    agent.setNomPhoto(archive.getPath());
+                }
+            }
+        }
+
         AgentHisto agentHisto = agentMapper.mapToAgentHisto(agent, AgentEventTypes.CREATE_AGENT, scm.getEventActorIdFromSCM());
         agentHistoRepo.save(agentHisto);
         CreateUserDTO createUserDTO = userMapper.mapToCreateUserDTO(dto);

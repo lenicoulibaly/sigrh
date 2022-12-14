@@ -7,6 +7,10 @@ import dgmp.sigrh.agentmodule.model.entities.Agent;
 import dgmp.sigrh.agentmodule.model.enums.Civility;
 import dgmp.sigrh.agentmodule.model.enums.EtatRecrutement;
 import dgmp.sigrh.agentmodule.model.enums.TypeAgent;
+import dgmp.sigrh.archivemodule.controller.service.IArchiveService;
+import dgmp.sigrh.archivemodule.controller.service.IFilesManager;
+import dgmp.sigrh.archivemodule.model.constants.ArchivageConstants;
+import dgmp.sigrh.archivemodule.model.entities.Archive;
 import dgmp.sigrh.auth2.security.services.ISecurityContextManager;
 import dgmp.sigrh.emploimodule.controller.repositories.EmploiRepo;
 import dgmp.sigrh.fonctionmodule.controller.repositories.FonctionRepo;
@@ -15,18 +19,20 @@ import dgmp.sigrh.shared.model.enums.PersistenceStatus;
 import dgmp.sigrh.structuremodule.controller.repositories.structure.StrRepo;
 import dgmp.sigrh.structuremodule.model.dtos.str.ReadStrDTO;
 import dgmp.sigrh.structuremodule.model.dtos.str.StrMapper;
+import dgmp.sigrh.typemodule.controller.repositories.TypeRepo;
+import dgmp.sigrh.typemodule.model.enums.TypeGroup;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,6 +52,9 @@ public class AgentController
     private final FonctionRepo fonctionRepo;
     private final EmploiRepo empRepo;
     private final GradeRepo gradeRepo;
+    private final IFilesManager filesManager;
+    private final IArchiveService archiveService;
+    private final TypeRepo typeRepo;
 
     @GetMapping(path = "/sigrh/agents/index")
     public String index(Model model)
@@ -176,5 +185,42 @@ public class AgentController
         }
         agentService.registerAgent(dto);
         return "redirect:/sigrh/agents/list";
+    }
+
+    @GetMapping(path = "/sigrh/agents/profile")
+    public String gotoProfilePage(Model model, @RequestParam Long agtId, @RequestParam(defaultValue = "0") int docPageNum,
+                                  @RequestParam(defaultValue = "5") int docPageSize, @RequestParam(defaultValue = "") String docKey,
+                                  @RequestParam(required = false) List<Long> typeIds, @RequestParam(defaultValue = "infoProf") String tab)
+    {
+        Agent agent = agentRepo.findById(agtId).orElse(null);
+        Page<Archive> archives = archiveService.searchArchives(agtId, docKey, typeIds, PageRequest.of(docPageNum, docPageSize));
+        if(agent == null) return "personnel/profile";
+        ReadAgentDTO dto = agentMapper.mapToReadAgentDTO(agent);
+        model.addAttribute("agent", dto);
+        model.addAttribute("archives", archives);
+
+
+        model.addAttribute("docPageNum", docPageNum);
+        model.addAttribute("docCurrentPage", docPageNum);
+        model.addAttribute("docPageSize", docPageSize);
+        model.addAttribute("docKey", docKey);
+        model.addAttribute("tab", tab);
+        model.addAttribute("pages", new long[archives.getTotalPages()]);
+        model.addAttribute("typeIds", typeIds);
+        model.addAttribute("archiveTypeList", typeRepo.findByTypeGroup(TypeGroup.ARCHIVE.name()));
+        return "personnel/profile";
+    }
+
+    @GetMapping(path = "/sigrh/agents/displayPhoto/{agentId}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ResponseBody
+    public byte[] displayPhoto(@PathVariable Long agentId) {
+
+        Agent agent = agentRepo.findById(agentId).orElse(null);
+        if(agent==null) return null;
+        if(agent.getNomPhoto() == null || !new File(agent.getNomPhoto()).exists())
+        {
+            return filesManager.downloadFile(ArchivageConstants.AGENT_UPLOADS_DIR + "\\PRF_PHT\\" + (agent.getCivilite() == Civility.MONSIEUR ? "m.jpg" : "f.png"));
+        }
+        return filesManager.downloadFile(agent.getNomPhoto());
     }
 }

@@ -137,4 +137,7 @@ public interface AgentRepo extends JpaRepository<Agent, Long>
 
     @Query("select a.user.userId from Agent  a where a.agentId = ?1")
     Long getUserId(Long idAgent);
+
+    @Query("select concat(a.nom, '_', a.prenom) from Agent a where a.agentId = ?1")
+    String getNameToSnackFormatByAgtId(Long agtId);
 }

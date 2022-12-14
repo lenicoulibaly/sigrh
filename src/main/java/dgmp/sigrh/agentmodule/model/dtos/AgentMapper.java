@@ -73,6 +73,7 @@ public abstract class AgentMapper
     @Mapping(target = "numBadge", expression = "java(dgmp.sigrh.shared.utilities.StringUtils.blankToNull(dto.getNumBadge()))")
     @Mapping(target = "fixeBureau", expression = "java(dgmp.sigrh.shared.utilities.StringUtils.blankToNull(dto.getFixeBureau()))")
     @Mapping(target = "matricule", expression = "java(dgmp.sigrh.shared.utilities.StringUtils.blankToNull(dto.getMatricule()))")
+    @Mapping(target = "photoFile", expression = "java(dto.getPhotoFile() == null ? null : dto.getPhotoFile().getOriginalFilename().equals(\"\") ? null : dto.getPhotoFile())")
     public abstract Agent mapToAgent(RegisterAgentDTO dto);
 
     @Mapping(target="civilite", expression = "java(org.apache.commons.lang3.EnumUtils.getEnum(dgmp.sigrh.agentmodule.model.enums.Civility.class, dto.getCivilite()))")
@@ -88,5 +89,6 @@ public abstract class AgentMapper
 
     @Mapping(target = "datePriseService1", source = "priseService.datePriseService1")
     @Mapping(target = "datePriseServiceDGMP", source = "priseService.datePriseServiceDGMP")
+    @Mapping(target = "photoFile", expression = "java(dto.getPhotoFile() == null ? null : dto.getPhotoFile().getOriginalFilename().equals(\"\") ? null : dto.getPhotoFile())")
     public abstract Agent mapToAgent(CreateNewAgentDTO dto);
 }

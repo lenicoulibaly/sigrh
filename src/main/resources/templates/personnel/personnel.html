@@ -6,7 +6,8 @@
 		<th:block layout:fragment="specific-css-links">
             <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
             <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
-		</th:block>
+            <link rel="stylesheet" th:href="@{/css/app-style.css}">
+        </th:block>
 	</head>
 
 	<body>
@@ -195,18 +196,18 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="agent: ${agents}">
-                                    <td th:text="${agent.nom}">Nom</td>
-                                    <td th:text="${agent.prenom}">Prénom</td>
-                                    <td th:text="${agent.matricule}">Matricule</td>
-                                    <td th:text="${agent.grade}">Grade</td>
-                                    <td th:text="${agent.fonction}">Fonction</td>
-                                    <td th:text="${agent.emploi}" style="font-size: 10px; width: 10%;">Emploi</td>
-                                    <td th:title="${agent.strName + '(' + agent.hierarchySigles + ')'}" th:text="${agent.strName + '(' + agent.strSigle + ')'}">Service</td>
-                                    <td>
-                                        <img src="dist/img/user2-160x160.jpg"  class="img-circle elevation-2 h-25 w-25" alt="User Image">
+                                <tr th:each="agent: ${agents}" >
+                                    <td th:text="${agent.nom}" style="vertical-align: middle; display: table-cell;" >Nom</td>
+                                    <td th:text="${agent.prenom}" style="vertical-align: middle; display: table-cell;" >Prénom</td>
+                                    <td th:text="${agent.matricule}" style="vertical-align: middle; display: table-cell;" >Matricule</td>
+                                    <td th:text="${agent.grade}" style="vertical-align: middle; display: table-cell;" >Grade</td>
+                                    <td th:text="${agent.fonction}" style="vertical-align: middle; display: table-cell;" >Fonction</td>
+                                    <td th:text="${agent.emploi}" style="font-size: 10px; width: 10%;vertical-align: middle; display: table-cell;">Emploi</td>
+                                    <td style="vertical-align: middle; display: table-cell;"  th:title="${agent.strName + '(' + agent.hierarchySigles + ')'}" th:text="${agent.strName + '(' + agent.strSigle + ')'}">Service</td>
+                                    <td style="vertical-align: middle; display: table-cell;" >
+                                        <img th:src="${'/sigrh/agents/displayPhoto/'+agent.agentId}" style="width: 50px; height: 50px;"  class="img-circle" alt="User Image">
                                     </td>
-                                    <td>
+                                    <td class="vertical-middle">
                                         <div class="dropdown show">
                                             <a class="btn btn-default dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 Actions
@@ -214,7 +215,7 @@
 
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 
-                                                <a class="dropdown-item" href="#">Detail</a>
+                                                <a class="dropdown-item" th:href="@{/sigrh/agents/profile(agtId = ${agent.agentId})}">Detail</a>
                                                 <a class="dropdown-item" th:href="@{/sigrh/agents/update-agent-form(agtId = ${agent.agentId})}">Modification</a>
                                                 <a class="dropdown-item" href="#">Affectation</a>
                                                 <a class="dropdown-item" href="#">Nomination</a>

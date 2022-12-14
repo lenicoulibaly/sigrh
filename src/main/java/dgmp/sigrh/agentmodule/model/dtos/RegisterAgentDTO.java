@@ -1,6 +1,8 @@
 package dgmp.sigrh.agentmodule.model.dtos;
 
 import dgmp.sigrh.agentmodule.model.dtos.validators.*;
+import dgmp.sigrh.archivemodule.model.dtos.ValidFileExtension;
+import dgmp.sigrh.archivemodule.model.dtos.ValidFileSize;
 import dgmp.sigrh.emploimodule.model.dtos.ExistingEmploiId;
 import dgmp.sigrh.grademodule.model.dtos.ExistingGradeId;
 import dgmp.sigrh.structuremodule.model.dtos.str.ExistingStrId;
@@ -71,6 +73,7 @@ public class RegisterAgentDTO
     private String position; //Activite, Detachement, Disponibilite, Sous les drapeaux
     private String etatRecrutement;
     private boolean attenteAffectation;
+    @ValidFileSize @ValidFileExtension
     private MultipartFile photoFile;
     @ExistingStrId
     private Long strId;

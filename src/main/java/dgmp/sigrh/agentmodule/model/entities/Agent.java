@@ -103,7 +103,12 @@ public class Agent
 	
 	
 	@Transient private long age;
-	public long getAge()
+
+    public Agent(Long agtId) {
+    	this.agentId = agtId;
+    }
+
+    public long getAge()
 	{
 		return Period.between(dateNaissance, LocalDate.now()).getYears();
 	}

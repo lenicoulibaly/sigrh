@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" 
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+                layout:decorate="~{personnel/agent-layout}">
+    <head>
+		<th:block layout:fragment="specific-css-links">
+            <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+            <link rel="stylesheet" th:href="@{/css/app-style.css}">
+        </th:block>
+	</head>
+
+	<body>
+        <th:block layout:fragment="breadcrumb">
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Profile</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                <li class="breadcrumb-item active">User Profile</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+        </th:block>
+        <div layout:fragment="content">
+            <div class="row">
+                <div class="col-md-4">
+
+                    <!-- Profile Image -->
+                    <div class="card card-primary card-outline">
+                        <div class="card-body box-profile">
+                            <div class="text-center">
+                                <img class="profile-user-img img-fluid img-circle" style="width: 70px; height: 70px;"
+                                     th:src="'/sigrh/agents/displayPhoto/' + ${agent.agentId}"
+                                     alt="User profile picture">
+                            </div>
+
+                            <h3 class="profile-username text-center">[[${agent.nom}]] [[${agent.prenom}]]</h3>
+
+                            <p class="text-muted text-center">[[${agent.emploi}]]</p>
+
+                            <ul class="list-group list-group-unbordered mb-3">
+                                <li class="list-group-item">
+                                    <b>Date de naissance</b> <a class="float-right">[[${agent.dateNaissance}]]</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Lieu de naissance</b> <a class="float-right">[[${agent.lieuNaissance}]]</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Civilité</b> <a class="float-right">[[${agent.civilite}]]</a>
+                                </li>
+
+                                <li class="list-group-item">
+                                    <b>Situation matrimoniale</b> <a class="float-right">[[${agent.situationMatrimoniale}]]</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>N° de pièce ([[${agent.typePiece}]])</b> <a class="float-right">[[${agent.numPiece}]]</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Père</b> <a class="float-right">[[${agent.nomPere}]]</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Mère</b> <a class="float-right">[[${agent.nomMere}]]</a>
+                                </li>
+
+                                <li class="list-group-item">
+                                    <b>Téléphone</b> <a class="float-right">[[${agent.tel}]]</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Email</b> <a class="float-right">[[${agent.email}]]</a>
+                                </li>
+                            </ul>
+
+                            <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header p-2">
+                            <ul class="nav nav-pills">
+                                <li class="nav-item"><a th:classappend="${tab} == 'infoProf' ? 'active' : ''" class="nav-link " href="#infoProf" data-toggle="tab">Information professionnelles</a></li>
+                                <li class="nav-item"><a th:classappend="${tab} == 'moovHisto' ? 'active' : ''" class="nav-link" href="#timeline" data-toggle="tab">Historique des mouvements</a></li>
+                                <li class="nav-item"><a th:classappend="${tab} == 'docs' ? 'active' : ''" class="nav-link" href="#docs" data-toggle="tab">Documents</a></li>
+                            </ul>
+                        </div><!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div th:classappend="${tab} == 'infoProf' ? 'active' : ''" class="tab-pane" id="infoProf">
+                                    <ul class="list-group list-group-unbordered mb-3">
+                                        <li class="list-group-item">
+                                            <b>Matricule</b> <a class="float-right">[[${agent.matricule}]]</a>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <b>Emploi</b> <a class="float-right">[[${agent.emploi}]]</a>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <b>Fonction</b> <a class="float-right">[[${agent.fonction}]]</a>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <b>Grade</b> <a class="float-right">[[${agent.grade}]]</a>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <b>Type d'agent</b> <a class="float-right">[[${agent.typeAgent}]]</a>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <b>Structure de tutelle</b> <a class="float-right">[[${agent.strName}]] ([[${agent.hierarchySigles}]])</a>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <b>Mail professionnel</b> <a class="float-right">[[${agent.emailPro}]]</a>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <b>Fixe bureau</b> <a class="float-right">[[${agent.fixeBureau}]]</a>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <b>N° de badge</b> <a class="float-right">[[${agent.numBadge}]]</a>
+                                        </li>
+
+                                        <li class="list-group-item">
+                                            <b>Première prise de service</b> <a class="float-right">[[${agent.datePriseService1}]]</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!-- /.tab-pane -->
+                                <div th:classappend="${tab} == 'moovHisto' ? 'active' : ''" class="tab-pane" id="timeline">
+                                    <!-- The timeline -->
+                                    <div class="timeline timeline-inverse">
+                                        <!-- timeline time label -->
+                                        <div class="time-label">
+                        <span class="bg-danger">
+                          10 Feb. 2014
+                        </span>
+                                        </div>
+                                        <!-- /.timeline-label -->
+                                        <!-- timeline item -->
+                                        <div>
+                                            <i class="fas fa-envelope bg-primary"></i>
+
+                                            <div class="timeline-item">
+                                                <span class="time"><i class="far fa-clock"></i> 12:05</span>
+
+                                                <h3 class="timeline-header"><a href="#">Support Team</a> sent you an email</h3>
+
+                                                <div class="timeline-body">
+                                                    Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
+                                                    weebly ning heekya handango imeem plugg dopplr jibjab, movity
+                                                    jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
+                                                    quora plaxo ideeli hulu weebly balihoo...
+                                                </div>
+                                                <div class="timeline-footer">
+                                                    <a href="#" class="btn btn-primary btn-sm">Read more</a>
+                                                    <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- END timeline item -->
+                                        <!-- timeline item -->
+                                        <div>
+                                            <i class="fas fa-user bg-info"></i>
+
+                                            <div class="timeline-item">
+                                                <span class="time"><i class="far fa-clock"></i> 5 mins ago</span>
+
+                                                <h3 class="timeline-header border-0"><a href="#">Sarah Young</a> accepted your friend request
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <!-- END timeline item -->
+                                        <!-- timeline item -->
+                                        <div>
+                                            <i class="fas fa-comments bg-warning"></i>
+
+                                            <div class="timeline-item">
+                                                <span class="time"><i class="far fa-clock"></i> 27 mins ago</span>
+
+                                                <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
+
+                                                <div class="timeline-body">
+                                                    Take me to your leader!
+                                                    Switzerland is small and neutral!
+                                                    We are more like Germany, ambitious and misunderstood!
+                                                </div>
+                                                <div class="timeline-footer">
+                                                    <a href="#" class="btn btn-warning btn-flat btn-sm">View comment</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- END timeline item -->
+                                        <!-- timeline time label -->
+                                        <div class="time-label">
+                        <span class="bg-success">
+                          3 Jan. 2014
+                        </span>
+                                        </div>
+                                        <!-- /.timeline-label -->
+                                        <!-- timeline item -->
+                                        <div>
+                                            <i class="fas fa-camera bg-purple"></i>
+
+                                            <div class="timeline-item">
+                                                <span class="time"><i class="far fa-clock"></i> 2 days ago</span>
+
+                                                <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos</h3>
+
+                                                <div class="timeline-body">
+                                                    <img src="http://placehold.it/150x100" alt="...">
+                                                    <img src="http://placehold.it/150x100" alt="...">
+                                                    <img src="http://placehold.it/150x100" alt="...">
+                                                    <img src="http://placehold.it/150x100" alt="...">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- END timeline item -->
+                                        <div>
+                                            <i class="far fa-clock bg-gray"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.tab-pane -->
+
+                                <div th:classappend="${tab} == 'docs' ? 'active' : ''" class="tab-pane" id="docs">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3 class="card-title">
+                                                [[${archives.getNumberOfElements()}]] items affichés sur [[${archives.getTotalElements()}]]
+                                            </h3>
+
+                                            <div class="card-tools">
+                                                <ul class="pagination pagination-sm float-right">
+                                                    <li th:title="Début" class="page-item"><a class="page-link" th:href="@{/sigrh/agents/profile(docPageNum=0, docKey=${docKey}, typeIds = ${typeIds}, agtId = ${agent.agentId}, tab='docs')}">&laquo;&laquo;</a></li>
+                                                    <li  th:title="Précédant" class="page-item"><a class="page-link" th:href="@{/sigrh/agents/profile(docPageNum=${docCurrentPage > 0 ? docCurrentPage-1 : 0}, docKey=${docKey}, typeIds = ${typeIds}, agtId = ${agent.agentId}, tab='docs')}">&laquo;</a></li>
+                                                    <li th:each="page, status:${pages}" class="page-item" th:classappend="${status.index == docCurrentPage ? 'active' : T(java.lang.Math).abs(status.index - docCurrentPage) < 4 ? '' : 'd-none'}"><a class="page-link" th:href="@{/sigrh/agents/profile(docPageNum=${status.index}, docKey=${docKey}, typeIds = ${typeIds}, agtId = ${agent.agentId}, tab='docs')}">[[${status.count}]]</a></li>
+                                                    <li th:title="Suivant" class="page-item"><a class="page-link" th:href="@{/sigrh/agents/profile(docPageNum=${docCurrentPage == 0 ? 0 : docCurrentPage < pages.length-1 ? docCurrentPage+1 : pages.length-1}, docKey=${docKey}, typeIds = ${typeIds}, agtId = ${agent.agentId}, tab='docs')}">&raquo;</a></li>
+                                                    <li th:title="Fin" class="page-item"><a class="page-link" th:href="@{/sigrh/agents/profile(docPageNum= ${docCurrentPage == 0 ? 0 : pages.length-1}, docKey=${docKey}, typeIds = ${typeIds}, agtId = ${agent.agentId}, tab='docs')}">&raquo;&raquo;</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <!-- /.card-header -->
+                                        <div class="card-body p-0">
+                                            <form class="form-horizontal" th:action="@{/sigrh/agents/profile}">
+                                                <input th:value="${agent.agentId}" name="agtId" type="hidden">
+                                                <input th:value="docs" name="tab" type="hidden">
+                                                <div class="card-body mt-2 m-0 p-0">
+                                                    <div class="form-group row">
+
+                                                        <div class="col-md-12 mx-0 ml-3 p-0" style="display: inline">
+                                                            <table class="d-inline">
+                                                                <tr>
+                                                                    <td >
+                                                                        <a id="lnk-reinitialize" th:href="@{/sigrh/agents/profile(docPageNum=0, docKey='', agtId=${agent.agentId}, tab='docs')}" class="btn btn-primary" >Réinitialiser</a>
+                                                                    </td>
+                                                                    <td style="width: 500px;">
+                                                                        <input type="text" style="height: 40px;"  class="form-control p-0 m-0" th:value="${docKey}" name="docKey" id="docKey" placeholder="Rechercher un document">
+                                                                    </td>
+                                                                    <td>
+                                                                        <button class=" btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </form>
+
+                                            <hr />
+                                            <table class="table table-sm table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th>Type</th>
+                                                    <th>Description</th>
+                                                    <th>Numéro</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="archive: ${archives}">
+                                                    <td>[[${archive.archiveType.name}]]</td>
+                                                    <td>
+                                                        [[${archive.description}]]
+                                                    </td>
+                                                    <td>
+                                                        [[${archive.archiveNum}]]
+                                                    </td>
+
+                                                    <td>
+                                                        <a class="btn btn-sm btn-outline-success mx-1" title="Télécharger" th:href="'/sigrh/archive/download/'+${archive.archiveId}"><i class="bi bi-download text-sm"></i> </a>
+                                                        <a class="btn btn-sm btn-outline-success mx-1" title="Modifier" th:href="'/sigrh/archive/update-archive-form/'+${archive.archiveId}"><i class="bi bi-pencil text-sm"></i> </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- /.card-body -->
+                                    </div>
+                                </div>
+                                <!-- /.tab-pane -->
+                            </div>
+                            <!-- /.tab-content -->
+                        </div><!-- /.card-body -->
+                    </div>
+                    <!-- /.nav-tabs-custom -->
+                </div>
+            </div>
+
+
+        </div>
+        <div layout:fragment="specific-scripts">
+            <script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
+            <script>
+                $(function () {
+                    //Initialize Select2 Elements
+                    $('.select2').select2();
+
+                    //Initialize Select2 Elements
+                    $('.select2bs4').select2({theme: 'bootstrap4'});
+                });
+            </script>
+        </div>
+    </body>
+</html>

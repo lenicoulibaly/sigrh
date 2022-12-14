@@ -89,7 +89,7 @@
                                                         <td>
                                                              [[${user.nom}]]
                                                         </td>
-                                                        <td> <span >[[${user.strName}]]([[${user.strHierarchySigle}]])</span></td>
+                                                        <td th:title="${user.strName + '(' +   user.strHierarchySigle + ')'}"> <span >[[${user.strName}]]([[${user.strSigle}]])</span></td>
                                                         <td ><span class="badge" th:classappend="${user.status == @userStatus.active ? 'badge-success' : user.status == @userStatus.blocked ? 'badge-danger' : user.status == @userStatus.standingForAccountActivationLink ? 'badge-warning' : ''}">[[${user.status.status}]]</span></td>
                                                         <td>
                                                             <a class="btn btn-sm btn-outline-success mx-1" title="Voir" th:href="@{/sigrh/users/user-details(userId=${user.userId})}"><i class="bi bi-eye text-sm"></i> </a>
