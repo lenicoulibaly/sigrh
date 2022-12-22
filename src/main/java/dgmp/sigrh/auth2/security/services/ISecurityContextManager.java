@@ -4,6 +4,7 @@ import dgmp.sigrh.auth2.model.entities.AppPrivilege;
 import dgmp.sigrh.auth2.model.entities.AppRole;
 import dgmp.sigrh.auth2.model.entities.PrincipalAss;
 import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
+import dgmp.sigrh.instancemodule.model.entities.Instance;
 import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
 
 import java.util.Set;
@@ -18,10 +19,15 @@ public interface ISecurityContextManager
 
     boolean hasAuthority(String auth);
     boolean hasAnyAuthority(String ...auths);
+    boolean hasMenu(String menuCode);
 
     String getAuthUsername();
 
     Long getAuthUserId();
+    Long getAuthAgentId();
+    String getAuthAgentPhotoLink();
+    Instance getAuthInstance();
+    String getAuthInstanceSigle();
 
     Structure getVisibility();
 

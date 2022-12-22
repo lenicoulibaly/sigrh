@@ -207,16 +207,18 @@ public class AgentController
         model.addAttribute("tab", tab);
         model.addAttribute("pages", new long[archives.getTotalPages()]);
         model.addAttribute("typeIds", typeIds);
-        model.addAttribute("archiveTypeList", typeRepo.findByTypeGroup(TypeGroup.ARCHIVE.name()));
+        model.addAttribute("archiveTypeList", typeRepo.findByTypeGroup(TypeGroup.ARCHIVE));
         return "personnel/profile";
     }
 
     @GetMapping(path = "/sigrh/agents/displayPhoto/{agentId}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
-    public byte[] displayPhoto(@PathVariable Long agentId) {
-
+    public byte[] displayPhoto(@PathVariable Long agentId)
+    {
+        if(agentId==null)
+            return filesManager.downloadFile(ArchivageConstants.AGENT_UPLOADS_DIR + "\\PRF_PHT\\" +"m.jpg");
         Agent agent = agentRepo.findById(agentId).orElse(null);
-        if(agent==null) return null;
+        if(agent==null) return filesManager.downloadFile(ArchivageConstants.AGENT_UPLOADS_DIR + "\\PRF_PHT\\" +"m.jpg");
         if(agent.getNomPhoto() == null || !new File(agent.getNomPhoto()).exists())
         {
             return filesManager.downloadFile(ArchivageConstants.AGENT_UPLOADS_DIR + "\\PRF_PHT\\" + (agent.getCivilite() == Civility.MONSIEUR ? "m.jpg" : "f.png"));

@@ -1,6 +1,6 @@
 package dgmp.sigrh.auth2.model.entities;
 
-import dgmp.sigrh.auth2.model.enums.PrvGroup;
+import dgmp.sigrh.typemodule.model.entities.Type;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,8 +20,11 @@ public class AppPrivilege
     @Column(unique = true)
     private String privilegeName;
 
-    @Enumerated(EnumType.STRING)
-    private PrvGroup prvGroup;
+    //@Enumerated(EnumType.STRING)
+    //private PrvGroup prvGroup;
+
+    @ManyToOne() @JoinColumn(name = "PRV_TYPE_ID")
+    private Type prvType;
 
     public AppPrivilege(Long privilegeId) {
         this.privilegeId = privilegeId;

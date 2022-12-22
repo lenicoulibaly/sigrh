@@ -62,7 +62,7 @@ public class InstanceController
     public String gotoNewInstanceForm(Model model, @RequestParam(defaultValue = "0") int pageNum, @RequestParam(defaultValue = "5") int pageSize, @RequestParam(defaultValue = "") String key)
     {
         Long visibilityId = scm.getVisibilityId();
-        Page<ReadInstanceDTO> instances = visibilityId == null ? new PageImpl<>(new ArrayList<>()) : instanceRepo.searchInstances(visibilityId, StringUtils.stripAccentsToUpperCase(key).trim(), PageRequest.of(pageNum, pageSize));
+        Page<ReadInstanceDTO> instances = visibilityId == null ? new PageImpl<>(new ArrayList<>()) : instanceRepo.searchInstances(visibilityId, StringUtils.stripAccentsToUpperCase(key), PageRequest.of(pageNum, pageSize));
         model.addAttribute("instances", instances);
         model.addAttribute("dto", new CreateInstanceDTO());
         model.addAttribute("pageNum", pageNum);

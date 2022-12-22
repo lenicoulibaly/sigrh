@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" 
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+                layout:decorate="~{personnel/agent-layout}">
+    <head>
+		<th:block layout:fragment="specific-css-links">
+            <!-- Select2 -->
+            <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+        </th:block>
+	</head>
+
+	<body>
+        <div layout:fragment="content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Enregistrer des pièces civiles</h3>
+                                    <span class="float-right" th:if="${agent}" style="vertical-align: middle; display: table-cell;" >
+                                        <a  th:href="@{/sigrh/agents/profile(agtId = ${agent.agentId}, tab='docs')}">
+                                            <img th:src="${'/sigrh/agents/displayPhoto/'+agent.agentId}" style="width: 30px; height: 30px;"  class="img-circle" alt="User Image">
+                                        </a>
+                                    </span>
+                                </div>
+                                <!-- /.card-header -->
+                                <!-- form start -->
+                                <div class="card-body">
+
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <form class="form-horizontal" th:action="@{/sigrh/archives/create-archive-form}">
+                                                    <div class="card-body mt-2 m-0 p-0">
+                                                        <div class="form-group row">
+                                                            <input type="hidden" th:value="0" name="pageNum">
+
+                                                            <div class="col-md-12 mx-0 ml-3 p-0" style="display: inline">
+                                                                <table class="d-inline">
+                                                                    <tr>
+                                                                        <td style="width: 500px;">
+                                                                            <input type="text" style="height: 40px;"  class="form-control m-0" th:value="${param.uniqueKey}" name="uniqueKey" id="uniqueKey" placeholder="Rechercher un agent par le matricule, l'email ou le N° de téléphone">
+                                                                        </td>
+                                                                        <td>
+                                                                            <button class=" btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <!-- /.card-header -->
+                                            <div class="card-body p-0">
+                                                <form class="form-horizontal" th:action="@{/sigrh/archives/update-archive}" th:object="${dto}" method="post" enctype="multipart/form-data">
+                                                    <input type="hidden" th:field="*{agtId}"}/>
+                                                    <input type="hidden" th:field="*{archiveId}"}/>
+                                                    <span th:if="${dto!=null && agent!=null}">
+                                                        <div class="col-12">
+                                                            <div class="row">
+                                                                <div class="col-12 align-items-center">
+                                                                    <span class="text-danger font-weight-bold" role="alert" th:each="msg:${globalErrs}">[[${msg}]]</span></br>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label for="nom">Nom et prénom</label>
+                                                                        <input id="nom" type="text" class="form-control" th:value="${agent.nom + ' ' + agent.prenom}" readonly/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label for="matricule">Matricule</label>
+                                                                        <input id="matricule" type="text" class="form-control" th:value="${agent.matricule}" readonly/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label for="email">Email</label>
+                                                                        <input id="email" type="text" class="form-control" th:value="${agent.email}" readonly/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label for="tel">N° Téléphone</label>
+                                                                        <input id="tel" type="text" class="form-control" th:value="${agent.tel}" readonly/>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-4 col-md-6 xs-12">
+                                                                    <div class="form-group">
+                                                                        <label for="archiveTypeCode">Type de document</label>
+                                                                        <select id="archiveTypeCode" required
+                                                                                name="strId"
+                                                                                th:field="*{archiveTypeCode}"
+                                                                                class="form-control select2bs4">
+                                                                            <option value="">Choisir le type de document</option>
+                                                                            <option th:each="type : ${@archiveService.getAllArchiveTypes()}"
+                                                                                    th:value="${type.uniqueCode}" th:title="${type.description}">[[${type.description}]] ([[${type.uniqueCode}]])</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label for="archiveNum">N° du document</label>
+                                                                        <input id="archiveNum" type="text" class="form-control" th:field="*{archiveNum}"/>
+                                                                        <small th:if="${archiveNumErrMsg}" class="text-danger">[[${archiveNumErrMsg}]]</small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label for="description">Description du document <span class="text-danger">*</span></label>
+                                                                        <input id="description" type="text" class="form-control" th:field="*{description}" required/>
+                                                                        <small th:if="${descriptionErrMsg}" class="text-danger">[[${descriptionErrMsg}]]</small>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label for="productionDate">Date de création du document</label>
+                                                                        <input id="productionDate" type="date" class="form-control" th:field="*{productionDate}"/>
+                                                                        <small th:if="${productionDateErrMsg}" class="text-danger">[[${productionDateErrMsg}]]</small><br/>
+                                                                        <small th:if="${productionAndExpirationDateErrMsg}" class="text-danger">[[${productionAndExpirationDateErrMsg}]]</small>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label for="expirationDate">Date d'expiration du document</label>
+                                                                        <input id="expirationDate" type="date" class="form-control" th:field="*{expirationDate}"/>
+                                                                        <small th:if="${expirationDateErrMsg}" class="text-danger">[[${expirationDateErrMsg}]]</small><br/>
+                                                                        <small th:if="${productionAndExpirationDateErrMsg}" class="text-danger">[[${productionAndExpirationDateErrMsg}]]</small>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label for="file">Choisir le fichier <span class="text-danger">*</span></label>
+                                                                        <div class="input-group">
+                                                                            <div class="custom-file">
+                                                                                <input type="file" class="custom-file-input" th:field="*{file}" id="file" required>
+                                                                                <label class="custom-file-label" for="file">Choisir le fichier</label>
+                                                                            </div>
+                                                                        </div>
+                                                                        <small th:if="${fileErrMsg}" class="text-danger">[[${fileErrMsg}]]</small><br/>
+                                                                        <small th:if="${fileErrMsg}" class="text-danger">[[${sizeErrorMsg}]]</small><br/>
+                                                                        <small th:if="${fileErrMsg}" class="text-danger">[[${extensionErrorMsg}]]</small>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <button class="btn btn-primary float-right mb-2" type="submit">Charger les fichiers</button>
+
+                                                        </div>
+                                                    </span>
+                                                </form>
+
+                                            </div>
+                                            <!-- /.card-body -->
+                                        </div>
+                                        <!-- /.card -->
+
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                        </div>
+                    </div>
+        </div>
+        <div layout:fragment="specific-scripts">
+            <script th:src="@{/dist/js/demo.js}"></script>
+
+            <!-- Select2 -->
+            <script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
+            <script th:src="@{/plugins/bootstrap-switch/js/bootstrap-switch.min.js}"></script>
+            <script>
+                $(function () {
+                    //Initialize Select2 Elements
+                    $('.select2').select2();
+
+                    //Initialize Select2 Elements
+                    $('.select2bs4').select2({theme: 'bootstrap4'});
+
+                    //SWITCH
+                    $("input[data-bootstrap-switch]").each(function(){
+                        $(this).bootstrapSwitch('state', $(this).prop('checked'));
+                    });
+                });
+            </script>
+
+            <script th:src="@{/plugins/bs-custom-file-input/bs-custom-file-input.min.js}"></script>
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    bsCustomFileInput.init();
+                });
+            </script>
+        </div>
+    </body>
+</html>

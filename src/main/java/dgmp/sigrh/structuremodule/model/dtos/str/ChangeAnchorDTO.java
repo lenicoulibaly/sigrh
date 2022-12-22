@@ -28,6 +28,8 @@ public class ChangeAnchorDTO
     @NotNull(message = "Le sigle de la structure ne peut être nul")
     private String newStrSigle;
 
+    private long strLevel;
+
     @Override
     public boolean equals(Object o)
     {

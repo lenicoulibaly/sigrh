@@ -21,7 +21,7 @@ public interface AgentRepo extends JpaRepository<Agent, Long>
     @Query("select (count(a) > 0) from Agent a where upper(a.email) = upper(:email) and a.agentId <> :idAgent")
     boolean existsByEmail(@Param("email") String email, @Param("idAgent") Long idAgent);
 
-    @Query("select (count(a) > 0) from Agent a where upper(a.emailPro) = upper(:emailPro) or upper(a.email) = upper(:emailPro)")
+    @Query("select (count(a) > 0) from Agent a where upper(a.emailPro) = upper(:emailPro)")
     boolean existsByEmailPro(@Param("emailPro") String emailPro);
 
     @Query("select (count(a) > 0) from Agent a where upper(a.emailPro) = upper(:emailPro) and a.agentId <> :idAgent")
@@ -32,6 +32,9 @@ public interface AgentRepo extends JpaRepository<Agent, Long>
 
     @Query("select a.matricule from Agent a where a.user.userId = ?1")
     String getMatriculeUserId(Long userId);
+
+    @Query("select a.email from Agent a where a.agentId = ?1")
+    String getEmailByAgtId(Long agtId);
 
     @Query("select (count(a) > 0) from Agent a where upper(a.tel) = upper(:tel)")
     boolean existsByTel(@Param("tel") String tel);
@@ -94,13 +97,13 @@ public interface AgentRepo extends JpaRepository<Agent, Long>
     Page<Agent> findAgentByStrAndEtat(long strId, List<EtatRecrutement> states, Pageable pageable);
 
     @Query("select a from Agent  a left join Structure s on a.structure.strId = s.strId where (locate(concat(function('getStrCode', ?1) , '/') , a.structure.strCode) = 1 or s.strId = ?1)and a.etatRecrutement in ?2 and a.status = 'ACTIVE' and " +
-            "(upper(function('strip_accents', a.nom) ) like concat('%', ?3, '%' ) or " +
-            "upper(function('strip_accents', a.prenom) ) like concat('%', ?3, '%' ) or " +
-            "upper(function('strip_accents', a.email) ) like concat('%', ?3, '%' ) or " +
-            "upper(function('strip_accents', a.emailPro) ) like concat('%', ?3, '%' ) or " +
-            "upper(function('strip_accents', a.matricule) ) like concat('%', ?3, '%' ) or " +
-            "upper(function('strip_accents', a.titre) ) like concat('%', ?3, '%' ) or " +
-            "upper(function('strip_accents', a.tel) ) like concat('%', ?3, '%' ) )")
+            "(upper(function('strip_accents', a.nom) ) like concat('%', coalesce(?3, ''), '%' ) or " +
+            "upper(function('strip_accents', a.prenom) ) like concat('%', coalesce(?3, ''), '%' ) or " +
+            "upper(function('strip_accents', a.email) ) like concat('%', coalesce(?3, ''), '%' ) or " +
+            "upper(function('strip_accents', a.emailPro) ) like concat('%', coalesce(?3, ''), '%' ) or " +
+            "upper(function('strip_accents', a.matricule) ) like concat('%', coalesce(?3, ''), '%' ) or " +
+            "upper(function('strip_accents', a.titre) ) like concat('%', coalesce(?3, ''), '%' ) or " +
+            "upper(function('strip_accents', a.tel) ) like concat('%', coalesce(?3, ''), '%' ) )")
     Page<Agent> searchAgentByStrAndEtat(long strId, List<EtatRecrutement> states, String key, Pageable pageable);
 
     @Query("select a from Agent  a left join Structure s on a.structure.strId = s.strId left join Fonction f on a.fonction.idFonction = f.idFonction where (locate(concat(function('getStrCode', :strId) , '/') , s.strCode) = 1 or s.strId = :strId) and a.etatRecrutement in :states and " +
@@ -110,13 +113,13 @@ public interface AgentRepo extends JpaRepository<Agent, Long>
             "a.grade.idGrade in (:gradesIds) and " +
             "a.emploi.idEmploi in (:emploisIds) and " +
             "a.status = 'ACTIVE' and " +
-            "(upper(function('strip_accents', a.nom) ) like concat('%', :searchKey, '%' ) or " +
-            "upper(function('strip_accents', a.prenom) ) like concat('%', :searchKey, '%' ) or " +
-            "upper(function('strip_accents', a.email) ) like concat('%', :searchKey, '%' ) or " +
-            "upper(function('strip_accents', a.emailPro) ) like concat('%', :searchKey, '%' ) or " +
-            "upper(function('strip_accents', a.matricule) ) like concat('%', :searchKey, '%' ) or " +
-            "upper(function('strip_accents', a.titre) ) like concat('%', :searchKey, '%' ) or " +
-            "upper(function('strip_accents', a.tel) ) like concat('%', :searchKey, '%' ) )")
+            "(upper(function('strip_accents', a.nom) ) like concat('%', coalesce(:searchKey, '') , '%' ) or " +
+            "upper(function('strip_accents', a.prenom) ) like concat('%', coalesce(:searchKey, ''), '%' ) or " +
+            "upper(function('strip_accents', a.email) ) like concat('%', coalesce(:searchKey, ''), '%' ) or " +
+            "upper(function('strip_accents', a.emailPro) ) like concat('%', coalesce(:searchKey, ''), '%' ) or " +
+            "upper(function('strip_accents', a.matricule) ) like concat('%', coalesce(:searchKey, ''), '%' ) or " +
+            "upper(function('strip_accents', a.titre) ) like concat('%', coalesce(:searchKey, ''), '%' ) or " +
+            "upper(function('strip_accents', a.tel) ) like concat('%', coalesce(:searchKey, ''), '%' ) )")
     Page<Agent> searchAgentsMultiCriteres(@Param("strId") long strId, @Param("searchKey") String key, @Param("states") List<EtatRecrutement> states,
                                         @Param("civilities") List<Civility> civilities,
                                         @Param("typeAgents") List<TypeAgent> typeAgents,
@@ -126,18 +129,26 @@ public interface AgentRepo extends JpaRepository<Agent, Long>
                                        Pageable pageable);
 
     @Query("select a from Agent  a left join Structure s on a.structure.strId = s.strId left join Fonction f on a.fonction.idFonction = f.idFonction where (locate(concat(function('getStrCode', :strId) , '/') , a.structure.strCode) = 1 or s.strId = :strId) and a.status = 'ACTIVE' and " +
-            "(upper(function('strip_accents', a.nom) ) like concat('%', :searchKey, '%' ) or " +
-            "upper(function('strip_accents', a.prenom) ) like concat('%', :searchKey, '%' ) or " +
-            "upper(function('strip_accents', a.email) ) like concat('%', :searchKey, '%' ) or " +
-            "upper(function('strip_accents', a.emailPro) ) like concat('%', :searchKey, '%' ) or " +
-            "upper(function('strip_accents', a.matricule) ) like concat('%', :searchKey, '%' ) or " +
-            "upper(function('strip_accents', a.titre) ) like concat('%', :searchKey, '%' ) or " +
-            "upper(function('strip_accents', a.tel) ) like concat('%', :searchKey, '%' ) )")
+            "(upper(function('strip_accents', a.nom) ) like concat('%', coalesce(:searchKey, ''), '%' ) or " +
+            "upper(function('strip_accents', a.prenom) ) like concat('%', coalesce(:searchKey, ''), '%' ) or " +
+            "upper(function('strip_accents', a.email) ) like concat('%', coalesce(:searchKey, ''), '%' ) or " +
+            "upper(function('strip_accents', a.emailPro) ) like concat('%', coalesce(:searchKey, ''), '%' ) or " +
+            "upper(function('strip_accents', a.matricule) ) like concat('%', coalesce(:searchKey, ''), '%' ) or " +
+            "upper(function('strip_accents', a.titre) ) like concat('%', coalesce(:searchKey, ''), '%' ) or " +
+            "upper(function('strip_accents', a.tel) ) like concat('%', coalesce(:searchKey, ''), '%' ) )")
     Page<Agent> searchAgents(@Param("strId")Long visibilityId, @Param("searchKey") String key, Pageable pageable);
 
     @Query("select a.user.userId from Agent  a where a.agentId = ?1")
     Long getUserId(Long idAgent);
 
+    @Query("select a.agentId from Agent a where a.user.userId = ?1")
+    Long getAgtIdByUserId(Long userId);
+
     @Query("select concat(a.nom, '_', a.prenom) from Agent a where a.agentId = ?1")
     String getNameToSnackFormatByAgtId(Long agtId);
+
+    Agent findByMatricule(String matricule);
+    Agent findByEmail(String email);
+    Agent findByEmailPro(String emailPro);
+    Agent findByTel(String tel);
 }

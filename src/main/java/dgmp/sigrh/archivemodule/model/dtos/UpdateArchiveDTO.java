@@ -9,9 +9,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PastOrPresent;
+import java.time.LocalDate;
 
-
-@ValidFileExtension
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class UpdateArchiveDTO
 {
@@ -26,8 +26,10 @@ public class UpdateArchiveDTO
     @ExistingOrNullAgtId(message = "L'ID de l'agent est invalide")
     @NotNull(message = "L'ID de l'agent ne peut être nul") @NotBlank(message = "L'ID de l'agent ne peut être nul")
     private Long agtId;
-
+    @PastOrPresent(message = "La date de production ne peut être future")
+    private LocalDate productionDate;
+    private LocalDate expirationDate;
     @NotNull(message = "Le fichier ne peut être nulle")
-    @ValidFileSize
+    @ValidFileSize @ValidFileExtension
     private MultipartFile file;
 }

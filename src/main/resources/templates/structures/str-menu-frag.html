@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="fr" th:fragment="str-menu">
     <div class="dropdown mx-1">
-        <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" th:if="${@scm.hasAnyAuthority('SEE-STR-LST', 'CRT-STR', 'SEE-STR-TRSH')}">
             Structure
         </a>
         <div class="dropdown-menu">
-            <a class="dropdown-item" href="/sigrh/structures/str-list">Liste des structures</a>
-            <a class="dropdown-item" href="/sigrh/structures/new-str-form">Nouvelle structure</a>
-            <a class="dropdown-item" href="/sigrh/structures/deleted-str-list">Corbeille</a>
+            <a class="dropdown-item" href="/sigrh/structures/str-list" th:if="${@scm.hasAuthority('SEE-STR-LST')}">Liste des structures</a>
+            <a class="dropdown-item" href="/sigrh/structures/new-str-form" th:if="${@scm.hasAuthority('CRT-STR')}">Nouvelle structure</a>
+            <a class="dropdown-item" href="/sigrh/structures/deleted-str-list" th:if="${@scm.hasAuthority('SEE-STR-TRSH')}">Corbeille</a>
         </div>
     </div>
 
     <div class="dropdown mx-1">
-        <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" th:if="${@scm.hasAnyAuthority('SEE-POST-LST', 'CRT-POST', 'SEE-POST-TRSH')}">
             Posts
         </a>
         <div class="dropdown-menu">
-            <a class="dropdown-item" href="/sigrh/posts/posts-list">Liste des posts</a>
-            <a class="dropdown-item" href="/sigrh/posts/new-post-form">Nouveau post</a>
-            <a class="dropdown-item" href="/sigrh/posts/deleted-posts-list">Corbeille</a>
+            <a class="dropdown-item" href="/sigrh/posts/posts-list" th:if="${@scm.hasAuthority('SEE-POST-LST')}">Liste des posts</a>
+            <a class="dropdown-item" href="/sigrh/posts/new-post-form" th:if="${@scm.hasAuthority('CRT-POST')}">Nouveau post</a>
+            <a class="dropdown-item" href="/sigrh/posts/deleted-posts-list" th:if="${@scm.hasAuthority('SEE-POST-TRSH')}">Corbeille</a>
         </div>
     </div>
 </html>

@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="fr" th:fragment="agent-menu">
-    <div class="dropdown mx-1">
+    <div class="dropdown mx-1"  th:if="${@scm.hasMenu('REC')}">
         <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             Recrutement
         </a>
         <div class="dropdown-menu">
-            <a class="dropdown-item" href="/sigrh/agents/list">Recrutements en cours</a>
-            <a class="dropdown-item" href="/sigrh/structures/new-str-form">Nouveau recrutement</a>
+            <a class="dropdown-item" href="#"  th:if="${@scm.hasAuthority('SEE-REC-LST')}">Recrutements en cours</a>
+            <a class="dropdown-item" href="#"  th:if="${@scm.hasAuthority('INIT-NEW-REC')}">Nouveau recrutement</a>
         </div>
     </div>
 
-    <div class="dropdown mx-1">
+    <div class="dropdown mx-1"  th:if="${@scm.hasMenu('PERS')}">
         <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             Le personnel
         </a>
         <div class="dropdown-menu">
-            <a class="dropdown-item" href="/sigrh/agents/list">Liste du personnel</a>
-            <a class="dropdown-item" href="/sigrh/agents/register/form">Enregistrer le personnel</a>
+            <a class="dropdown-item" href="/sigrh/agents/list"  th:if="${@scm.hasAuthority('SEE-PERS-LST')}">Liste du personnel</a>
+            <a class="dropdown-item" href="/sigrh/agents/register/form"  th:if="${@scm.hasAuthority('RGST-PERS')}">Enregistrer le personnel</a>
         </div>
     </div>
 </html>

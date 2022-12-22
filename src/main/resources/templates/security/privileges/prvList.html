@@ -46,6 +46,7 @@
                                             <!-- /.card-header -->
                                             <div class="card-body p-0">
                                                 <form class="form-horizontal" th:action="@{/sigrh/privileges/prv-list}">
+                                                    <input name="pageNum" value="0" type="hidden">
                                                     <div class="card-body mt-2 m-0 p-0">
                                                         <div class="form-group row">
                                                             <input type="hidden" th:value="${currentPage}" name="pageNum">
@@ -65,7 +66,7 @@
                                                                         </td>
                                                                     </tr>
                                                                 </table>
-                                                                <a id="lnk-new-user" th:href="@{/sigrh/security/privileges/new-prv-form}" class="btn btn-primary float-right mr-4" >Nouveau privilège</a>
+                                                                <a id="lnk-new-prv" th:href="@{/sigrh/security/privileges/new-prv-form}" class="btn btn-primary float-right mr-4" >Nouveau privilège</a>
                                                             </div>
 
                                                         </div>
@@ -78,6 +79,7 @@
                                                     <tr>
                                                         <th>Nom</th>
                                                         <th>Code</th>
+                                                        <th>Type</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -85,6 +87,9 @@
                                                         <td>[[${prv.privilegeName}]]</td>
                                                         <td>
                                                             [[${prv.privilegeCode}]]
+                                                        </td>
+                                                        <td>
+                                                            [[${prv.prvTypeName}]]
                                                         </td>
                                                     </tr>
                                                     </tbody>

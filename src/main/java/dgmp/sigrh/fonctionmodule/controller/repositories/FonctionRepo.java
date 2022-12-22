@@ -15,7 +15,7 @@ public interface FonctionRepo extends JpaRepository<Fonction, Long> {
     @Query("select (count(f) > 0) from Fonction f where f.idFonction <> ?1 and upper(f.nomFonction) = upper(?2)")
     boolean existsByNomFonction(Long idFonction, String nomFonction);
 
-    @Query("select f from Fonction f where upper(f.nomFonction) like upper(concat('%', ?1, '%')) and f.status='ACTIVE'")
+    @Query("select f from Fonction f where upper(f.nomFonction) like upper(concat('%', coalesce(?1, ''), '%')) and f.status='ACTIVE'")
     Page<Fonction> searchPageFonction(String searchKey, PageRequest of);
 
     @Query("select f from Fonction f where f.codeFonction ='FCT_AGT'")
@@ -38,10 +38,10 @@ public interface FonctionRepo extends JpaRepository<Fonction, Long> {
     @Query("select f.idFonction from Fonction f where f.status = 'ACTIVE'")
     List<Long> getActiveFonctionsIds();
 
-    @Query("select f from Fonction f where upper(f.nomFonction) like upper(concat('%', ?1, '%')) and f.status='DELETED'")
+    @Query("select f from Fonction f where upper(f.nomFonction) like upper(concat('%', coalesce(?1, ''), '%')) and f.status='DELETED'")
     Page<Fonction> searchDeletedPageFonction(String searchKey, PageRequest of);
 
-    @Query("select count(f) from Fonction f where upper(f.nomFonction) like upper(concat('%', ?1, '%')) and f.status = 'DELETED'")
+    @Query("select count(f) from Fonction f where upper(f.nomFonction) like upper(concat('%', coalesce(?1, ''), '%')) and f.status = 'DELETED'")
     long countDeletedBySearchKey(String searchKey);
 
     @Query("select f.fonctionTopManager from Fonction f where f.idFonction = ?1")

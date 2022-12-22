@@ -1,0 +1,6 @@
+Création de tous les privilèges;
+Création des rôles de base (Facultatif);
+Création des Menus;
+Création de la structure de base (SYS);
+Création de l'utilisateur administrateur global (VIA une IHM pour la définition du username et mot de passe)
+Création de l'assignation ADMIN Global pour cet utilisateur

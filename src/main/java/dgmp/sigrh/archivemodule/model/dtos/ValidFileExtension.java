@@ -1,6 +1,7 @@
 package dgmp.sigrh.archivemodule.model.dtos;
 
 import dgmp.sigrh.archivemodule.model.constants.ArchivageConstants;
+import dgmp.sigrh.archivemodule.model.enums.ArchiveTypes;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
@@ -14,9 +15,9 @@ import java.lang.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Target({ElementType.TYPE, ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = {ValidFileExtension.ValidFileExtensionValidator.class, ValidFileExtension.ValidFileExtensionValidatorOnCreate.class, ValidFileExtension.ValidFileExtensionValidatorOnUpdate.class})
+@Constraint(validatedBy = {ValidFileExtension.ValidFileExtensionValidator.class, ValidFileExtension.ValidFileExtensionValidatorOnDTO.class})
 @Documented
 public @interface ValidFileExtension
 {
@@ -33,42 +34,25 @@ public @interface ValidFileExtension
             if(file == null) return true;
             if(file.getOriginalFilename().equals("")) return true;
             String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-            List<String> authorizedExtensions = ArchivageConstants.PHOTO_AUTHORIZED_TYPE.stream().map(String::toLowerCase).collect(Collectors.toList());
+            List<String> authorizedExtensions =  ArchivageConstants.DOCUMENT_AUTHORIZED_TYPE.stream().map(String::toLowerCase).collect(Collectors.toList());
             return authorizedExtensions.contains(extension.toLowerCase()) ;
         }
     }
 
     @Component @RequiredArgsConstructor
-    class ValidFileExtensionValidatorOnCreate implements ConstraintValidator<ValidFileExtension, CreateArchiveDTO>
+    class ValidFileExtensionValidatorOnDTO implements ConstraintValidator<ValidFileExtension, ArchiveReqDTO>
     {
         @Override
-        public boolean isValid(CreateArchiveDTO dto, ConstraintValidatorContext context)
+        public boolean isValid(ArchiveReqDTO dto, ConstraintValidatorContext context)
         {
-            if(dto == null) return true;
-            if(dto.getArchiveTypeCode() == null) return true;
-            String extension = FilenameUtils.getExtension(dto.getFile().getOriginalFilename());
-            List<String> authorizedExtensions =
-                    dto.getArchiveTypeCode().equals("PRF_PHT")?
-                            ArchivageConstants.PHOTO_AUTHORIZED_TYPE : ArchivageConstants.DOCUMENT_AUTHORIZED_TYPE;
-
-            return authorizedExtensions.contains(extension) ;
-        }
-    }
-
-    @Component @RequiredArgsConstructor
-    class ValidFileExtensionValidatorOnUpdate implements ConstraintValidator<ValidFileExtension, UpdateArchiveDTO>
-    {
-        @Override
-        public boolean isValid(UpdateArchiveDTO dto, ConstraintValidatorContext context)
-        {
-            if(dto == null) return true;
-            if(dto.getArchiveTypeCode() == null) return true;
-            String extension = FilenameUtils.getExtension(dto.getFile().getOriginalFilename());
-            List<String> authorizedExtensions =
-                    dto.getArchiveTypeCode().equals("PRF_PHT") ?
-                            ArchivageConstants.PHOTO_AUTHORIZED_TYPE : ArchivageConstants.DOCUMENT_AUTHORIZED_TYPE;
-
-            return authorizedExtensions.contains(extension) ;
+            MultipartFile file = dto.getFile();
+            if(ArchiveTypes.getByUniqueCode(dto.getArchiveTypeCode()) == null) return false;
+            List<String> authorizedExtensions = ArchiveTypes.getByUniqueCode(dto.getArchiveTypeCode()).getAuthorizedFiles();
+            if(file == null) return true;
+            if(file.getOriginalFilename().equals("")) return true;
+            String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+            authorizedExtensions =  authorizedExtensions.stream().map(String::toLowerCase).collect(Collectors.toList());
+            return authorizedExtensions.contains(extension.toLowerCase()) ;
         }
     }
 }

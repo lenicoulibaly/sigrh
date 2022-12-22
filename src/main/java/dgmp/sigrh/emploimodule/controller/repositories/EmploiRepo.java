@@ -43,10 +43,10 @@ public interface EmploiRepo extends JpaRepository<Emploi, Long>
     @Modifying
     int updateEmploi(Long idemploi, String nomEmploi);
 
-    @Query("select e from Emploi e where upper(e.nomEmploi) like upper(concat('%', ?1, '%')) and e.status='DELETED'")
+    @Query("select e from Emploi e where upper(e.nomEmploi) like upper(concat('%', coalesce(?1, ''), '%')) and e.status='DELETED'")
     Page<Emploi> searchDeletedPageEmploi(String searchKey, PageRequest of);
 
-    @Query("select count(e) from Emploi e where upper(e.nomEmploi) like upper(concat('%', ?1, '%')) and e.status='DELETED'")
+    @Query("select count(e) from Emploi e where upper(e.nomEmploi) like upper(concat('%', coalesce(?1, ''), '%')) and e.status='DELETED'")
     long countDeletedBySearchKey(String searchKey);
 
 

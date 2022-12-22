@@ -30,7 +30,7 @@ public @interface ValidArchiveType
         public boolean isValid(String value, ConstraintValidatorContext context)
         {
             if(value == null) return true;
-            return typeRepo.typeGroupHasChild(TypeGroup.ARCHIVE.name(), value) ;
+            return typeRepo.typeGroupHasChild(TypeGroup.ARCHIVE, value) ;
         }
     }
 }

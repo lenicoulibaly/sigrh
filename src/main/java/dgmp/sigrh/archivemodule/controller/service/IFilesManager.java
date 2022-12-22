@@ -8,4 +8,8 @@ public interface IFilesManager {
 	public byte[] downloadFile(String filePAth);
 
     String generatePath(MultipartFile file, String typeCode, String agentName, Long agtId, Long archiveId);
+
+	String generateHistoPath(MultipartFile file, String typeCode, String agentName, Long agtId, Long archiveId, Long histoId);
+
+	void renameFile(String oldPath, String newPath);
 }

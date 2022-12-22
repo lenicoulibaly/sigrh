@@ -105,6 +105,7 @@ public class StrService implements IStrService
     {
         String actionId = UUID.randomUUID().toString();
         ChangeAnchorDTO dtoBeforeUpdate = strRepo.getChangeAnchorDTO(dto.getStrId());
+        long oldStrLevel = dtoBeforeUpdate.getStrLevel();
         Structure str = strMapper.mapToStructure(dto);
         if(dtoBeforeUpdate.equals(dto)) return strMapper.mapToReadStrDTO(str); // Si l'objet n'a pas été modifié, on ne fait aucune action
 
@@ -113,12 +114,14 @@ public class StrService implements IStrService
         if(!Objects.equals(dtoBeforeUpdate.getNewParentId(), dto.getNewParentId()))
         {
             str.setStrCode(this.generateStrCode(str));
+            long newStrLevel = str.getStrLevel();
             Long childrenMaxLevel = strRepo.getChildrenMaxLevel(oldStrCode);
             childrenMaxLevel = childrenMaxLevel == null ? 0L : childrenMaxLevel;
-            for(long level = str.getStrLevel() + 1; level <= childrenMaxLevel; level++)
+            for(long level = oldStrLevel+ 1; level <= childrenMaxLevel; level++)
             {
                 List<Structure> children = strRepo.findChildrenByLevel(oldStrCode, level);
                 children.forEach(s->{
+                    s.setStrLevel(s.getStrLevel() + (newStrLevel-oldStrLevel));
                     s.setStrCode(this.generateStrCode(s));
                     s = strRepo.save(s);
                     strHistoService.storeEntity(s, StrEventType.CHANGE_STR_CODE, actionId, StrEventType.CHANGE_STR_ANCHOR.name());
@@ -266,7 +269,6 @@ public class StrService implements IStrService
         Page<Structure> strPage = parentId == null ?
                 new PageImpl<>(new ArrayList<>(), PageRequest.of(pageNum, pageSize), 0) :
                 strRepo.searchStr(parentId, key==null ? "" : StringUtils.stripAccentsToUpperCase(key.trim()), ACTIVE, PageRequest.of(pageNum, pageSize));
-
         List<ReadStrDTO> strDTOS = strPage.stream().map(strMapper::mapToReadStrDTO).collect(Collectors.toList());
 
         return new PageImpl<>(strDTOS, PageRequest.of(pageNum, pageSize), strPage.getTotalElements());

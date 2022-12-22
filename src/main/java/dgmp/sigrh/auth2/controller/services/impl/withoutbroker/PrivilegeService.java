@@ -51,9 +51,9 @@ public class PrivilegeService implements IPrivilegeService
     @Override
     public Page<ReadPrivilegeDTO> searchPrivileges(String searchKey, Pageable pageable)
     {
-        Page<AppPrivilege> rolePage = prvRepo.searchPrivileges(StringUtils.stripAccentsToUpperCase(searchKey), pageable);
-        List<ReadPrivilegeDTO> readRoleDTOS = rolePage.stream().map(prvMapper::mapToReadPrivilegeDTO).collect(Collectors.toList());
-        return new PageImpl<>(readRoleDTOS, pageable, rolePage.getTotalElements());
+        Page<AppPrivilege> privilegePage = prvRepo.searchPrivileges(StringUtils.stripAccentsToUpperCase(searchKey), pageable);
+        List<ReadPrivilegeDTO> readPrivilegeDTOS = privilegePage.stream().map(prvMapper::mapToReadPrivilegeDTO).collect(Collectors.toList());
+        return new PageImpl<>(readPrivilegeDTOS, pageable, privilegePage.getTotalElements());
     }
 
     @Override

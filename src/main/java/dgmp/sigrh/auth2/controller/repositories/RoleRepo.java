@@ -25,7 +25,7 @@ public interface RoleRepo extends JpaRepository<AppRole, Long>
     @Query("select (count(a) > 0) from AppRole a where upper(a.roleCode) = upper(?1) and a.roleId <> ?2")
     boolean alreadyExistsByCode(String roleCode, Long roleId);
 
-    @Query("select a from AppRole a where upper(function('strip_accents', a.roleCode)) like upper(concat('%', ?1, '%')) or upper(function('strip_accents', a.roleName)) like upper(concat('%', ?1, '%')) order by a.roleName")
+    @Query("select a from AppRole a where upper(function('strip_accents', a.roleCode)) like upper(concat('%', coalesce(?1, ''), '%')) or upper(function('strip_accents', a.roleName)) like upper(concat('%', coalesce(?1, ''), '%')) order by a.roleName")
     Page<AppRole> searchRoles(String searchKey, Pageable pageable);
 
 

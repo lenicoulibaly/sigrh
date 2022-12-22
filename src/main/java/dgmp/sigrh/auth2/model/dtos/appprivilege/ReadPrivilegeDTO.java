@@ -8,4 +8,5 @@ public class ReadPrivilegeDTO
     private Long privilegeId;
     private String privilegeCode;
     private String privilegeName;
+    private String prvTypeName;
 }

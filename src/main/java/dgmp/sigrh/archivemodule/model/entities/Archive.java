@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -22,6 +23,8 @@ public class Archive
 	private String archiveNum;
 	private String description;
 	private String path;
+	private LocalDate productionDate;
+	private LocalDate expirationDate;
 	@ManyToOne @JoinColumn(name = "TYPE_ID")
 	private Type archiveType;
 	@ManyToOne

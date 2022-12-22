@@ -23,26 +23,26 @@ public interface PostRepo extends JpaRepository<Post, Long>
     long countNoneVacantPostsByPostGroup(Long postGroupId);
 
     @Query("select count(p) from PostGroup p left join Structure s on p.structure.strId = s.strId where " +
-           "(upper(p.intitule) like upper(concat('%', ?1, '%')) or " +
-           "upper(p.postDescription) like upper(concat('%', ?1, '%')) or " +
-           "upper(p.fonction.nomFonction) like upper(concat('%', ?1, '%')) or " +
-           "upper(p.structure.strName) like upper(concat('%', ?1, '%')) or " +
-           "upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', ?1, '%'))) and p.status = 'ACTIVE'")
+           "(upper(p.intitule) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+           "upper(p.postDescription) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+           "upper(p.fonction.nomFonction) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+           "upper(p.structure.strName) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+           "upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', coalesce(?1, ''), '%'))) and p.status = 'ACTIVE'")
     long countPosts(String key);
 
     @Query("select count(p) from PostGroup p left join Structure s on p.structure.strId = s.strId where " +
             "(s.strId = ?1 or locate(concat(function('getStrCode', ?1), '/'), s.strCode) = 1) and "+
-            "(upper(p.intitule) like upper(concat('%', ?1, '%')) or " +
-            "upper(p.postDescription) like upper(concat('%', ?1, '%')) or " +
-            "upper(p.fonction.nomFonction) like upper(concat('%', ?1, '%')) or " +
-            "upper(p.structure.strName) like upper(concat('%', ?1, '%')) or " +
-            "upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', ?1, '%'))) and p.status = 'ACTIVE'")
+            "(upper(p.intitule) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(p.postDescription) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(p.fonction.nomFonction) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(p.structure.strName) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', coalesce(?2, ''), '%'))) and p.status = 'ACTIVE'")
     long countPosts(long strId, String key);
 
-    @Query("select count(p) from PostGroup p left join Structure s on p.structure.strId = s.strId where (upper(p.intitule) like upper(concat('%', ?1, '%')) or upper(p.postDescription) like upper(concat('%', ?1, '%')) or upper(p.fonction.nomFonction) like upper(concat('%', ?1, '%')) or upper(p.structure.strName) like upper(concat('%', ?1, '%')) or upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', ?1, '%')) or p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?2)) and p.status = 'ACTIVE'")
+    @Query("select count(p) from PostGroup p left join Structure s on p.structure.strId = s.strId where (upper(p.intitule) like upper(concat('%', coalesce(?1, ''), '%')) or upper(p.postDescription) like upper(concat('%', coalesce(?1, ''), '%')) or upper(p.fonction.nomFonction) like upper(concat('%', coalesce(?1, ''), '%')) or upper(p.structure.strName) like upper(concat('%', coalesce(?1, ''), '%')) or upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', coalesce(?1, ''), '%')) or p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?2)) and p.status = 'ACTIVE'")
     long countPostsWithEmplois(String key, Set<Long> emplpoiIds);
 
-    @Query("select count(p) from PostGroup p left join Structure s on p.structure.strId = s.strId where (upper(p.intitule) like upper(concat('%', ?1, '%')) or upper(p.postDescription) like upper(concat('%', ?1, '%')) or upper(p.fonction.nomFonction) like upper(concat('%', ?1, '%')) or upper(p.structure.strName) like upper(concat('%', ?1, '%')) or upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', ?1, '%'))) and p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?2) and p.status = 'ACTIVE'")
+    @Query("select count(p) from PostGroup p left join Structure s on p.structure.strId = s.strId where (upper(p.intitule) like upper(concat('%', coalesce(?1, ''), '%')) or upper(p.postDescription) like upper(concat('%', coalesce(?1, ''), '%')) or upper(p.fonction.nomFonction) like upper(concat('%', coalesce(?1, ''), '%')) or upper(p.structure.strName) like upper(concat('%', coalesce(?1, ''), '%')) or upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', coalesce(?1, ''), '%'))) and p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?2) and p.status = 'ACTIVE'")
     long countPostsInEmplois(String key, Set<Long> emplpoiIds);
 
 
@@ -53,26 +53,26 @@ public interface PostRepo extends JpaRepository<Post, Long>
     long countNoneVacantByStr(long strId);
 
     @Query("select p from PostGroup p left join Structure s on p.structure.strId = s.strId where " +
-            "(upper(function('strip_accents', p.intitule) ) like upper(concat('%', ?1, '%')) or " +
-            "upper(function('strip_accents', p.postDescription)) like upper(concat('%', ?1, '%')) or " +
-            "upper(function('strip_accents', p.fonction.nomFonction)) like upper(concat('%', ?1, '%')) or " +
-            "upper(function('strip_accents', p.structure.strName)) like upper(concat('%', ?1, '%')) or " +
-            "upper(coalesce(function('strip_accents', p.structure.strSigle), '') ) like upper(concat('%', ?1, '%'))) and " +
+            "(upper(function('strip_accents', p.intitule) ) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+            "upper(function('strip_accents', p.postDescription)) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+            "upper(function('strip_accents', p.fonction.nomFonction)) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+            "upper(function('strip_accents', p.structure.strName)) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+            "upper(coalesce(function('strip_accents', p.structure.strSigle), '') ) like upper(concat('%', coalesce(?1, ''), '%'))) and " +
             "p.status = 'ACTIVE'")
     Page<PostGroup> searchPostGroups(String key, Pageable pageable);
 
 
 
-    @Query("select p from PostGroup p left join Structure s on p.structure.strId = s.strId where (upper(p.intitule) like upper(concat('%', ?1, '%')) or upper(p.postDescription) like upper(concat('%', ?1, '%')) or upper(p.fonction.nomFonction) like upper(concat('%', ?1, '%')) or upper(p.structure.strName) like upper(concat('%', ?1, '%')) or upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', ?1, '%')) or p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?2)) and p.status = 'ACTIVE'")
+    @Query("select p from PostGroup p left join Structure s on p.structure.strId = s.strId where (upper(p.intitule) like upper(concat('%', coalesce(?1, ''), '%')) or upper(p.postDescription) like upper(concat('%', coalesce(?1, ''), '%')) or upper(p.fonction.nomFonction) like upper(concat('%', coalesce(?1, ''), '%')) or upper(p.structure.strName) like upper(concat('%', coalesce(?1, ''), '%')) or upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', coalesce(?1, ''), '%')) or p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?2)) and p.status = 'ACTIVE'")
     Page<PostGroup> searchPostsWithEmplois(String key, Set<Long> emplpoiIds, Pageable pageable);
 
-    @Query("select p from PostGroup p left join Structure s on p.structure.strId = s.strId where (upper(p.intitule) like upper(concat('%', ?1, '%')) or upper(p.postDescription) like upper(concat('%', ?1, '%')) or upper(p.fonction.nomFonction) like upper(concat('%', ?1, '%')) or upper(p.structure.strName) like upper(concat('%', ?1, '%')) or upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', ?1, '%'))) and p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?2) and p.status = 'ACTIVE'")
+    @Query("select p from PostGroup p left join Structure s on p.structure.strId = s.strId where (upper(p.intitule) like upper(concat('%', coalesce(?1, ''), '%')) or upper(p.postDescription) like upper(concat('%', coalesce(?1, ''), '%')) or upper(p.fonction.nomFonction) like upper(concat('%', coalesce(?1, ''), '%')) or upper(p.structure.strName) like upper(concat('%', coalesce(?1, ''), '%')) or upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', coalesce(?1, ''), '%'))) and p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?2) and p.status = 'ACTIVE'")
     Page<PostGroup> searchPostsInEmplois(String key, Set<Long> emplpoiIds, Pageable pageable);
 
-    @Query("select p from PostGroup p left join Structure s on p.structure.strId = s.strId where (upper(p.intitule) like upper(concat('%', ?1, '%')) or upper(p.postDescription) like upper(concat('%', ?1, '%')) or upper(p.fonction.nomFonction) like upper(concat('%', ?1, '%')) or upper(p.structure.strName) like upper(concat('%', ?1, '%')) or upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', ?1, '%')) or p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?2)) and p.status = 'ACTIVE'")
+    @Query("select p from PostGroup p left join Structure s on p.structure.strId = s.strId where (upper(p.intitule) like upper(concat('%', coalesce(?1, ''), '%')) or upper(p.postDescription) like upper(concat('%', coalesce(?1, ''), '%')) or upper(p.fonction.nomFonction) like upper(concat('%', coalesce(?1, ''), '%')) or upper(p.structure.strName) like upper(concat('%', coalesce(?1, ''), '%')) or upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', coalesce(?1, ''), '%')) or p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?2)) and p.status = 'ACTIVE'")
     List<PostGroup> searchPostsWithEmplois(String key, Set<Long> emplpoiIds);
 
-    @Query("select p from PostGroup p left join Structure s on p.structure.strId = s.strId where (upper(p.intitule) like upper(concat('%', ?1, '%')) or upper(p.postDescription) like upper(concat('%', ?1, '%')) or upper(p.fonction.nomFonction) like upper(concat('%', ?1, '%')) or upper(p.structure.strName) like upper(concat('%', ?1, '%')) or upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', ?1, '%'))) and p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?2) and p.status = 'ACTIVE'")
+    @Query("select p from PostGroup p left join Structure s on p.structure.strId = s.strId where (upper(p.intitule) like upper(concat('%', coalesce(?1, ''), '%')) or upper(p.postDescription) like upper(concat('%', coalesce(?1, ''), '%')) or upper(p.fonction.nomFonction) like upper(concat('%', coalesce(?1, ''), '%')) or upper(p.structure.strName) like upper(concat('%', coalesce(?1, ''), '%')) or upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', coalesce(?1, ''), '%'))) and p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?2) and p.status = 'ACTIVE'")
     List<PostGroup> searchPostsInEmplois(String key, Set<Long> emplpoiIds);
 
 
@@ -101,41 +101,41 @@ public interface PostRepo extends JpaRepository<Post, Long>
 
     @Query("select count(pg) from PostGroup pg left join Structure s on (pg.structure.strId = s.strId) where " +
             "(s.strId = ?1 or locate(concat(function('getStrCode', ?1) , '/'), s.strCode) = 1) and "+
-            "(upper(function('strip_accents', pg.intitule)) like upper(concat('%', ?2, '%')) or " +
-            "upper(coalesce(function('strip_accents', pg.postDescription), ?2) ) like upper(concat('%', ?2, '%')) or " +
-            "upper(function('strip_accents', pg.fonction.nomFonction)) like upper(concat('%', ?2, '%')) or " +
-            "upper(function('strip_accents', pg.structure.strName)) like upper(concat('%', ?2, '%')) or " +
-            "upper(coalesce(function('strip_accents', pg.structure.strSigle), '')) like upper(concat('%', ?2, '%'))) and pg.status = 'ACTIVE'")
+            "(upper(function('strip_accents', pg.intitule)) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(coalesce(function('strip_accents', pg.postDescription), coalesce(?2, '')) ) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(function('strip_accents', pg.fonction.nomFonction)) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(function('strip_accents', pg.structure.strName)) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(coalesce(function('strip_accents', pg.structure.strSigle), '')) like upper(concat('%', coalesce(?2, ''), '%'))) and pg.status = 'ACTIVE'")
     long countPostGroups(long strId, String key);
 
     @Query("select pg from PostGroup pg left join Structure s on pg.structure.strId = s.strId where " +
             "(s.strId = ?1 or locate(concat(function('getStrCode', ?1), '/'), s.strCode) = 1) and "+
-            "(upper(function('strip_accents', pg.intitule)) like upper(concat('%', ?2, '%')) or " +
-            "upper(coalesce(function('strip_accents', pg.postDescription), ?2) ) like upper(concat('%', ?2, '%')) or " +
-            "upper(function('strip_accents', pg.fonction.nomFonction)) like upper(concat('%', ?2, '%')) or " +
-            "upper(function('strip_accents', pg.structure.strName)) like upper(concat('%', ?2, '%')) or " +
-            "upper(coalesce(function('strip_accents', pg.structure.strSigle), '')) like upper(concat('%', ?2, '%'))) and pg.status = 'ACTIVE'")
+            "(upper(function('strip_accents', pg.intitule)) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(coalesce(function('strip_accents', pg.postDescription), coalesce(?2, '')) ) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(function('strip_accents', pg.fonction.nomFonction)) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(function('strip_accents', pg.structure.strName)) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(coalesce(function('strip_accents', pg.structure.strSigle), '')) like upper(concat('%', coalesce(?2, ''), '%'))) and pg.status = 'ACTIVE'")
     Page<PostGroup> searchPostGroups(long strId, String key, Pageable pageable);
 
 
     @Query("select count(pg) from PostGroup pg left join Post p on (pg.postGroupId = p.postGroup.postGroupId) left join Structure s on (pg.structure.strId = s.strId) where " +
             "(s.strId = ?1 or locate(concat(function('getStrCode', ?1) , '/'), s.strCode) = 1) and "+
-            "(upper(function('strip_accents', pg.intitule)) like upper(concat('%', ?2, '%')) or " +
-            "upper(coalesce(function('strip_accents', pg.postDescription), ?2) ) like upper(concat('%', ?2, '%')) or " +
-            "upper(function('strip_accents', pg.fonction.nomFonction)) like upper(concat('%', ?2, '%')) or " +
-            "upper(function('strip_accents', pg.structure.strName)) like upper(concat('%', ?2, '%')) or " +
-            "upper(coalesce(function('strip_accents', pg.structure.strSigle), '') ) like upper(concat('%', ?2, '%'))) and " +
+            "(upper(function('strip_accents', pg.intitule)) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(coalesce(function('strip_accents', pg.postDescription), coalesce(?2, '')) ) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(function('strip_accents', pg.fonction.nomFonction)) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(function('strip_accents', pg.structure.strName)) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(coalesce(function('strip_accents', pg.structure.strSigle), '') ) like upper(concat('%', coalesce(?2, ''), '%'))) and " +
             "(select count(post) from Post post where post.postGroup.postGroupId = pg.postGroupId and post.vacant = true)>0 and " +
             "p.vacant =true and p.status = 'ACTIVE' and pg.status = 'ACTIVE'")
     long countPostGroupHavingVacantPosts(long strId, String key);
 
     @Query("select pg from PostGroup pg left join Post p left join Structure s on pg.postGroupId = p.postGroup.postGroupId and pg.structure.strId = s.strId where " +
             "(s.strId = ?1 or locate(concat(function('getStrCode', ?1), '/'), s.strCode) = 1) and "+
-            "(upper(function('strip_accents', pg.intitule)) like upper(concat('%', ?2, '%')) or " +
-            "upper(coalesce(function('strip_accents', pg.postDescription), ?2) ) like upper(concat('%', ?2, '%')) or " +
-            "upper(function('strip_accents', pg.fonction.nomFonction)) like upper(concat('%', ?2, '%')) or " +
-            "upper(function('strip_accents', pg.structure.strName)) like upper(concat('%', ?2, '%')) or " +
-            "upper(coalesce(function('strip_accents', pg.structure.strSigle), '') ) like upper(concat('%', ?2, '%'))) and " +
+            "(upper(function('strip_accents', pg.intitule)) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(coalesce(function('strip_accents', pg.postDescription), coalesce(?2, '')) ) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(function('strip_accents', pg.fonction.nomFonction)) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(function('strip_accents', pg.structure.strName)) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(coalesce(function('strip_accents', pg.structure.strSigle), '') ) like upper(concat('%', coalesce(?2, ''), '%'))) and " +
             "(select count(post) from Post post where post.postGroup.postGroupId = pg.postGroupId and post.vacant = true)>0 and " +
             "p.vacant =true and p.status = 'ACTIVE' and pg.status = 'ACTIVE'")
     Page<PostGroup> searchPostGroupHavingVacantPosts(long strId, String key, Pageable pageable);
@@ -151,62 +151,62 @@ public interface PostRepo extends JpaRepository<Post, Long>
     Page<PostGroup> searchVacantPosts(String key, Pageable pageable);
 
     /*@Query("select pg from PostGroup pg left join Post p left join Structure s on pg.postGroupId = p.postGroup.postGroupId and pg.structure.strId = s.strId where " +
-            "(upper(pg.intitule) like upper(concat('%', ?1, '%')) or " +
-            "upper(pg.postDescription) like upper(concat('%', ?1, '%')) or " +
-            "upper(pg.fonction.nomFonction) like upper(concat('%', ?1, '%')) or " +
-            "upper(pg.structure.strName) like upper(concat('%', ?1, '%')) or " +
-            "upper(coalesce(pg.structure.strSigle, '') ) like upper(concat('%', ?1, '%')) or " +
+            "(upper(pg.intitule) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+            "upper(pg.postDescription) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+            "upper(pg.fonction.nomFonction) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+            "upper(pg.structure.strName) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+            "upper(coalesce(pg.structure.strSigle, '') ) like upper(concat('%', coalesce(?1, ''), '%')) or " +
             "pg.postGroupId in (select .postGroupId from PostParam pp where pp.emploiId in ?2 and pp.status = 'ACTIVE')) and " +
             "p.vacant =true and p.status ='ACTIVE' and pg.status = 'ACTIVE'")
     Page<PostGroup> searchVacantPostsWithEmplois(String key, Set<Long> emplpoiIds, Pageable pageable);*/
 
     @Query("select p from PostGroup p left join Post p1 left join Structure s on p.postGroupId = p1.postGroup.postGroupId and p.structure.strId = s.strId where " +
             "(s.strId = ?1 or locate(concat(function('getStrCode', ?1), '/'), s.strCode) = 1) and "+
-            "(upper(p.intitule) like upper(concat('%', ?2, '%')) or " +
-            "upper(p.postDescription) like upper(concat('%', ?2, '%')) or " +
-            "upper(p.fonction.nomFonction) like upper(concat('%', ?2, '%')) " +
-            "or upper(p.structure.strName) like upper(concat('%', ?2, '%')) or " +
-            "upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', ?2, '%')) or " +
+            "(upper(p.intitule) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(p.postDescription) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(p.fonction.nomFonction) like upper(concat('%', coalesce(?2, ''), '%')) " +
+            "or upper(p.structure.strName) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', coalesce(?2, ''), '%')) or " +
             "p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?3))" +
             "and p1.vacant =true and p1.status = 'ACTIVE' and p.status = 'ACTIVE'")
     Page<PostGroup> searchVacantPostsWithEmplois(long strId, String key, Set<Long> emplpoiIds, Pageable pageable);
 
     @Query("select p from PostGroup p left join Post p1 left join Structure s on p.postGroupId = p1.postGroup.postGroupId and p.structure.strId = s.strId where " +
-            "(upper(p.intitule) like upper(concat('%', ?1, '%')) or " +
-            "upper(p.postDescription) like upper(concat('%', ?1, '%')) or " +
-            "upper(p.fonction.nomFonction) like upper(concat('%', ?1, '%')) or " +
-            "upper(p.structure.strName) like upper(concat('%', ?1, '%')) or " +
-            "upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', ?1, '%'))) and p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?2) " +
-            "and p1.vacant =true and p1.status = 'ACTIVE' and p.status = 'ACTIVE'")
+            "(upper(p.intitule) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+            "upper(p.postDescription) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+            "upper(p.fonction.nomFonction) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+            "upper(p.structure.strName) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+            "upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', coalesce(?1, ''), '%'))) and p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?2) and " +
+            "p1.vacant =true and p1.status = 'ACTIVE' and p.status = 'ACTIVE'")
     Page<PostGroup> searchVacantPostsInEmplois(String key, Set<Long> emplpoiIds, Pageable pageable);
 
     /*@Query("select p from PostGroup p left join Post p1 left join Structure s on (p.postGroupId = p1.postGroup.postGroupId and p.structure.strId = s.strId) join Structure s2 on where " +
             "(p.structure.strId = ?1 or locate(concat(function('getStrCode', ?1), '/'), s.strCode) = 1) and "+
-            "(upper(p.intitule) like upper(concat('%', ?2, '%')) or " +
-            "upper(p.postDescription) like upper(concat('%', ?2, '%')) or " +
-            "upper(p.fonction.nomFonction) like upper(concat('%', ?2, '%')) or " +
-            "upper(p.structure.strName) like upper(concat('%', ?2, '%')) or " +
-            "upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', ?2, '%'))) and p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?3) " +
+            "(upper(p.intitule) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(p.postDescription) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(p.fonction.nomFonction) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(p.structure.strName) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', coalesce(?2, ''), '%'))) and p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?3) " +
             "and p1.vacant =true and p1.status = 'ACTIVE' and p.status = 'ACTIVE'")
     Page<PostGroup> searchVacantPostsInEmplois(long strId, String key, Set<Long> emplpoiIds, Pageable pageable);*/
     /*
     @Query("select p from PostGroup p left join Post p1 left join Structure s on p.postGroupId = p1.postGroup.postGroupId and p.structure.strId = s.strId where " +
-            "(upper(p.intitule) like upper(concat('%', ?1, '%')) or " +
-            "upper(p.postDescription) like upper(concat('%', ?1, '%')) or " +
-            "upper(p.fonction.nomFonction) like upper(concat('%', ?1, '%')) or " +
-            "upper(p.structure.strName) like upper(concat('%', ?1, '%')) or " +
-            "upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', ?1, '%')) or " +
+            "(upper(p.intitule) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+            "upper(p.postDescription) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+            "upper(p.fonction.nomFonction) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+            "upper(p.structure.strName) like upper(concat('%', coalesce(?1, ''), '%')) or " +
+            "upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', coalesce(?1, ''), '%')) or " +
             "p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?2))" +
             "and p1.vacant =true and p1.status = 'ACTIVE' and p.status = 'ACTIVE'")
     List<PostGroup> searchVacantPostsWithEmplois(String key, Set<Long> emplpoiIds);
 
     @Query("select p from PostGroup p left join Post p1 left join Structure s on p.postGroupId = p1.postGroup.postGroupId and p.structure.strId = s.strId where " +
             "(s.strId = ?1 or locate(concat(function('getStrCode', ?1), '/'), s.strCode) = 1) and"+
-            "(upper(p.intitule) like upper(concat('%', ?2, '%')) or " +
-            "upper(p.postDescription) like upper(concat('%', ?2, '%')) or " +
-            "upper(p.fonction.nomFonction) like upper(concat('%', ?2, '%')) or " +
-            "upper(p.structure.strName) like upper(concat('%', ?2, '%')) or " +
-            "upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', ?2, '%')) or " +
+            "(upper(p.intitule) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(p.postDescription) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(p.fonction.nomFonction) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(p.structure.strName) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', coalesce(?2, ''), '%')) or " +
             "p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?3))" +
             "and p1.vacant =true and p1.status = 'ACTIVE' and p.status = 'ACTIVE'")
     List<PostGroup> searchVacantPostsWithEmplois(long strId, String key, Set<Long> emplpoiIds);
@@ -216,17 +216,17 @@ public interface PostRepo extends JpaRepository<Post, Long>
             "upper(p.postDescription) like upper(concat('%', ?1, '%')) or " +
             "upper(p.fonction.nomFonction) like upper(concat('%', ?1, '%')) or " +
             "upper(p.structure.strName) like upper(concat('%', ?1, '%')) or " +
-            "upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', ?1, '%'))) and p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?2) " +
+            "upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', ?1, '%'))) and p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in coalesce(?2, '')) " +
             "and p.status = 'ACTIVE'")
     List<PostGroup> searchVacantPostsInEmplois(String key, Set<Long> emplpoiId);
 
     @Query("select p from PostGroup p left join Structure s on p.structure.strId = s.strId where " +
             "s.strCode = ?1 or locate(concat(?1 , '/'), s.strCode) = 1 and"+
-            "(upper(p.intitule) like upper(concat('%', ?2, '%')) or " +
-            "upper(p.postDescription) like upper(concat('%', ?2, '%')) or " +
-            "upper(p.fonction.nomFonction) like upper(concat('%', ?2, '%')) or " +
-            "upper(p.structure.strName) like upper(concat('%', ?2, '%')) or " +
-            "upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', ?2, '%'))) and p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?3) " +
+            "(upper(p.intitule) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(p.postDescription) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(p.fonction.nomFonction) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(p.structure.strName) like upper(concat('%', coalesce(?2, ''), '%')) or " +
+            "upper(coalesce(p.structure.strSigle, '') ) like upper(concat('%', coalesce(?2, ''), '%'))) and p.postGroupId in (select pp.postGroupId from PostParam pp where pp.emploiId in ?3) " +
             "and p.status = 'ACTIVE'")
     List<PostGroup> searchVacantPostsInEmplois(String strCode, String key, Set<Long> emplpoiId);*/
 

@@ -1,72 +1,72 @@
 <!DOCTYPE html>
 <html lang="fr" th:fragment="administration-menu">
-    <div class="dropdown mx-1">
+    <div class="dropdown mx-1"  th:if="${@scm.hasMenu('SEC')}">
         <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             Comptes et accès
         </a>
         <div class="dropdown-menu">
-            <a class="dropdown-item" href="/sigrh/users/user-list">Liste des utilisateurs</a>
-            <a class="dropdown-item" href="/sigrh/security/users/new-user-form">Nouvel utilisateur</a>
-            <a class="dropdown-item" href="/sigrh/roles/role-list">Liste des roles</a>
-            <a class="dropdown-item" href="/sigrh/security/roles/new-role-form">Nouveau role</a>
-            <a class="dropdown-item" href="/sigrh/privileges/prv-list">Liste des privilèges</a>
-            <a class="dropdown-item" href="/sigrh/security/privileges/new-prv-form">Nouveau privilège</a>
-            <a class="dropdown-item" href="/sigrh/assignations/new-principal-ass-form">Assignation</a>
+            <a class="dropdown-item" href="/sigrh/users/user-list"  th:if="${@scm.hasAuthority('SEE-USR-LST')}">Liste des utilisateurs</a>
+            <a class="dropdown-item" href="/sigrh/security/users/new-user-form" th:if="${@scm.hasAuthority('CRT-USR')}">Nouvel utilisateur</a>
+            <a class="dropdown-item" href="/sigrh/roles/role-list" th:if="${@scm.hasAuthority('SEE-ROL-LST')}">Liste des roles</a>
+            <a class="dropdown-item" href="/sigrh/security/roles/new-role-form" th:if="${@scm.hasAuthority('CRT-ROL')}">Nouveau role</a>
+            <a class="dropdown-item" href="/sigrh/privileges/prv-list" th:if="${@scm.hasAuthority('SEE-PRV-LST')}">Liste des privilèges</a>
+            <a class="dropdown-item" href="/sigrh/security/privileges/new-prv-form" th:if="${@scm.hasAuthority('CRT-PRV')}">Nouveau privilège</a>
+            <a class="dropdown-item" href="/sigrh/assignations/new-principal-ass-form" th:if="${@scm.hasAuthority('CRT-PRP-ASS')}">Assignation</a>
         </div>
     </div>
 
-    <div class="dropdown mx-1">
+    <div class="dropdown mx-1"  th:if="${@scm.hasMenu('EMP')}">
         <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             Emplois
         </a>
         <div class="dropdown-menu">
-            <a class="dropdown-item" href="/sigrh/administration/emplois/emplois-list">Liste des emplois</a>
-            <a class="dropdown-item" href="/sigrh/administration/emplois/new-emploi-form">Nouvel emploi</a>
-            <a class="dropdown-item" href="/sigrh/administration/emplois/deleted-emplois-list">Corbeille</a>
+            <a class="dropdown-item" href="/sigrh/administration/emplois/emplois-list"  th:if="${@scm.hasAuthority('SEE-EMP-LST')}">Liste des emplois</a>
+            <a class="dropdown-item" href="/sigrh/administration/emplois/new-emploi-form"  th:if="${@scm.hasAuthority('CRT-EMP')}">Nouvel emploi</a>
+            <a class="dropdown-item" href="/sigrh/administration/emplois/deleted-emplois-list"  th:if="${@scm.hasAuthority('DLT-EMP')}">Corbeille</a>
         </div>
     </div>
 
-    <div class="dropdown mx-1">
+    <div class="dropdown mx-1"  th:if="${@scm.hasMenu('FCT')}">
         <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             Fonctions
         </a>
         <div class="dropdown-menu">
-            <a class="dropdown-item" href="/sigrh/administration/fonctions/fonctions-list">Liste des fonctions</a>
-            <a class="dropdown-item" href="/sigrh/administration/fonctions/new-fonction-form">Nouvelle fonction</a>
-            <a class="dropdown-item" href="/sigrh/administration/fonctions/deleted-fonctions-list">Corbeille</a>
+            <a class="dropdown-item" href="/sigrh/administration/fonctions/fonctions-list"  th:if="${@scm.hasAuthority('SEE-FCT-LST')}">Liste des fonctions</a>
+            <a class="dropdown-item" href="/sigrh/administration/fonctions/new-fonction-form"  th:if="${@scm.hasAuthority('CRT-FCT')}">Nouvelle fonction</a>
+            <a class="dropdown-item" href="/sigrh/administration/fonctions/deleted-fonctions-list"  th:if="${@scm.hasAuthority('SEE-FCT-TRSH')}">Corbeille</a>
         </div>
     </div>
 
     <div class="dropdown mx-1">
-        <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"  th:if="${@scm.hasMenu('TYP')}">
             Types
         </a>
         <div class="dropdown-menu">
-            <a class="dropdown-item" href="/sigrh/administration/types/types-list">Liste des types</a>
-            <a class="dropdown-item" href="/sigrh/administration/types/new-type-form">Nouveau type</a>
-            <a class="dropdown-item" href="/sigrh/administration/types/deleted-types-list">Corbeille</a>
+            <a class="dropdown-item" href="/sigrh/administration/types/types-list"  th:if="${@scm.hasAuthority('SEE-TYP-LST')}">Liste des types</a>
+            <a class="dropdown-item" href="/sigrh/administration/types/new-type-form"  th:if="${@scm.hasAuthority('CRT-TYP')}">Nouveau type</a>
+            <a class="dropdown-item" href="/sigrh/administration/types/deleted-types-list"  th:if="${@scm.hasAuthority('SEE-TYP-TRSH')}">Corbeille</a>
         </div>
     </div>
 
-    <div class="dropdown mx-1">
+    <div class="dropdown mx-1"  th:if="${@scm.hasMenu('GRD')}">
         <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             Grades
         </a>
         <div class="dropdown-menu">
-            <a class="dropdown-item" href="/sigrh/administration/grades/grades-list">Liste des grades</a>
-            <a class="dropdown-item" href="/sigrh/administration/grades/new-grade-form">Nouveau grade</a>
-            <a class="dropdown-item" href="/sigrh/administration/grades/deleted-grades-list">Corbeille</a>
+            <a class="dropdown-item" href="/sigrh/administration/grades/grades-list"  th:if="${@scm.hasAuthority('SEE-GRD-LST')}">Liste des grades</a>
+            <a class="dropdown-item" href="/sigrh/administration/grades/new-grade-form"  th:if="${@scm.hasAuthority('CRT-GRD')}">Nouveau grade</a>
+            <a class="dropdown-item" href="/sigrh/administration/grades/deleted-grades-list"  th:if="${@scm.hasAuthority('SEE-GRD-TRSH')}">Corbeille</a>
         </div>
     </div>
 
-    <div class="dropdown mx-1">
+    <div class="dropdown mx-1"  th:if="${@scm.hasMenu('INSTCE')}">
         <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             Instances
         </a>
         <div class="dropdown-menu">
-            <a class="dropdown-item" href="/sigrh/instances/instance-list">Liste des instances</a>
-            <a class="dropdown-item" href="/sigrh/instances/new-instance-form">Nouvelle instance</a>
-            <a class="dropdown-item" href="/sigrh/instances/deleted-instance-list">Corbeille</a>
+            <a class="dropdown-item" href="/sigrh/instances/instance-list"  th:if="${@scm.hasAuthority('SEE-INSTCE-LST')}">Liste des instances</a>
+            <a class="dropdown-item" href="/sigrh/instances/new-instance-form"  th:if="${@scm.hasAuthority('CRT-INSTCE')}">Nouvelle instance</a>
+            <a class="dropdown-item" href="/sigrh/instances/deleted-instance-list"  th:if="${@scm.hasAuthority('SEE-INSTCE-TRSH')}">Corbeille</a>
         </div>
     </div>
 </html>

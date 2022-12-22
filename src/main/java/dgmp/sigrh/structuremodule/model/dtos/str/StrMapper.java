@@ -41,10 +41,10 @@ public abstract class StrMapper
     }
 
 
-    @Mapping(target = "strParent.strId", source = "parentId")
+    @Mapping(target = "strParent.strId", expression = "java(createStrDTO.getParentId()==null ? strRepo.getStrIdByStrCode(\"SYS\") : createStrDTO.getParentId())")
     @Mapping(target = "strType.typeId", source = "typeId")
     @Mapping(target = "status", expression = "java(dgmp.sigrh.shared.model.enums.PersistenceStatus.ACTIVE)")
-    public abstract Structure mapToStructure(CreateStrDTO dto);
+    public abstract Structure mapToStructure(CreateStrDTO createStrDTO);
 
     public abstract UpdateStrDTO mapToUpdateStrDTO(Structure str);
 
@@ -70,8 +70,8 @@ public abstract class StrMapper
         if(loadedStructure == null ) return null;
         entityManager.detach(loadedStructure);
         loadedStructure.setStrType(new Type(dto.getNewTypeId()));
-        loadedStructure.setStrParent(dto.getNewParentId() == null ? null : new Structure(dto.getNewParentId()));
-        loadedStructure.setStrLevel(dto.getNewParentId() == null ? 0 : strRepo.getStrLevel(dto.getNewParentId())+1);
+        loadedStructure.setStrParent(dto.getNewParentId() == null ? new Structure(strRepo.getStrIdByStrCode("SYS")) : new Structure(dto.getNewParentId()));
+        loadedStructure.setStrLevel(dto.getNewParentId() == null ? 1 : strRepo.getStrLevel(dto.getNewParentId())+1);
         loadedStructure.setStrName(dto.getNewStrName());
         loadedStructure.setStrSigle(dto.getNewStrSigle());
         return loadedStructure;

@@ -12,7 +12,7 @@ import dgmp.sigrh.agentmodule.model.enums.TypeAgent;
 import dgmp.sigrh.agentmodule.model.histo.AgentHisto;
 import dgmp.sigrh.archivemodule.controller.service.IArchiveService;
 import dgmp.sigrh.archivemodule.model.dtos.ArchiveMapper;
-import dgmp.sigrh.archivemodule.model.dtos.CreateArchiveDTO;
+import dgmp.sigrh.archivemodule.model.dtos.ArchiveReqDTO;
 import dgmp.sigrh.archivemodule.model.entities.Archive;
 import dgmp.sigrh.auth2.controller.services.spec.IUserService;
 import dgmp.sigrh.auth2.model.dtos.appuser.CreateUserDTO;
@@ -79,7 +79,7 @@ public class AgentService implements IAgentService
             {
                 if(!dto.getPhotoFile().getOriginalFilename().equals(""))
                 {
-                    CreateArchiveDTO archiveDTO = archiveMapper.mapToPhotoArchiveDTO(dto, agent.getAgentId());
+                    ArchiveReqDTO archiveDTO = archiveMapper.mapToPhotoArchiveDTO(dto, agent.getAgentId());
                     Archive archive = archiveService.createArchive(archiveDTO);
                     agent.setNomPhoto(archive.getPath());
                 }
@@ -213,7 +213,8 @@ public class AgentService implements IAgentService
                                                         List<Long> fonctionsIds, List<Long> gradesIds,
                                                         List<Long> emploisIds, Pageable pageable)
     {
-        List<EtatRecrutement> states; List<Civility> civilities; List<TypeAgent> typeAgents;
+        key = key==null ? "" : key;
+        List<EtatRecrutement> states; List<Civility> civilities; List<TypeAgent> typeAgents; key = key == null ? "" : key;
         List<Long> fonctionsIds2 = new ArrayList<>(); List<Long> gradesIds2 = new ArrayList<>();List<Long> emploisIds2 = new ArrayList<>();
 
         states = statesString == null ? EtatRecrutement.getAll() : statesString.isEmpty()  || statesString.contains("") ? EtatRecrutement.getAll() : statesString.stream().map(EtatRecrutement::valueOf).collect(Collectors.toList());
@@ -226,7 +227,7 @@ public class AgentService implements IAgentService
                 gradeRepo.getActiveGradesIds(): gradesIds.isEmpty() || gradesIds.contains(null) ? gradeRepo.getActiveGradesIds() : gradesIds;
         emploisIds2 = emploisIds == null ? empRepo.getActiveEmploisIds(): emploisIds.isEmpty() || emploisIds.contains(null) ? empRepo.getActiveEmploisIds() : emploisIds;
 
-        Page<Agent> agents = agentRepo.searchAgentsMultiCriteres(visibilityId, StringUtils.stripAccentsToUpperCase(key).trim(), states, civilities, typeAgents, fonctionsIds2, gradesIds2, emploisIds2, pageable);
+        Page<Agent> agents = visibilityId==null ? new PageImpl<>(new ArrayList<>()) : agentRepo.searchAgentsMultiCriteres(visibilityId, StringUtils.stripAccentsToUpperCase(key), states, civilities, typeAgents, fonctionsIds2, gradesIds2, emploisIds2, pageable);
 
         List<ReadAgentDTO> readAgentDTOList = agents.stream().map(agentMapper::mapToReadAgentDTO).collect(Collectors.toList());
         return new PageImpl<>(readAgentDTOList, pageable, agents.getTotalElements());

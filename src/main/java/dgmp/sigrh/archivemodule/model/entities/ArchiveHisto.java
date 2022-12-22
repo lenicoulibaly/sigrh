@@ -24,8 +24,9 @@ public class ArchiveHisto
 	private String archiveNum;
 	private String description;
 	private String path;
+	private String histoPath;
 	@ManyToOne
-	private Type typeArchive;
+	private Type archiveType;
 	@ManyToOne
 	@JoinColumn(name = "AGENT_ID")
 	private Agent agent;

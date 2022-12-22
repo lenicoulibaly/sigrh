@@ -30,10 +30,10 @@ public interface UserRepo extends JpaRepository<AppUser, Long>
     @Query("select a from AppUser a order by a.creationDate DESC")
     Page<AppUser> getUsersPage(Pageable pageable);
 
-    @Query("select u from AppUser u left join Structure s on u.structure.strId = s.strId where upper(function('strip_accents', u.username)) like upper(concat('%', ?1, '%')) or upper(function('strip_accents', u.email)) like upper(concat('%', ?1, '%')) or upper(function('strip_accents', u.tel)) like upper(concat('%', ?1, '%')) or upper(function('strip_accents', s.strName)) like upper(concat('%', ?1, '%')) or upper(function('strip_accents', s.strSigle)) like upper(concat('%', ?1, '%')) order by u.creationDate DESC")
+    @Query("select u from AppUser u left join Structure s on u.structure.strId = s.strId where upper(function('strip_accents', u.username)) like upper(concat('%', coalesce(?1, ''), '%')) or upper(function('strip_accents', u.email)) like upper(concat('%', coalesce(?1, ''), '%')) or upper(function('strip_accents', u.tel)) like upper(concat('%', coalesce(?1, ''), '%')) or upper(function('strip_accents', s.strName)) like upper(concat('%', coalesce(?1, ''), '%')) or upper(function('strip_accents', s.strSigle)) like upper(concat('%', coalesce(?1, ''), '%')) order by u.creationDate DESC")
     Page<AppUser> searchUsers(String searchKey, Pageable pageable);
 
-    @Query("select u from AppUser u left join Structure s on u.structure.strId = s.strId where (upper(function('strip_accents', u.username)) like upper(concat('%', ?1, '%')) or upper(function('strip_accents', u.email)) like upper(concat('%', ?1, '%')) or upper(function('strip_accents', u.tel)) like upper(concat('%', ?1, '%')) or upper(function('strip_accents', s.strName)) like upper(concat('%', ?1, '%')) or upper(function('strip_accents', s.strSigle)) like upper(concat('%', ?1, '%')) )  and (locate(concat(function('getStrCode', coalesce(?2, s.strId)), '/') , s.strCode) = 1 or coalesce(?2, s.strId) = s.strId ) order by u.creationDate DESC")
+    @Query("select u from AppUser u left join Structure s on u.structure.strId = s.strId where (upper(function('strip_accents', u.username)) like upper(concat('%', coalesce(?1, ''), '%')) or upper(function('strip_accents', u.email)) like upper(concat('%', coalesce(?1, ''), '%')) or upper(function('strip_accents', u.tel)) like upper(concat('%', coalesce(?1, ''), '%')) or upper(function('strip_accents', s.strName)) like upper(concat('%', coalesce(?1, ''), '%')) or upper(function('strip_accents', s.strSigle)) like upper(concat('%', coalesce(?1, ''), '%')) )  and (locate(concat(function('getStrCode', coalesce(?2, s.strId)), '/') , s.strCode) = 1 or coalesce(?2, s.strId) = s.strId ) order by u.creationDate DESC")
     Page<AppUser> searchUsersUnderStr(String searchKey, Long strId, Pageable pageable);//------->
 
     @Query("select u from AppUser u left join Structure s on u.structure.strId = s.strId where (locate(concat(function('getStrCode', coalesce(?1, s.strId)), '/') , s.strCode) = 1 or coalesce(?1, s.strId) = s.strId ) order by u.username ASC")
@@ -80,5 +80,8 @@ public interface UserRepo extends JpaRepository<AppUser, Long>
 
     @Query("select u.username from AppUser u where  u.userId = ?1")
     String getUsername(Long userId);
+
+    @Query("select u.agentId from AppUser u where  u.userId = ?1")
+    Long getAgentId(Long userId);
 
 }

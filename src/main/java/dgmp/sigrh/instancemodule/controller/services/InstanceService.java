@@ -41,7 +41,15 @@ public class InstanceService implements IInstanceService
         EventActorIdentifier eai = scm.getEventActorIdFromSCM();
         strRepo.findAllChildren(dto.getHeadId()).forEach(str->
         {
-            str.setInstance(savedInstance);
+            if(str.getInstance() == null) str.setInstance(savedInstance);
+            else if(str.getInstance().getHead()!=null && savedInstance.getHead() != null)
+            {
+                if(str.getInstance().getHead().getStrLevel()<savedInstance.getHead().getStrLevel())
+                {
+                    str.setInstance(savedInstance);
+                }
+            }
+
             StrHisto strHisto = strMapper.mapToStrHisto(str, StrEventType.CHANGE_STR_INSTANCE, eai, actionId, InstanceEventType.CREATE_INSTANCE.getEvent());
             strHistoRepo.save(strHisto);
         });

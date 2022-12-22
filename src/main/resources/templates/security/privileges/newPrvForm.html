@@ -56,11 +56,11 @@
                                                 </div>
                                                 <div class="col col-md-4 col-sm-12">
                                                     <div class="form-group">
-                                                        <label for="prvGroup">Type</label> <small
-                                                            th:if="${prvGroupErrMsg}" class="text-danger">[[${prvGroupErrMsg}]]</small>
-                                                        <select th:classappend="${prvGroupErrMsg} ? 'border-danger' : ''" th:field="*{prvGroup}" class="form-control select2bs4" id="prvGroup" >
+                                                        <label for="typeId">Type</label>
+                                                        <small th:if="${typeIdErrMsg}" class="text-danger">[[${typeIdErrMsg}]]</small>
+                                                        <select th:classappend="${typeIdErrMsg} ? 'border-danger' : ''" th:field="*{typeId}" class="form-control select2bs4" id="typeId" >
                                                             <option value="" >Choisir le type de privilège</option>
-                                                            <option th:each="type:${groups}" th:value="${type.name()}">[[${type.group}]]</option>
+                                                            <option th:each="type:${prvTypes}" th:value="${type.typeId}">[[${type.name}]]</option>
                                                         </select>
 
                                                     </div>
@@ -100,30 +100,6 @@
                     $("input[data-bootstrap-switch]").each(function(){
                         $(this).bootstrapSwitch('state', $(this).prop('checked'));
                     });
-                });
-            </script>
-            <script>
-                $("#typeId").change(e=>
-                {
-                    $.ajax(
-                        {
-                            url: "/sigrh/structures/child-type/" + $("#typeId").val(),
-                            success: response=>
-                            {
-                                console.log(response)
-                                $("#parentId").empty();
-                                $("#parentId").append('<option value="" >Choisir la tutelle</option>')
-                                $.each(response, (index, str)=>
-                                {
-                                    $("#parentId").append('<option value="' + str.strId + '">'+ str.strName + '-' + str.strSigle + '</option>')
-                                });
-                            },
-                            error: err=>
-                            {
-                                console.log(err);
-                            }
-                        }
-                    );
                 });
             </script>
             <script>

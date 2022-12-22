@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" 
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+                layout:decorate="~{personnel/agent-layout}">
+    <head>
+		<th:block layout:fragment="specific-css-links">
+            <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+            <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+            <link rel="stylesheet" th:href="@{/css/app-style.css}">
+        </th:block>
+	</head>
+
+	<body>
+        <th:block layout:fragment="breadcrumb">
+            <th:block th:replace="personnel/list-personnel-breadcrumb-frag.html::list-personnel-breadcrumb"/>
+        </th:block>
+        <div layout:fragment="content">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Zone de recherche</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                    <i class="fas fa-minus"></i></button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <div class="card-body">
+                            <form th:action="@{/sigrh/agents/list}">
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-6 xs-12">
+                                        <div class="form-group">
+                                            <label for="strId">Structure</label>
+                                            <select id="strId"
+                                                    name="strId"
+                                                    th:value="${strId}"
+                                                    class="form-control select2bs4">
+                                                <option value="">Choix de la structure</option>
+                                                <option th:each="str : ${strList}"
+                                                        th:value="${str.strId}" th:title="${str.strName + '(' + str.hierarchySigles + ')'}"
+                                                        th:selected="${str.strId == strId}">[[${str.strName}]] ([[${str.strSigle}]])</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2 col-md-6 xs-12">
+                                        <div class="form-group">
+                                            <label for="civilities">Civilité</label>
+                                            <select id="civilities"
+                                                    name="civilities" multiple
+                                                    th:value="${civilities}"
+                                                    class="form-control select2bs4">
+                                                <option value="">Tous les
+                                                    genres
+                                                </option>
+                                                <option th:each="civility : ${civilityList}"
+                                                        th:value="${civility.name()}" th:text="${civility.toString()}"
+                                                        th:selected="${civilities == null ? false : civilities.contains(civility.name())}"/>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2 col-md-6 xs-12">
+                                        <div class="form-group">
+                                            <label for="typeAgents">Type
+                                                d'agents</label>
+                                            <select id="typeAgents"
+                                                    name="typeAgents"
+                                                    th:value="${typeAgents}"
+
+                                                    class="form-control select2bs4"
+                                                    multiple>
+                                                <option value="">Tous les types d'agents</option>
+                                                <option th:each="type:${typeAgentList}"
+                                                        th:selected="${typeAgents == null ? false : typeAgents.contains(type.name())}"
+                                                        th:value="${type.name()}">
+                                                    [[${type.toString()}]]
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-6 xs-12">
+                                        <div class="form-group">
+                                            <label for="fonctionsIds">Fonctions</label>
+                                            <select id="fonctionsIds"
+                                                    name="fonctionsIds"
+                                                    th:value="${fonctionsIds}"
+                                                    class="form-control select2bs4"
+                                                    multiple>
+                                                <option value="">Toutes les fonctions</option>
+                                                <option th:each="fonction:${fonctionList}"
+                                                        th:selected="${fonctionsIds == null ? false : fonctionsIds.contains(fonction.idFonction)}"
+                                                        th:value="${fonction.idFonction}">
+                                                    [[${fonction.nomFonction}]]
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-6 xs-12">
+                                        <div class="form-group">
+                                            <label for="gradesIds">Grades</label>
+                                            <select id="gradesIds"
+                                                    name="gradesIds" multiple
+                                                    th:value="${gradesIds}"
+                                                    class="form-control select2bs4">
+                                                <option value="">Tous les grades</option>
+                                                <option th:each="grade : ${gradeList}" th:value="${grade.idGrade}"
+                                                        th:text="${grade.nomGrade}"
+                                                        th:selected="${gradesIds == null ? false : gradesIds.contains(grade.idGrade)}"/>
+
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-6 xs-12">
+                                        <div class="form-group">
+                                            <label for="emploisIds">Emplois</label>
+                                            <select id="emploisIds"
+                                                    name="emploisIds"
+                                                    th:value="${emploisIds}"
+                                                    class="form-control select2bs4"
+                                                    multiple>
+                                                <option value="">Tous les emplois</option>
+                                                <option th:each="emploi:${emploiList}"
+                                                        th:selected="${emploisIds == null ? false : emploisIds.contains(emploi.idEmploi)}"
+                                                        th:value="${emploi.idEmploi}">
+                                                    [[${emploi.nomEmploi}]]
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-6 xs-12">
+                                        <div class="form-group">
+                                            <label for="key">Critère</label>
+                                            <input th:value="${key}" name="key" id="key" class="form-control" type="text"
+                                                   placeholder="Critère de recherche">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary float-right">Rechercher</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                [[${agents.getNumberOfElements()}]] items affichés sur [[${agents.getTotalElements()}]]
+                            </h3>
+
+                            <div class="card-tools">
+                                <ul class="pagination pagination-sm float-right">
+                                    <li th:title="Début" class="page-item"><a class="page-link" th:href="@{/sigrh/agents/list(pageNum=0, key=${key}, strId=${strId}, civilities = ${civilities}, typeAgents = ${typeAgents}, fonctionsIds = ${fonctionsIds}, gradesIds = ${gradesIds}, emploisIds = ${emploisIds})}">&laquo;&laquo;</a></li>
+                                    <li  th:title="Précédant" class="page-item"><a class="page-link" th:href="@{/sigrh/agents/list(pageNum=${currentPage > 0 ? currentPage-1 : 0}, key=${key}, strId=${strId}, civilities = ${civilities}, typeAgents = ${typeAgents}, fonctionsIds = ${fonctionsIds}, gradesIds = ${gradesIds}, emploisIds = ${emploisIds})}">&laquo;</a></li>
+                                    <li th:each="page, status:${pages}" class="page-item" th:classappend="${status.index == currentPage ? 'active' : T(java.lang.Math).abs(status.index - currentPage) < 4 ? '' : 'd-none'}"><a class="page-link" th:href="@{/sigrh/agents/list(pageNum=${status.index}, key=${key}, strId=${strId}, civilities = ${civilities}, typeAgents = ${typeAgents}, fonctionsIds = ${fonctionsIds}, gradesIds = ${gradesIds}, emploisIds = ${emploisIds})}">[[${status.count}]]</a></li>
+                                    <li th:title="Suivant" class="page-item"><a class="page-link" th:href="@{/sigrh/agents/list(pageNum=${pages.length == 0 ? 0 : currentPage < pages.length-1 ? currentPage+1 : pages.length-1}, key=${key}, strId=${strId}, civilities = ${civilities}, typeAgents = ${typeAgents}, fonctionsIds = ${fonctionsIds}, gradesIds = ${gradesIds}, emploisIds = ${emploisIds})}">&raquo;</a></li>
+                                    <li th:title="Fin" class="page-item"><a class="page-link" th:href="@{/sigrh/agents/list(pageNum= ${pages.length == 0 ? 0 : pages.length-1}, key=${key}, strId=${strId}, civilities = ${civilities}, typeAgents = ${typeAgents}, fonctionsIds = ${fonctionsIds}, gradesIds = ${gradesIds}, emploisIds = ${emploisIds})}">&raquo;&raquo;</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body mt-2 m-0 p-0">
+                            <div class="form-group row">
+
+                                <div class="col-md-12 mx-0 ml-3" style="display: inline">
+                                    <a id="lnk-new-str" th:href="@{/sigrh/agents/register/form}" class="btn btn-primary float-right mr-4" >Nouvel enregistrement</a>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive pt-0" style="height: 500px;">
+                            <table style="width: 100%;" class="table table-sm table-striped table-hover table-head-fixed text-nowrap">
+                                <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Prénom</th>
+                                    <th>Matricule</th>
+                                    <th>Grade</th>
+                                    <th>Fonction</th>
+                                    <th style="width: 10%;">Emploi</th>
+                                    <th>Service</th>
+                                    <th>Photo</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="agent: ${agents}" >
+                                    <td th:text="${agent.nom}" style="vertical-align: middle; display: table-cell;" >Nom</td>
+                                    <td th:text="${agent.prenom}" style="vertical-align: middle; display: table-cell;" >Prénom</td>
+                                    <td th:text="${agent.matricule}" style="vertical-align: middle; display: table-cell;" >Matricule</td>
+                                    <td th:text="${agent.grade}" style="vertical-align: middle; display: table-cell;" >Grade</td>
+                                    <td th:text="${agent.fonction}" style="vertical-align: middle; display: table-cell;" >Fonction</td>
+                                    <td th:text="${agent.emploi}" style="font-size: 10px; width: 10%;vertical-align: middle; display: table-cell;">Emploi</td>
+                                    <td style="vertical-align: middle; display: table-cell;"  th:title="${agent.strName + '(' + agent.hierarchySigles + ')'}" th:text="${agent.strName + '(' + agent.strSigle + ')'}">Service</td>
+                                    <td style="vertical-align: middle; display: table-cell;" >
+                                        <img th:src="${'/sigrh/agents/displayPhoto/'+agent.agentId}" style="width: 50px; height: 50px;"  class="img-circle" alt="User Image">
+                                    </td>
+                                    <td class="vertical-middle">
+                                        <div class="dropdown show">
+                                            <a class="btn btn-default dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Actions
+                                            </a>
+
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+
+                                                <a class="dropdown-item" th:href="@{/sigrh/agents/profile(agtId = ${agent.agentId})}">Detail</a>
+                                                <a class="dropdown-item" th:href="@{/sigrh/agents/update-agent-form(agtId = ${agent.agentId})}">Modification</a>
+                                                <a class="dropdown-item" href="#">Affectation</a>
+                                                <a class="dropdown-item" href="#">Nomination</a>
+                                                <a class="dropdown-item" href="#">Promotion</a>
+                                                <a class="dropdown-item" href="#">Mobilité</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+
+
+        </div>
+        <div layout:fragment="specific-scripts">
+            <script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
+            <script>
+                $(function () {
+                    //Initialize Select2 Elements
+                    $('.select2').select2();
+
+                    //Initialize Select2 Elements
+                    $('.select2bs4').select2({theme: 'bootstrap4'});
+                });
+            </script>
+        </div>
+    </body>
+</html>

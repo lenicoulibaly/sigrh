@@ -32,13 +32,13 @@ public class AgentHisto
     @Column(length = 30) @Enumerated(EnumType.STRING)
     private Civility civilite;
 
-    @Column(length = 100, unique = true)
+    @Column(length = 100)
     private String email;
 
-    @Column(length = 100, unique = true)
+    @Column(length = 100)
     private String emailPro;
 
-    @Column(length = 20, unique = true)
+    @Column(length = 20)
     private String tel;
     private String fixeBureau;
     private String lieuNaissance; //Localité (Plus précis)
@@ -46,16 +46,15 @@ public class AgentHisto
     private LocalDate dateNaissance;
     @Enumerated(EnumType.STRING)
     private TypePiece typePiece;
-    @Column(length = 50, unique = true)
+    @Column(length = 50)
     private String numPiece;
     private String nomPere;
     private String nomMere;
     private boolean attenteAffectation;
 
 
-    @Column(unique = true)
     private String numBadge;
-    @Column(length = 20, unique = true)
+    @Column(length = 20)
     private String matricule;
     @Enumerated(EnumType.STRING)
     private SituationMatrimoniale situationMatrimoniale;
@@ -91,7 +90,7 @@ public class AgentHisto
     private PersistenceStatus status;
     @OneToOne(fetch = FetchType.EAGER)
     private AppUser user;
-    @Column(unique = true)
+    @Column()
     private String nomPhoto;
     @Transient private MultipartFile photoFile;
 

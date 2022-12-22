@@ -75,6 +75,15 @@ public class RegisterAgentDTO
     private boolean attenteAffectation;
     @ValidFileSize @ValidFileExtension
     private MultipartFile photoFile;
+
+    @ValidFileExtension
+    @ValidFileSize
+    private MultipartFile cv;
+
+    @ValidFileExtension
+    @ValidFileSize
+    private MultipartFile diplome;
+
     @ExistingStrId
     private Long strId;
 

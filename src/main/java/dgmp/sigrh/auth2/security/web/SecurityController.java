@@ -30,4 +30,9 @@ public class SecurityController
     public String index(Model model) {
         return "index";
     }
+
+    @GetMapping(path = "/sigrh/security/index") @PreAuthorize("isFullyAuthenticated()")
+    public String securityIndex(Model model) {
+        return "security/security-layout";
+    }
 }

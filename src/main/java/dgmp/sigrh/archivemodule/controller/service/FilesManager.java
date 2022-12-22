@@ -1,7 +1,9 @@
 package dgmp.sigrh.archivemodule.controller.service;
 
 import dgmp.sigrh.archivemodule.model.constants.ArchivageConstants;
+import dgmp.sigrh.archivemodule.model.enums.ArchiveTypes;
 import dgmp.sigrh.shared.controller.exception.AppException;
+import dgmp.sigrh.shared.utilities.StringUtils;
 import dgmp.sigrh.typemodule.controller.repositories.TypeRepo;
 import dgmp.sigrh.typemodule.model.enums.TypeGroup;
 import org.apache.commons.io.FilenameUtils;
@@ -15,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Locale;
 
 @Component
 public class FilesManager implements IFilesManager
@@ -48,8 +51,30 @@ public class FilesManager implements IFilesManager
 	@Override
 	public String generatePath(MultipartFile file, String typeCode, String agentName, Long agtId, Long archiveId)
 	{
-		return ArchivageConstants.AGENT_UPLOADS_DIR + "\\" + typeCode + "\\" +
-				agentName + "_" + agtId + "_" + archiveId + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+		if(ArchiveTypes.getByUniqueCode(typeCode) == null) return "";
+		return ArchivageConstants.AGENT_UPLOADS_DIR + "\\" + typeCode + "\\" + ArchiveTypes.getByUniqueCode(typeCode).getDescription().replace(" ", "_").toUpperCase(Locale.ROOT) + "_" +
+				StringUtils.stripAccents(agentName).replace(" ", "_") + "_" + agtId + "_" + archiveId + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+	}
+
+	@Override
+	public String generateHistoPath(MultipartFile file, String typeCode, String agentName, Long agtId, Long archiveId, Long histoId)
+	{
+		if(ArchiveTypes.getByUniqueCode(typeCode) == null) return "";
+		return ArchivageConstants.AGENT_UPLOADS_DIR + "\\" + typeCode + "\\" + ArchiveTypes.getByUniqueCode(typeCode).getDescription().replace(" ", "_").toUpperCase(Locale.ROOT) + "_" +
+				StringUtils.stripAccents(agentName).replace(" ", "_") + "_" + agtId + "_" + archiveId + "_Histo_" + histoId + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+	}
+
+	@Override
+	public void renameFile(String oldPath, String newPath)
+	{
+		if(new File(oldPath).exists())
+		{
+			try {
+				Files.move(Paths.get(oldPath), Paths.get(newPath));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Bean
@@ -59,7 +84,7 @@ public class FilesManager implements IFilesManager
 		{
 			File agtUploadDir= new File(ArchivageConstants.AGENT_UPLOADS_DIR);
 			if(!agtUploadDir.exists()) agtUploadDir.mkdirs();
-			typeRepo.findByTypeGroup(TypeGroup.ARCHIVE.name()).forEach(type->
+			typeRepo.findByTypeGroup(TypeGroup.ARCHIVE).forEach(type->
 			{
 				File typeDir = new File(ArchivageConstants.AGENT_UPLOADS_DIR + "\\" + type.getUniqueCode()) ;
 				if(!typeDir.exists()) typeDir.mkdirs();

@@ -10,6 +10,8 @@ public enum AgentEventTypes implements EventType
     CHANGE_STRUCTURE("CHANGE_STRUCTURE"),//Mouvement
     CHANGE_GRADE("CHANGE_GRADE"), //Promotion
     CHANGE_EMPLOI("CHANGE_EMPLOI"), //Mobilite Professionnelle
+    ADD_PROFILE_PHOTO("Ajout d'une photo de profil"),
+    CHANGE_PROFILE_PHOTO("Changement de la photo de profil"),
     SIMPLE_UPDATE("SIMPLE_UPDATE");
 
     String name;

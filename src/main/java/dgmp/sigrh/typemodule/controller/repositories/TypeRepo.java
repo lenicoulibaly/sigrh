@@ -30,20 +30,20 @@ public interface TypeRepo extends JpaRepository<Type, Long>
     TypeGroup findTypeGroupBTypeId(Long typeId);
 
 
-    @Query("select t from Type t where (upper(t.name) like upper(concat('%', ?1, '%')) or upper(t.uniqueCode) like upper(concat('%', ?1, '%')) or t.typeGroup = ?2) and t.status = ?3")
+    @Query("select t from Type t where (upper(t.name) like upper(concat('%', coalesce(?1, '') , '%')) or upper(t.uniqueCode) like upper(concat('%', coalesce(?1, ''), '%')) or t.typeGroup = ?2) and t.status = ?3")
     Page<Type> searchPageOfTypes(String key, TypeGroup typeGroup, PersistenceStatus status, Pageable pageable);
 
-    @Query("select t from Type t where (upper(t.name) like upper(concat('%', ?1, '%')) or upper(t.uniqueCode) like upper(concat('%', ?1, '%')) or t.typeGroup in ?2) and t.status = ?3")
+    @Query("select t from Type t where (upper(t.name) like upper(concat('%', coalesce(?1, ''), '%')) or upper(t.uniqueCode) like upper(concat('%', coalesce(?1, ''), '%')) or t.typeGroup in ?2) and t.status = ?3")
     Page<Type> searchPageOfTypes(String key, Collection<TypeGroup> typeGroups, PersistenceStatus status, Pageable pageable);
 
-    @Query("select t from Type t where (upper(t.name) like upper(concat('%', ?1, '%')) or upper(t.uniqueCode) like upper(concat('%', ?1, '%'))) and t.status = ?2")
+    @Query("select t from Type t where (upper(t.name) like upper(concat('%', coalesce(?1, ''), '%')) or upper(t.uniqueCode) like upper(concat('%', coalesce(?1, ''), '%'))) and t.status = ?2")
     Page<Type> searchPageOfTypes(String key, PersistenceStatus status, Pageable pageable);
 
     @Query("select t from Type t where t.status = ?1")
     Page<Type> searchPageOfTypes(PersistenceStatus status, Pageable pageable);
 
-    @Query("select new dgmp.sigrh.typemodule.model.dtos.ReadTypeDTO(t) from Type t where upper(t.typeGroup) = upper(?1) and t.status = 'ACTIVE'")
-    List<ReadTypeDTO> findByTypeGroup(String typeGroup);
+    @Query("select new dgmp.sigrh.typemodule.model.dtos.ReadTypeDTO(t) from Type t where t.typeGroup = ?1 and t.status = 'ACTIVE'")
+    List<ReadTypeDTO> findByTypeGroup(TypeGroup typeGroup);
 
     @Query("select t.typeId from Type t where upper(t.typeGroup) = upper(?1) and t.status = 'ACTIVE'")
     List<Long> getTypeIdsByTypeGroup(String typeGroup);
@@ -90,10 +90,10 @@ public interface TypeRepo extends JpaRepository<Type, Long>
     String getUniqueCode(Long typeId);
 
     @Query("select (count(t)>0) from Type t where t.typeGroup = ?1 and t.typeId = ?2 and t.status = 'ACTIVE'")
-    boolean typeGroupHasChild(String typeGroup, Long typeId);
+    boolean typeGroupHasChild(TypeGroup typeGroup, Long typeId);
 
     @Query("select (count(t)>0) from Type t where t.typeGroup = ?1 and t.uniqueCode = ?2 and t.status = 'ACTIVE'")
-    boolean typeGroupHasChild(String typeGroup, String uniqueCode);
+    boolean typeGroupHasChild(TypeGroup typeGroup, String uniqueCode);
 
     Type findByUniqueCode(String uniqueCode);
     @Query("select t.typeId from Type t where t.uniqueCode = ?1")

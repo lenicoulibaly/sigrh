@@ -2,13 +2,17 @@ package dgmp.sigrh.auth2.security.services;
 
 import dgmp.sigrh.agentmodule.controller.repositories.AgentRepo;
 import dgmp.sigrh.agentmodule.model.entities.Agent;
+import dgmp.sigrh.auth2.controller.repositories.MenuRepo;
 import dgmp.sigrh.auth2.controller.repositories.UserRepo;
+import dgmp.sigrh.auth2.controller.services.IMenuService;
 import dgmp.sigrh.auth2.model.entities.AppPrivilege;
 import dgmp.sigrh.auth2.model.entities.AppRole;
 import dgmp.sigrh.auth2.model.entities.AppUser;
 import dgmp.sigrh.auth2.model.entities.PrincipalAss;
 import dgmp.sigrh.auth2.model.events.EventActorIdentifier;
 import dgmp.sigrh.auth2.security.authentication.token.AppUsernamePasswordAuthToken;
+import dgmp.sigrh.instancemodule.controller.repositories.InstanceRepo;
+import dgmp.sigrh.instancemodule.model.entities.Instance;
 import dgmp.sigrh.structuremodule.model.entities.structure.Structure;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,6 +33,9 @@ public class SecurityContextManager implements ISecurityContextManager
     private final UserRepo userRepo;
     private final AppUserDetailsService uds;
     private final AgentRepo agentRepo;
+    private final InstanceRepo instanceRepo;
+    private final MenuRepo menuRepo;
+    private final IMenuService menuService;
     @Override
     public void refreshSecurityContext(String username)
     {
@@ -75,6 +82,16 @@ public class SecurityContextManager implements ISecurityContextManager
     }
 
     @Override
+    public boolean hasMenu(String menuCode)
+    {
+        return this.getAuthorities().stream().anyMatch(auth->
+        {
+            String[] prvCodes = menuService.getPrvCodesByMenuCode(menuCode);
+            return Arrays.stream(prvCodes).anyMatch(prv->auth.equals(prv));
+        });
+    }
+
+    @Override
     public String getAuthUsername() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
@@ -82,6 +99,31 @@ public class SecurityContextManager implements ISecurityContextManager
     @Override
     public Long getAuthUserId() {
         return userRepo.getUserIdByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+
+    @Override
+    public Long getAuthAgentId() {
+        return agentRepo.getAgtIdByUserId(getAuthUserId());
+    }
+
+    @Override
+    public String getAuthAgentPhotoLink() {
+        Long agentId = getAuthAgentId();
+        return "/sigrh/agents/displayPhoto/" + (agentId == null ? -10 : agentId);
+    }
+
+    @Override
+    public Instance getAuthInstance()
+    {
+        Long visibility = this.getVisibilityId();
+        return visibility == null ? null : instanceRepo.getStrInstance(visibility);
+    }
+
+    @Override
+    public String getAuthInstanceSigle()
+    {
+        Instance instance = this.getAuthInstance();
+        return instance == null ? "" : instance.getHead() == null ? "" : "| " + instance.getHead().getStrSigle();
     }
 
     @Override

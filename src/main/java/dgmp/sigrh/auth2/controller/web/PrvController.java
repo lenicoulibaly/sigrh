@@ -6,6 +6,9 @@ import dgmp.sigrh.auth2.model.dtos.appprivilege.ReadPrivilegeDTO;
 import dgmp.sigrh.auth2.model.dtos.appprivilege.SelectedPrvDTO;
 import dgmp.sigrh.auth2.model.enums.PrvGroup;
 import dgmp.sigrh.shared.utilities.StringUtils;
+import dgmp.sigrh.typemodule.controller.repositories.TypeRepo;
+import dgmp.sigrh.typemodule.model.dtos.ReadTypeDTO;
+import dgmp.sigrh.typemodule.model.enums.TypeGroup;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,11 +30,14 @@ import java.util.Set;
 public class PrvController
 {
     private final IPrivilegeService prvService;
+    private final TypeRepo typeRepo;
 
     @GetMapping(path = "/sigrh/security/privileges/new-prv-form")
     public String gotoNewPrvForm(Model model)
     {
         CreatePrivilegeDTO dto = new CreatePrivilegeDTO();
+        List<ReadTypeDTO> prvTypes = typeRepo.findByTypeGroup(TypeGroup.PRIVILEGE);
+        model.addAttribute("prvTypes", prvTypes);
         model.addAttribute("dto", dto);
         model.addAttribute("groups", PrvGroup.getPrvGroups());
         return "security/privileges/newPrvForm";
@@ -51,9 +57,9 @@ public class PrvController
     }
 
     @GetMapping(path = "/sigrh/privileges/prv-list")
-    public String gotoPrvsList(Model model, @RequestParam(defaultValue = "0") int pageNum, @RequestParam(defaultValue = "5") int pageSize, @RequestParam(defaultValue = "") String key)
+    public String gotoPrvsList(Model model, @RequestParam(defaultValue = "0") int pageNum, @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "") String key)
     {
-        Page<ReadPrivilegeDTO> prvs = prvService.searchPrivileges(StringUtils.stripAccentsToUpperCase(key).trim(), PageRequest.of(pageNum, pageSize));
+        Page<ReadPrivilegeDTO> prvs = prvService.searchPrivileges(StringUtils.stripAccentsToUpperCase(key), PageRequest.of(pageNum, pageSize));
 
         model.addAttribute("pageNum", pageNum);
         model.addAttribute("currentPage", pageNum);

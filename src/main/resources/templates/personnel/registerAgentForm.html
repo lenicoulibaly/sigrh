@@ -251,10 +251,42 @@
                                             </select>
                                         </div>
                                     </div>
+
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="photoFile">Photo de profil</label>  <small th:if="${photoFileErrMsg}" class="text-danger"> [[${photoFileErrMsg}]]</small>
-                                            <input id="photoFile" type="file" class="form-control" th:field="*{photoFile}" />
+                                            <label for="cv">CV</label>
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" th:field="*{cv}" id="cv">
+                                                    <label class="custom-file-label" for="cv">Choisir le fichier</label>
+                                                </div>
+                                            </div>
+                                            <small th:if="${cvErrMsg}" class="text-danger">[[${cvErrMsg}]]</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="diplome">Diplôme</label>
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" th:field="*{diplome}" id="diplome">
+                                                    <label class="custom-file-label" for="diplome">Choisir le fichier</label>
+                                                </div>
+                                            </div>
+                                            <small th:if="${cvErrMsg}" class="text-danger">[[${cvErrMsg}]]</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="photoFile">Photo de profil</label>
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" th:field="*{photoFile}" id="photoFile">
+                                                    <label class="custom-file-label" for="diplome">Choisir le fichier</label>
+                                                </div>
+                                            </div>
+                                            <small th:if="${photoFileErrMsg}" class="text-danger"> [[${photoFileErrMsg}]]</small>
                                         </div>
                                     </div>
 
@@ -286,6 +318,13 @@
 
                     //Initialize Select2 Elements
                     $('.select2bs4').select2({theme: 'bootstrap4'});
+                });
+            </script>
+
+            <script th:src="@{/plugins/bs-custom-file-input/bs-custom-file-input.min.js}"></script>
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    bsCustomFileInput.init();
                 });
             </script>
         </div>

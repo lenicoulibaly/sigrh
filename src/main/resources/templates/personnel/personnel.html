@@ -217,6 +217,7 @@
 
                                                 <a class="dropdown-item" th:href="@{/sigrh/agents/profile(agtId = ${agent.agentId})}">Detail</a>
                                                 <a class="dropdown-item" th:href="@{/sigrh/agents/update-agent-form(agtId = ${agent.agentId})}">Modification</a>
+                                                <a class="dropdown-item" th:title="${'Archiver des documents au dossier de ' + agent.nom + ' ' + agent.prenom}" th:href="@{/sigrh/archives/create-archive-form(uniqueKey = ${agent.email})}">Ajouter des documents</a>
                                                 <a class="dropdown-item" href="#">Affectation</a>
                                                 <a class="dropdown-item" href="#">Nomination</a>
                                                 <a class="dropdown-item" href="#">Promotion</a>
